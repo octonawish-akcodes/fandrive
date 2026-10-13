@@ -1,9 +1,9 @@
 import { QlooError } from "@/lib/qloo/client";
 import type { QlooApi } from "@/lib/qloo/api";
-import type { Demographics, HeatCell, QlooPlace } from "@/lib/qloo/types";
+import type { Demographics, EntityType, HeatCell, QlooPlace } from "@/lib/qloo/types";
 
 export type FakeData = {
-  alias?: Record<string, string>; notFound?: string[];
+  alias?: Record<string, string>; notFound?: string[]; types?: Record<string, EntityType>;
   demo?: Record<string, Demographics | "invalid">; cityFit?: Record<string, number>;
   heat?: Record<string, HeatCell[]>; places?: QlooPlace[]; badCities?: string[]; authFail?: boolean;
 };
@@ -17,7 +17,7 @@ export function fakeApi(d: FakeData): QlooApi {
     async search(query, type) {
       if (d.authFail) throw new QlooError("auth", 401, "bad key");
       if (d.notFound?.includes(query)) return [];
-      return [{ entityId: id(query), name: d.alias?.[query] ?? query, type: type ?? "artist", popularity: 0.9 }];
+      return [{ entityId: id(query), name: d.alias?.[query] ?? query, type: type ?? d.types?.[query] ?? "artist", popularity: 0.9 }];
     },
     async demographics(entityId) {
       const v = d.demo?.[entityId];

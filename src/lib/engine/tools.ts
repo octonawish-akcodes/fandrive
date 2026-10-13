@@ -33,6 +33,8 @@ const orSoft = <T>(fallback: T) => (e: unknown): T => { if (soft(e)) return fall
 const signed = (x: number) => (x >= 0 ? "+" : "") + x.toFixed(2);
 const density = (cells: LiftCell[]) => cells.slice(0, ZONE.topCells).reduce((s, c) => s + Math.max(0, c.lift), 0);
 
+const PRIORITY: EntityType[] = ["artist", "brand", "tv_show", "videogame", "person", "movie", "podcast"];
+
 export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {}) {
   let baselineIdsP: Promise<string[]> | null = null;
   const baselineCells = new Map<string, Promise<HeatCell[][]>>();
@@ -137,6 +139,18 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     return Promise.all(zones.map(async (z) => ({ ...z, ...(await venuesNear(z, a.partner.entityId, a.date)) })));
   }
 
-  return { findAndConfirm, fanAge, cityFit, cityStrength, fanZones, venuesNear, scorePartners, mapPartner };
+  async function typeNames(names: string[]): Promise<{ refs: NameRef[]; unresolved: string[] }> {
+    if (!names.length) return { refs: [], unresolved: [] };
+    emit({ tool: "find_and_confirm", message: `Identifying ${names.length} partner names you entered` });
+    const typed = await Promise.all(names.map(async (n) => {
+      const hits = (await api.search(n, undefined, 8).catch(orSoft([]))).filter((h) => PRIORITY.includes(h.type));
+      const best = hits.map((h) => ({ h, m: matchConfidence(n, h.name) })).filter((x) => x.m >= MATCH_OK)
+        .sort((a, b) => b.m - a.m || PRIORITY.indexOf(a.h.type) - PRIORITY.indexOf(b.h.type))[0];
+      return best ? { name: n, type: best.h.type } : null;
+    }));
+    return { refs: typed.filter((x): x is NameRef => x !== null), unresolved: names.filter((_, i) => typed[i] === null) };
+  }
+
+  return { findAndConfirm, typeNames, fanAge, cityFit, cityStrength, fanZones, venuesNear, scorePartners, mapPartner };
 }
 export type Tools = ReturnType<typeof createTools>;
