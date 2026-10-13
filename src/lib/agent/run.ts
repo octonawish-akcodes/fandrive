@@ -1,0 +1,73 @@
+import type { LanguageModel } from "ai";
+import { nanoid } from "nanoid";
+import { CityNotFoundError, type ToolEvent, type Tools } from "@/lib/engine/tools";
+import type { CityInfo, PlainAiCheck, Plan, PlanInput, RunEvent, Step } from "@/lib/plan/schema";
+import { QlooError } from "@/lib/qloo/client";
+import { AgentIncompleteError, runAgent } from "./agent";
+import { runAutopilot, TooFewPartnersError, type CoreResult } from "./autopilot";
+import { runPlainAi } from "./plainAi";
+
+export type RunDeps = { makeTools: (onTool: (e: ToolEvent) => void) => Tools; model: LanguageModel | null; now?: () => number; newId?: () => string };
+
+export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEvent) => void): Promise<Plan | null> {
+  const now = deps.now ?? Date.now;
+  const t0 = now();
+  const steps: Step[] = [];
+  const step = (tool: string, message: string) => { const s = { at: now() - t0, tool, message }; steps.push(s); emit({ type: "step", step: s }); };
+  const base = deps.makeTools((e) => step(e.tool, e.message));
+  const tools: Tools = { ...base, scorePartners: async (x) => { const r = await base.scorePartners(x); emit({ type: "partners", partners: r.ranked, excluded: r.excluded }); return r; } };
+
+  try {
+    const s = await tools.cityStrength(input.city);
+    const city: CityInfo = { name: s.locality.name, disambiguation: s.locality.disambiguation, lat: s.locality.lat, lon: s.locality.lon, badge: s.badge, cells: s.cells };
+    emit({ type: "city", city });
+
+    let core: CoreResult;
+    let engine: Plan["engine"] = "agent";
+    if (deps.model) {
+      step("agent", "AI planner is choosing which partners to test");
+      try { core = await runAgent({ input, city, tools, model: deps.model }); }
+      catch (e) {
+        if (!(e instanceof AgentIncompleteError)) throw e;
+        step("autopilot", "AI planner unavailable, switching to autopilot (same Qloo tools, fixed order)");
+        engine = "autopilot";
+        core = await runAutopilot({ input, city, tools, state: e.state });
+      }
+    } else {
+      engine = "autopilot";
+      step("autopilot", "Running autopilot (no AI key configured)");
+      core = await runAutopilot({ input, city, tools });
+    }
+    emit({ type: "partners", partners: core.partners, excluded: core.excluded });
+    emit({ type: "maps", maps: core.maps });
+    emit({ type: "creative", creative: core.creative });
+
+    let plainAi: PlainAiCheck[] | null = null;
+    if (deps.model && engine === "agent") {
+      step("plain_ai", "Asking plain AI (no Qloo) for its picks, then fact-checking them with Qloo");
+      plainAi = await runPlainAi({ input, city, tools, model: deps.model }).catch(() => null);
+    }
+    emit({ type: "plainAi", plainAi });
+
+    const limits = [
+      ...(city.badge !== "strong" ? [`Qloo data for ${city.name} is ${city.badge}; treat rankings as directional.`] : []),
+      ...(core.excluded.length ? [`${core.excluded.length} names were skipped (not found, wrong match, or no audience data yet).`] : []),
+      ...(engine === "autopilot" ? ["Planned by autopilot: same Qloo data, fixed steps, template copy."] : []),
+      ...(core.usedTemplate && engine === "agent" ? ["Campaign copy uses templates (AI writer unavailable)."] : []),
+      "Scores describe crowd-level tendencies, not individuals. Eligibility rules vary; follow your blood service's guidance.",
+    ];
+    const plan: Plan = {
+      id: (deps.newId ?? (() => nanoid(10)))(), createdAt: new Date(now()).toISOString(), engine, input, city,
+      partners: core.partners, excluded: core.excluded, maps: core.maps, creative: core.creative, plainAi, steps, limits,
+    };
+    emit({ type: "done", plan });
+    return plan;
+  } catch (e) {
+    if (e instanceof CityNotFoundError) emit({ type: "error", code: "city_not_found", message: `We couldn't find "${input.city}" in Qloo. Try the full name, e.g. "Houston, TX".` });
+    else if (e instanceof TooFewPartnersError) emit({ type: "error", code: "too_few_partners", message: `${e.message}. Try a larger nearby city or add well-known partners.` });
+    else if (e instanceof QlooError && e.kind === "rate_limited") emit({ type: "error", code: "rate_limited", message: "The taste-data service is busy. Try an example city or retry in a minute." });
+    else if (e instanceof QlooError) emit({ type: "error", code: "upstream", message: "The taste-data service had a problem. Please retry." });
+    else emit({ type: "error", code: "internal", message: "Something went wrong while planning." });
+    return null;
+  }
+}
