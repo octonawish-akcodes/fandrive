@@ -68,6 +68,15 @@ describe("runPlan", () => {
     expect(calls.length).toBeGreaterThan(3);
     expect(calls.filter((c) => !c.endsWith(":Springfield, MA"))).toEqual([]);
   });
+  it("skips the plain-AI check when no AI model is available at all", async () => {
+    const model = failingModel("No AI model is available right now");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { plan, events } = await run(data, model);
+    warn.mockRestore();
+    expect(plan?.engine).toBe("autopilot");
+    expect(model.doGenerateCalls).toHaveLength(1);
+    expect(events.some((e) => e.type === "step" && e.step.tool === "plain_ai")).toBe(false);
+  });
   it("reports unknown cities", async () => {
     const { plan, events } = await run({ ...data, badCities: ["asdfgh"] }, null, { ...input, city: "asdfgh" });
     expect(plan).toBeNull();

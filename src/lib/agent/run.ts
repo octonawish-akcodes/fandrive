@@ -26,12 +26,14 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
 
     let core: CoreResult;
     let engine: Plan["engine"] = "agent";
+    let aiDown = false; // the whole model chain just failed: don't spend another wait on the plain-AI check
     if (deps.model) {
       step("agent", "AI planner is choosing which partners to test");
       try { core = await runAgent({ input, city, tools, model: deps.model }); }
       catch (e) {
         if (!(e instanceof AgentIncompleteError)) throw e;
         const r = e.reason;
+        aiDown = r instanceof Error && r.message.includes("No AI model is available");
         console.warn(`[fandrive] agent fallback: ${r instanceof Error ? `${r.name}: ${r.message}`.slice(0, 300) : "no partners scored"}`);
         step("autopilot", "AI planner unavailable, switching to autopilot (same Qloo tools, fixed order)");
         engine = "autopilot";
@@ -47,7 +49,7 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
     emit({ type: "creative", creative: core.creative });
 
     let plainAi: PlainAiCheck[] | null = null;
-    if (deps.model) { // also after an agent fallback: the comparison is cheap and has its own timeout
+    if (deps.model && !aiDown) { // also after an agent fallback: the comparison is cheap and has its own timeout
       step("plain_ai", "Asking plain AI (no Qloo) for its picks, then fact-checking them with Qloo");
       plainAi = await runPlainAi({ input, city, tools, model: deps.model }).catch(() => null);
     }

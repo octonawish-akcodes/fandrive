@@ -40,4 +40,13 @@ describe("withFallback", () => {
     await expect(run).rejects.toThrow();
     expect(b.doGenerateCalls).toHaveLength(0);
   });
+  it("rests a model that hit its quota (429) instead of retrying it on every call", async () => {
+    const a = new MockLanguageModelV4({ doGenerate: async () => { throw Object.assign(new Error("RESOURCE_EXHAUSTED"), { statusCode: 429 }); } });
+    const b = overloaded();
+    const m = withFallback([a, b], { pauseMs: 0 });
+    await expect(generateText({ model: m, prompt: "x" })).rejects.toThrow();
+    await expect(generateText({ model: m, prompt: "y" })).rejects.toThrow();
+    expect(a.doGenerateCalls).toHaveLength(1);
+    expect(b.doGenerateCalls).toHaveLength(4);
+  });
 });
