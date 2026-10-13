@@ -20,7 +20,7 @@ export class AgentIncompleteError extends Error {
   constructor(public state: AutopilotState, public reason?: unknown) { super("AI planner did not finish"); this.name = "AgentIncompleteError"; }
 }
 
-export async function writeCreative(a: { input: PlanInput; city: CityInfo; partners: Partner[]; maps: MapResult[]; model: LanguageModel }): Promise<{ creative: Creative; usedTemplate: boolean }> {
+export async function writeCreative(a: { input: PlanInput; city: CityInfo; partners: Partner[]; maps: MapResult[]; model: LanguageModel; timeoutMs?: number }): Promise<{ creative: Creative; usedTemplate: boolean }> {
   const fallback = templateCreative(ctxFrom(a.input, a.city, a.partners[0], a.maps[0]));
   const facts = {
     city: a.city.name, ageBand: a.input.band, goalDonors: a.input.goalDonors, date: a.input.startDate,
@@ -29,7 +29,7 @@ export async function writeCreative(a: { input: PlanInput; city: CityInfo; partn
   };
   try {
     const r = await generateText({
-      model: a.model, maxRetries: 1, output: Output.object({ schema: CreativeSchema }),
+      model: a.model, maxRetries: 1, output: Output.object({ schema: CreativeSchema }), abortSignal: AbortSignal.timeout(a.timeoutMs ?? 30_000),
       system: "Write blood-drive campaign copy for young first-time donors: fan-themed and warm, with no official logos. Use only numbers present in FACTS. Make no medical claims, and tell people to check eligibility.",
       prompt: `FACTS: ${JSON.stringify(facts)}`,
     });
@@ -40,7 +40,8 @@ export async function writeCreative(a: { input: PlanInput; city: CityInfo; partn
   }
 }
 
-export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Tools; model: LanguageModel; maxSteps?: number }): Promise<CoreResult> {
+/** deadlineMs bounds the tool loop; on expiry the caller falls back to autopilot with whatever was scored. */
+export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Tools; model: LanguageModel; maxSteps?: number; deadlineMs?: number }): Promise<CoreResult> {
   const state: AutopilotState & { chosen?: string[] } = {};
   const maps = new Map<string, MapResult>();
   const snapshot = (): AutopilotState => ({ ranked: state.ranked, excluded: state.excluded, maps: [...maps.values()] });
@@ -81,6 +82,7 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
   try {
     await generateText({
       model: a.model, system: SYSTEM, tools, maxRetries: 1, stopWhen: [stepCountIs(a.maxSteps ?? 4), hasToolCall("finish")],
+      abortSignal: AbortSignal.timeout(a.deadlineMs ?? 90_000),
       prompt: `<user_input>${JSON.stringify({ city: a.city.name, cityDisambiguation: a.city.disambiguation, ageBand: a.input.band, goalDonors: a.input.goalDonors, dates: [a.input.startDate, a.input.endDate], partnersToTest: a.input.partners })}</user_input>`,
     });
   } catch (e) {

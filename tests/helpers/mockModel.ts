@@ -9,3 +9,4 @@ export const calls = (...cs: [string, unknown][]) =>
 export const text = (t: string) => done([{ type: "text", text: t }], "stop");
 export const mockModel = (results: any[]) => new MockLanguageModelV4({ doGenerate: results as any });
 export const failingModel = (message = "429 RESOURCE_EXHAUSTED") => new MockLanguageModelV4({ doGenerate: async () => { throw new Error(message); } });
+export const hangingModel = () => new MockLanguageModelV4({ doGenerate: ({ abortSignal }) => new Promise((_, rej) => abortSignal?.addEventListener("abort", () => rej(abortSignal.reason))) });

@@ -29,6 +29,8 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
       try { core = await runAgent({ input, city, tools, model: deps.model }); }
       catch (e) {
         if (!(e instanceof AgentIncompleteError)) throw e;
+        const r = e.reason;
+        console.warn(`[fandrive] agent fallback: ${r instanceof Error ? `${r.name}: ${r.message}`.slice(0, 300) : "no partners scored"}`);
         step("autopilot", "AI planner unavailable, switching to autopilot (same Qloo tools, fixed order)");
         engine = "autopilot";
         core = await runAutopilot({ input, city, tools, state: e.state });

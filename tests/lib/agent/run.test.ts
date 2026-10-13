@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { runPlan } from "@/lib/agent/run";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema, type RunEvent } from "@/lib/plan/schema";
@@ -28,7 +28,10 @@ describe("runPlan", () => {
     expect(plan?.limits.at(-1)).toContain("crowd-level");
   });
   it("falls back to autopilot when the model fails", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const { plan, events } = await run(data, failingModel());
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("[fandrive] agent fallback"));
+    warn.mockRestore();
     expect(plan?.engine).toBe("autopilot");
     expect(events.some((e) => e.type === "step" && e.step.message.includes("switching to autopilot"))).toBe(true);
     expect(plan?.plainAi).toBeNull();

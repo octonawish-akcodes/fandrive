@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { runAgent } from "@/lib/agent/agent";
+import { AgentIncompleteError, runAgent, writeCreative } from "@/lib/agent/agent";
 import { runPlainAi } from "@/lib/agent/plainAi";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema } from "@/lib/plan/schema";
 import { templateCreative } from "@/lib/plan/templates";
 import { fakeApi, heat, id } from "../../helpers/fakeApi";
-import { calls, mockModel, text } from "../../helpers/mockModel";
+import { calls, hangingModel, mockModel, text } from "../../helpers/mockModel";
 
 const young = { age: { "24_and_younger": 0.8 }, gender: {} };
 const data = {
@@ -58,6 +58,20 @@ describe("runAgent", () => {
 });
 
 describe("runPlainAi", () => {
+  it("gives up at the deadline so autopilot can take over", async () => {
+    const t = Date.now();
+    await expect(runAgent({ input, city, tools: createTools(fakeApi(data)), model: hangingModel(), deadlineMs: 30 })).rejects.toBeInstanceOf(AgentIncompleteError);
+    expect(Date.now() - t).toBeLessThan(2_000);
+  });
+  it("uses template copy when the writer is slower than its timeout", async () => {
+    const tools = createTools(fakeApi(data));
+    const { ranked } = await tools.scorePartners({ city: "Houston", band: "16-24", cityBadge: "strong", refs: cands.candidates as never });
+    const r = await writeCreative({ input, city, partners: ranked, maps: [], model: hangingModel(), timeoutMs: 20 });
+    expect(r.usedTemplate).toBe(true);
+  });
+  it("plain-AI check rejects when the model is slower than its timeout", async () => {
+    await expect(runPlainAi({ input, city, tools: createTools(fakeApi(data)), model: hangingModel(), timeoutMs: 20 })).rejects.toThrow();
+  });
   it("fact-checks plain-AI picks with Qloo", async () => {
     const model = mockModel([text(JSON.stringify({ picks: [{ name: "Metallica", type: "artist", why: "Iconic" }, { name: "Sabrina Carpenter", type: "artist", why: "Pop star" }] }))]);
     const r = await runPlainAi({ input, city, tools: createTools(fakeApi(data)), model });
