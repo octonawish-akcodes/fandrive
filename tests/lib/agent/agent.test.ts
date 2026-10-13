@@ -96,6 +96,20 @@ describe("runPlainAi", () => {
     expect(prompt).toContain("Sat, Nov 14");
     expect(prompt).not.toContain("2026-11-14");
   });
+  it("gives the writer one drive venue, not every candidate venue", async () => {
+    const tools = createTools(fakeApi(data));
+    const { ranked } = await tools.scorePartners({ city: "Houston", band: "16-24", cityBadge: "strong", refs: cands.candidates as never });
+    const v = (name: string) => ({ entityId: name, name, lat: 29.7, lon: -95.5, role: "host" as const, reasons: [], score: 1 });
+    const zone = (id: string, name: string, hosts: string[]) => ({ id, name, lat: 29.7, lon: -95.5, radiusKm: 1, meanLift: 0.2, cellCount: 3, venues: { host: hosts.map(v), promote: [] } });
+    const maps = [{ partnerId: ranked[0].entityId, partnerName: ranked[0].name, zones: [zone("z1", "Sharpstown", ["Imperial Reception Hall", "Arena Theatre"]), zone("z2", "Airline", ["Stuebner Airline Park"])] }];
+    const model = mockModel([text(creative("Fan Day"))]);
+    await writeCreative({ input, city, partners: ranked, maps, model });
+    const prompt = JSON.stringify(model.doGenerateCalls[0].prompt);
+    expect(prompt).toContain("Imperial Reception Hall");
+    expect(prompt).not.toContain("Arena Theatre");
+    expect(prompt).not.toContain("Stuebner Airline Park");
+    expect(prompt).not.toContain("16-24");
+  });
   it("fact-checks plain-AI picks with Qloo", async () => {
     const model = mockModel([text(JSON.stringify({ picks: [{ name: "Metallica", type: "artist", why: "Iconic" }, { name: "Sabrina Carpenter", type: "artist", why: "Pop star" }] }))]);
     const r = await runPlainAi({ input, city, tools: createTools(fakeApi(data)), model });
