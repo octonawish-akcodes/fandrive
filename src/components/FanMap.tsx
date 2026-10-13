@@ -11,7 +11,8 @@ export function FanMap({ city, maps }: { city: CityInfo; maps: MapResult[] }) {
   useEffect(() => {
     let map: import("maplibre-gl").Map | undefined;
     let cancelled = false;
-    import("maplibre-gl").then(({ Map: MapLibreMap, Marker, Popup }) => {
+    import("maplibre-gl").then(({ Map: MapLibreMap, Marker, Popup, setWorkerUrl, getVersion }) => {
+      setWorkerUrl(`/maplibre-gl-worker.mjs?v=${getVersion()}`); // see scripts/copy-maplibre-worker.mjs
       if (cancelled || !ref.current) return;
       map = new MapLibreMap({ container: ref.current, style: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json", center: [city.lon, city.lat], zoom: 10, attributionControl: { compact: true } });
       map.on("load", () => {
