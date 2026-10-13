@@ -2,7 +2,7 @@ import { QlooError } from "@/lib/qloo/client";
 import { ageSignal, type QlooApi } from "@/lib/qloo/api";
 import type { AgeBand, Demographics, EntityType, HeatCell, Locality, QlooPlace } from "@/lib/qloo/types";
 import { matchConfidence } from "./match";
-import { confidenceLevel, pullScores, youthSkew } from "./scoring";
+import { byYoungDonorFit, confidenceLevel, pullScores, youthSkew } from "./scoring";
 import { clusterZones, haversineKm, liftCells, type LiftCell, type Zone } from "./zones";
 import { rankVenues, type Venue } from "./venues";
 import { BADGE, MATCH_OK, VENUE_RADIUS_M, ZONE } from "./weights";
@@ -128,7 +128,7 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
           { label: "Fan concentration (top-30 heatmap lift)", source: "Qloo insights · filter.type=urn:heatmap vs city baseline", value: row.density.toFixed(2) },
         ],
       };
-    }).sort((x, y) => y.pull - x.pull);
+    }).sort(byYoungDonorFit);
     return { ranked, excluded };
   }
 

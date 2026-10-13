@@ -1,5 +1,6 @@
 import { generateText, hasToolCall, Output, stepCountIs, tool, type LanguageModel } from "ai";
 import { z } from "zod";
+import { byYoungDonorFit } from "@/lib/engine/scoring";
 import type { Partner, Tools } from "@/lib/engine/tools";
 import { allowedNumbers, sanitizeCreative } from "@/lib/plan/cite";
 import { fitCreative } from "@/lib/plan/fit";
@@ -54,7 +55,7 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
       execute: async ({ candidates }) => {
         const r = await a.tools.scorePartners({ city: a.input.city, band: a.input.band, cityBadge: a.city.badge, refs: candidates });
         const merged = new Map([...(state.ranked ?? []), ...r.ranked].map((p) => [p.entityId, p]));
-        state.ranked = [...merged.values()].sort((x, y) => y.pull - x.pull);
+        state.ranked = [...merged.values()].sort(byYoungDonorFit);
         state.excluded = [...(state.excluded ?? []), ...r.excluded];
         return {
           ranked: state.ranked.slice(0, 10).map((p) => ({ id: p.entityId, name: p.name, type: p.type, pull: +p.pull.toFixed(2), youthSkew: +p.youthSkew.toFixed(2), localLove: p.localLove === null ? null : +p.localLove.toFixed(2), confidence: p.confidence })),

@@ -60,6 +60,16 @@ describe("cityStrength", () => {
   });
 });
 
+describe("scorePartners ordering", () => {
+  it("never ranks an older-skewing fan base above a young-skewing one", async () => {
+    const d = { ...base, cityFit: { [id("Metallica")]: 0.99 }, heat: { [id("Metallica")]: heat([["g1", 0.99], ["g2", 0.98], ["g3", 0.97]]), [id("Sabrina Carpenter")]: heat([["g1", 0.5], ["g2", 0.5], ["g3", 0.5]]) } };
+    const r = await createTools(fakeApi(d)).scorePartners({ city: "Houston", band: "16-24", cityBadge: "strong", refs: [{ name: "Metallica", type: "artist" }, { name: "Sabrina Carpenter", type: "artist" }] });
+    const [m, sc] = ["Metallica", "Sabrina Carpenter"].map((n) => r.ranked.find((p) => p.name === n)!);
+    expect(m.pull).toBeGreaterThan(sc.pull);
+    expect(r.ranked.map((p) => p.name)).toEqual(["Sabrina Carpenter", "Metallica"]);
+  });
+});
+
 describe("mapPartner", () => {
   it("names zones by venue neighbourhood and splits host/promote venues", async () => {
     const zones = await createTools(fakeApi(base)).mapPartner({ city: "Houston", partner: { entityId: id("Sabrina Carpenter"), name: "Sabrina Carpenter" }, date: "2026-11-14" });

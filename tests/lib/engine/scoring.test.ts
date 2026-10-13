@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { confidenceLevel, minMax, pullScores, youthSkew } from "@/lib/engine/scoring";
+import { byYoungDonorFit, confidenceLevel, minMax, pullScores, youthSkew } from "@/lib/engine/scoring";
 
 describe("youthSkew", () => {
   it("uses 24_and_younger for 16-24 and the mean for 18-29", () => {
@@ -39,5 +39,12 @@ describe("confidenceLevel", () => {
     expect(confidenceLevel({ match: 1, hasLocal: false, cityBadge: "strong" })).toBe("medium");
     expect(confidenceLevel({ match: 0.5, hasLocal: true, cityBadge: "strong" })).toBe("low");
     expect(confidenceLevel({ match: 1, hasLocal: true, cityBadge: "thin" })).toBe("low");
+  });
+});
+
+describe("byYoungDonorFit", () => {
+  it("ranks every young-skewing fan base above older-skewing ones, then by pull", () => {
+    const ps = [{ name: "Old but local", youthSkew: -0.22, pull: 0.86 }, { name: "Young", youthSkew: 0.71, pull: 0.8 }, { name: "Neutral-old", youthSkew: -0.04, pull: 0.9 }, { name: "Younger", youthSkew: 0.4, pull: 0.85 }];
+    expect([...ps].sort(byYoungDonorFit).map((p) => p.name)).toEqual(["Younger", "Young", "Neutral-old", "Old but local"]);
   });
 });

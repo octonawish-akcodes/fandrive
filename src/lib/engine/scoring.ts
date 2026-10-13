@@ -28,3 +28,8 @@ export function confidenceLevel(a: { match: number; hasLocal: boolean; cityBadge
   if (a.match < MATCH_OK || a.cityBadge === "thin") return "low";
   return a.hasLocal && a.cityBadge === "strong" ? "high" : "medium";
 }
+
+/** "Best partners for young donors": every young-skewing fan base (skew ≥ 0) ranks above older-skewing ones, then by pull. */
+export function byYoungDonorFit(a: { youthSkew: number; pull: number }, b: { youthSkew: number; pull: number }): number {
+  return Number(a.youthSkew < 0) - Number(b.youthSkew < 0) || b.pull - a.pull;
+}
