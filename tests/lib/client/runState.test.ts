@@ -12,3 +12,8 @@ it("accumulates steps and sections, and resets", () => {
   expect(s.status).toBe("error");
   expect(applyEvent(s, { type: "reset" }).steps).toEqual([]);
 });
+
+it("keeps the agent's picks from the partners event", () => {
+  const s = applyEvent(applyEvent(initialRun, { type: "reset" }), { type: "partners", partners: [], excluded: [], picks: { ids: ["a"], rationale: "Young" } });
+  expect(s.picks).toEqual({ ids: ["a"], rationale: "Young" });
+});

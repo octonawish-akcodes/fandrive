@@ -19,7 +19,7 @@ function Section({ title, ready, children }: { title: string; ready: boolean; ch
 }
 
 export function ReportView({ state }: { state: RunState }) {
-  const { city, partners, excluded, maps, creative, plainAi, plan, error, status } = state;
+  const { city, partners, excluded, maps, creative, plainAi, plan, error, status, picks } = state;
   return (
     <div className="space-y-4">
       {error && <div role="alert" className="rounded-xl border border-rose-300 bg-rose-50 p-4 text-rose-900">{error.message}</div>}
@@ -31,7 +31,7 @@ export function ReportView({ state }: { state: RunState }) {
         </div>
       )}
       {status !== "error" && <>
-        <Section title="1 · Best partners for young first-time donors" ready={!!partners}>{partners && <PartnerTable partners={partners} excluded={excluded ?? []} />}</Section>
+        <Section title="1 · Best partners for young first-time donors" ready={!!partners}>{partners && <PartnerTable partners={partners} excluded={excluded ?? []} picks={picks} />}</Section>
         <Section title="2 · Where their fans are, and where to host" ready={!!maps}>{maps && city && <><FanMap city={city} maps={maps} /><div className="mt-4"><VenueList maps={maps} /></div></>}</Section>
         <Section title="3 · Campaign copy" ready={!!creative}>{creative && <CreativePanel c={creative} />}</Section>
         <Section title="4 · FanDrive vs plain AI" ready={plainAi !== undefined}><PlainAiPanel checks={plainAi ?? null} /></Section>

@@ -42,13 +42,16 @@ export type PlainAiCheck = { name: string; type: EntityType; why: string; matche
 export type MapResult = { partnerId: string; partnerName: string; zones: MappedZone[] };
 export type Step = { at: number; tool: string; message: string };
 export type CityInfo = { name: string; disambiguation?: string; lat: number; lon: number; badge: CityBadge; cells: number };
+/** The AI planner's own recommendation (finish tool). rationale is null when it cited numbers no tool returned. */
+export type AgentPicks = { ids: string[]; rationale: string | null };
 export type Plan = {
   id: string; createdAt: string; engine: "agent" | "autopilot" | "recorded"; input: PlanInput; city: CityInfo;
   partners: Partner[]; excluded: Excluded[]; maps: MapResult[]; creative: Creative; plainAi: PlainAiCheck[] | null; steps: Step[]; limits: string[];
+  agentPicks?: AgentPicks | null; // optional: plans saved before this field existed
 };
 export type ErrorCode = "bad_input" | "city_not_found" | "too_few_partners" | "rate_limited" | "upstream" | "internal";
 export type RunEvent =
   | { type: "step"; step: Step } | { type: "city"; city: CityInfo }
-  | { type: "partners"; partners: Partner[]; excluded: Excluded[] } | { type: "maps"; maps: MapResult[] }
+  | { type: "partners"; partners: Partner[]; excluded: Excluded[]; picks?: AgentPicks } | { type: "maps"; maps: MapResult[] }
   | { type: "creative"; creative: Creative } | { type: "plainAi"; plainAi: PlainAiCheck[] | null }
   | { type: "done"; plan: Plan } | { type: "error"; code: ErrorCode; message: string };

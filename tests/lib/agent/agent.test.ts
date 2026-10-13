@@ -74,6 +74,24 @@ describe("runAgent", () => {
     expect(r.partners.map((p) => p.name)).toContain("Olivia Rodrigo");
     expect(r.excluded.map((e) => e.query)).toContain("Nobody Real");
   });
+  it("returns the planner's picks and its rationale", async () => {
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: [id("Bad Bunny"), id("Sabrina Carpenter")], rationale: "Young fans and strong local love" }]),
+      text(creative("Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
+    expect(r.picks).toEqual({ ids: [id("Bad Bunny"), id("Sabrina Carpenter")], rationale: "Young fans and strong local love" });
+  });
+  it("drops a rationale that cites numbers no tool returned, keeping the picks", async () => {
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: [id("Bad Bunny")], rationale: "Will lift turnout by 73%" }]),
+      text(creative("Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
+    expect(r.picks).toEqual({ ids: [id("Bad Bunny")], rationale: null });
+  });
   it("stops the tool loop at 4 steps even if the model never finishes", async () => {
     const model = mockModel([calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), text(creative("T"))]);
     const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });

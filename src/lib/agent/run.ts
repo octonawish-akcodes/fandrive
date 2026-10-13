@@ -44,7 +44,11 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
       step("autopilot", "Running autopilot (no AI key configured)");
       core = await runAutopilot({ input, city, tools });
     }
-    emit({ type: "partners", partners: core.partners, excluded: core.excluded });
+    if (core.picks?.ids.length) {
+      const names = core.picks.ids.map((id) => core.partners.find((p) => p.entityId === id)?.name).filter(Boolean).join(" and ");
+      step("agent_picks", `AI planner picked ${names}${core.picks.rationale ? `: ${core.picks.rationale}` : ""}`);
+    }
+    emit({ type: "partners", partners: core.partners, excluded: core.excluded, ...(core.picks ? { picks: core.picks } : {}) });
     emit({ type: "maps", maps: core.maps });
     emit({ type: "creative", creative: core.creative });
 
@@ -64,7 +68,7 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
     ];
     const plan: Plan = {
       id: (deps.newId ?? (() => nanoid(10)))(), createdAt: new Date(now()).toISOString(), engine, input, city,
-      partners: core.partners, excluded: core.excluded, maps: core.maps, creative: core.creative, plainAi, steps, limits,
+      partners: core.partners, excluded: core.excluded, maps: core.maps, creative: core.creative, plainAi, steps, limits, agentPicks: core.picks ?? null,
     };
     emit({ type: "done", plan });
     return plan;

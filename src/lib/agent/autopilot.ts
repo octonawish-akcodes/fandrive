@@ -1,10 +1,10 @@
 import { seedPartners } from "@/lib/engine/seeds";
 import type { Excluded, Partner, Tools } from "@/lib/engine/tools";
-import type { CityInfo, Creative, MapResult, PlanInput } from "@/lib/plan/schema";
+import type { CityInfo, Creative, MapResult, PlanInput, AgentPicks } from "@/lib/plan/schema";
 import { dateLabel, templateCreative, type TemplateCtx } from "@/lib/plan/templates";
 
 export type AutopilotState = { ranked?: Partner[]; excluded?: Excluded[]; maps?: MapResult[] };
-export type CoreResult = { partners: Partner[]; excluded: Excluded[]; maps: MapResult[]; creative: Creative; usedTemplate: boolean };
+export type CoreResult = { partners: Partner[]; excluded: Excluded[]; maps: MapResult[]; creative: Creative; usedTemplate: boolean; picks?: AgentPicks };
 export class TooFewPartnersError extends Error {
   constructor(public count: number) { super(`Only ${count} partners had enough Qloo data (need 3)`); this.name = "TooFewPartnersError"; }
 }

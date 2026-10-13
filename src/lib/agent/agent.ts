@@ -2,8 +2,8 @@ import { generateText, hasToolCall, Output, stepCountIs, tool, type LanguageMode
 import { z } from "zod";
 import { byYoungDonorFit } from "@/lib/engine/scoring";
 import type { Excluded, NameRef, Partner, Tools } from "@/lib/engine/tools";
-import { allowedNumbers, sanitizeCreative } from "@/lib/plan/cite";
-import { fitCreative } from "@/lib/plan/fit";
+import { allowedNumbers, hasUncited, leaksInstructions, sanitizeCreative } from "@/lib/plan/cite";
+import { clamp, fitCreative } from "@/lib/plan/fit";
 import { CreativeDraftSchema, PARTNER_TYPES, type CityInfo, type Creative, type MapResult, type PlanInput } from "@/lib/plan/schema";
 import { dateLabel, templateCreative } from "@/lib/plan/templates";
 import { ctxFrom, mapTop, TooFewPartnersError, type AutopilotState, type CoreResult } from "./autopilot";
@@ -44,7 +44,8 @@ export async function writeCreative(a: { input: PlanInput; city: CityInfo; partn
 
 /** deadlineMs bounds the tool loop; on expiry the caller falls back to autopilot with whatever was scored. */
 export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Tools; model: LanguageModel; maxSteps?: number; deadlineMs?: number }): Promise<CoreResult> {
-  const state: AutopilotState & { chosen?: string[] } = {};
+  const state: AutopilotState & { chosen?: string[]; rationale?: string } = {};
+  const toolOutput: string[] = []; // numbers the planner may cite in its rationale
   const maps = new Map<string, MapResult>();
   let userNamesScored = false;
   const snapshot = (): AutopilotState => ({ ranked: state.ranked, excluded: state.excluded, maps: [...maps.values()] });
@@ -67,10 +68,12 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
         const merged = new Map([...(state.ranked ?? []), ...r.ranked].map((p) => [p.entityId, p]));
         state.ranked = [...merged.values()].sort(byYoungDonorFit);
         state.excluded = [...(state.excluded ?? []), ...unresolved, ...r.excluded];
-        return {
+        const out = {
           ranked: state.ranked.slice(0, 10).map((p) => ({ id: p.entityId, name: p.name, type: p.type, pull: +p.pull.toFixed(2), youthSkew: +p.youthSkew.toFixed(2), localLove: p.localLove === null ? null : +p.localLove.toFixed(2), confidence: p.confidence })),
           excluded: r.excluded.map((e) => `${e.query}: ${e.reason}`),
         };
+        toolOutput.push(JSON.stringify(out));
+        return out;
       },
     }),
     map_partner: tool({
@@ -87,7 +90,7 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
     finish: tool({
       description: "Finish with 1-3 recommended partner ids and a short rationale.",
       inputSchema: z.object({ ids: z.array(z.string().max(80)).min(1).max(3), rationale: z.string().max(600) }),
-      execute: async ({ ids }) => { state.chosen = ids; return { ok: true }; },
+      execute: async ({ ids, rationale }) => { state.chosen = ids; state.rationale = rationale; return { ok: true }; },
     }),
   };
 
@@ -106,5 +109,8 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
   const partners = [...chosen, ...state.ranked.filter((p) => !chosen.includes(p))];
   const finalMaps = await mapTop(a.tools, a.input, a.city, partners, [...maps.values()]);
   const c = await writeCreative({ input: a.input, city: a.city, partners, maps: finalMaps, model: a.model });
-  return { partners, excluded: state.excluded ?? [], maps: finalMaps, creative: c.creative, usedTemplate: c.usedTemplate };
+  const why = state.rationale?.trim() ? clamp(state.rationale, 400) : null;
+  const rationale = why && !hasUncited(why, allowedNumbers(toolOutput)) && !leaksInstructions(why) ? why : null;
+  const picks = { ids: chosen.map((p) => p.entityId), rationale };
+  return { partners, excluded: state.excluded ?? [], maps: finalMaps, creative: c.creative, usedTemplate: c.usedTemplate, picks };
 }

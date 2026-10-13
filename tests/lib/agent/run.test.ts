@@ -3,7 +3,7 @@ import { runPlan, skippedNote } from "@/lib/agent/run";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema, type RunEvent } from "@/lib/plan/schema";
 import { fakeApi, heat, id, type FakeData } from "../../helpers/fakeApi";
-import { failingModel, text } from "../../helpers/mockModel";
+import { calls, failingModel, mockModel, text } from "../../helpers/mockModel";
 import { MockLanguageModelV4 } from "ai/test";
 
 const young = { age: { "24_and_younger": 0.8 }, gender: {} };
@@ -76,6 +76,21 @@ describe("runPlan", () => {
     expect(plan?.engine).toBe("autopilot");
     expect(model.doGenerateCalls).toHaveLength(1);
     expect(events.some((e) => e.type === "step" && e.step.tool === "plain_ai")).toBe(false);
+  });
+  it("shows the agent's picks in the step log, on the partners event and on the plan", async () => {
+    const cands = { candidates: [{ name: "Sabrina Carpenter", type: "artist" }, { name: "Olivia Rodrigo", type: "artist" }, { name: "Bad Bunny", type: "artist" }] };
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: [id("Olivia Rodrigo")], rationale: "Youngest fan base" }]),
+      text(JSON.stringify({ theme: "Fan Day", posterHeadline: "Olivia Rodrigo fans, give blood", posterBody: "Give blood with fellow fans on the day.", socialPosts: ["Olivia Rodrigo fans, give blood", "Olivia Rodrigo fans, bring a friend", "Olivia Rodrigo fans, see you there"], invite: "Come give blood with me, check eligibility.", pitchEmail: { subject: "Partnership idea", body: "Hello, we would love to partner on a fan blood drive." } })),
+      text(JSON.stringify({ picks: [{ name: "Bad Bunny", type: "artist", why: "Popular" }] })),
+    ]);
+    const { plan, events } = await run(data, model);
+    expect(plan?.engine).toBe("agent");
+    expect(plan?.agentPicks).toEqual({ ids: [id("Olivia Rodrigo")], rationale: "Youngest fan base" });
+    expect(events.some((e) => e.type === "step" && e.step.tool === "agent_picks" && e.step.message.includes("Olivia Rodrigo") && e.step.message.includes("Youngest fan base"))).toBe(true);
+    const last = events.filter((e) => e.type === "partners").at(-1);
+    expect(last && last.type === "partners" && last.picks?.ids).toEqual([id("Olivia Rodrigo")]);
   });
   it("reports unknown cities", async () => {
     const { plan, events } = await run({ ...data, badCities: ["asdfgh"] }, null, { ...input, city: "asdfgh" });
