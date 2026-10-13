@@ -3,7 +3,7 @@ import { runPlan, skippedNote } from "@/lib/agent/run";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema, type RunEvent } from "@/lib/plan/schema";
 import { fakeApi, heat, id, type FakeData } from "../../helpers/fakeApi";
-import { calls, failingModel, mockModel, text } from "../../helpers/mockModel";
+import { calls, failingModel, hangingModel, mockModel, text } from "../../helpers/mockModel";
 import { MockLanguageModelV4 } from "ai/test";
 
 const young = { age: { "24_and_younger": 0.8 }, gender: {} };
@@ -97,6 +97,13 @@ describe("runPlan", () => {
     const plan = await runPlan(input, { makeTools: () => { throw new Error("Missing QLOO_API_KEY"); }, model: null }, (e) => events.push(e));
     expect(plan).toBeNull();
     expect(events.at(-1)).toMatchObject({ type: "error", code: "internal" });
+  });
+  it("uses the agent deadline from deps (recording runs allow longer)", async () => {
+    const events: RunEvent[] = [];
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const plan = await runPlan(input, { makeTools: (on) => createTools(fakeApi(data), on), model: hangingModel(), agentDeadlineMs: 30, plainAiTimeoutMs: 30, newId: () => "p" }, (e) => events.push(e));
+    warn.mockRestore();
+    expect(plan?.engine).toBe("autopilot");
   });
   it("reports unknown cities", async () => {
     const { plan, events } = await run({ ...data, badCities: ["asdfgh"] }, null, { ...input, city: "asdfgh" });

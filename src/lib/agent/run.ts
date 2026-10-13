@@ -7,7 +7,10 @@ import { AgentIncompleteError, runAgent } from "./agent";
 import { runAutopilot, TooFewPartnersError, type CoreResult } from "./autopilot";
 import { runPlainAi } from "./plainAi";
 
-export type RunDeps = { makeTools: (onTool: (e: ToolEvent) => void) => Tools; model: LanguageModel | null; now?: () => number; newId?: () => string };
+export type RunDeps = {
+  makeTools: (onTool: (e: ToolEvent) => void) => Tools; model: LanguageModel | null; now?: () => number; newId?: () => string;
+  agentDeadlineMs?: number; plainAiTimeoutMs?: number; // recordings allow longer than live requests
+};
 
 export const skippedNote = (n: number) => `${n} ${n === 1 ? "name was" : "names were"} skipped (not found, wrong match, or no audience data yet).`;
 
@@ -28,7 +31,7 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
     let aiDown = false; // the whole model chain just failed: don't spend another wait on the plain-AI check
     if (deps.model) {
       step("agent", "AI planner is choosing which partners to test");
-      try { core = await runAgent({ input, city, tools, model: deps.model }); }
+      try { core = await runAgent({ input, city, tools, model: deps.model, deadlineMs: deps.agentDeadlineMs }); }
       catch (e) {
         if (!(e instanceof AgentIncompleteError)) throw e;
         const r = e.reason;
@@ -54,7 +57,7 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
     let plainAi: PlainAiCheck[] | null = null;
     if (deps.model && !aiDown) { // also after an agent fallback: the comparison is cheap and has its own timeout
       step("plain_ai", "Asking plain AI (no Qloo) for its picks, then fact-checking them with Qloo");
-      plainAi = await runPlainAi({ input, city, tools, model: deps.model }).catch(() => null);
+      plainAi = await runPlainAi({ input, city, tools, model: deps.model, timeoutMs: deps.plainAiTimeoutMs }).catch(() => null);
     }
     emit({ type: "plainAi", plainAi });
 

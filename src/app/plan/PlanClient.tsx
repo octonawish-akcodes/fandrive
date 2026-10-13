@@ -5,7 +5,8 @@ import { PlanForm, type PlanFormValues } from "@/components/PlanForm";
 import { ReportView } from "@/components/ReportView";
 import { StepLog } from "@/components/StepLog";
 import { consumePlanStream } from "@/lib/client/consume";
-import { replay, type Recording } from "@/lib/client/replay";
+import { loadRecording, loadSavedPlan } from "@/lib/client/load";
+import { replay } from "@/lib/client/replay";
 import { applyEvent, fromPlan, initialRun, type RunState } from "@/lib/client/runState";
 
 export function PlanClient() {
@@ -18,17 +19,20 @@ export function PlanClient() {
 
   useEffect(() => {
     if (!id) return;
-    fetch(`/api/plan/${encodeURIComponent(id)}`).then((r) => (r.ok ? r.json() : null)).then((p) => p && setLoaded(fromPlan(p))).catch(() => undefined);
+    loadSavedPlan(id).then((p) => {
+      if ("error" in p) { dispatch({ type: "reset" }); dispatch({ type: "error", code: "bad_input", message: p.error }); }
+      else setLoaded(fromPlan(p));
+    });
   }, [id]);
 
   useEffect(() => {
     if (!example || !/^[a-z]{2,20}$/.test(example)) return;
-    fetch(`/examples/${example}.json`).then((r) => (r.ok ? r.json() : null)).then((rec: Recording | null) => {
-      if (!rec) return;
-      setRecordedAt(rec.recordedAt);
+    loadRecording(example).then((rec) => {
       dispatch({ type: "reset" });
+      if ("error" in rec) { dispatch({ type: "error", code: "bad_input", message: rec.error }); return; }
+      setRecordedAt(rec.recordedAt);
       replay(rec.events, dispatch);
-    }).catch(() => undefined);
+    });
   }, [example]);
 
   async function start(v: PlanFormValues) {
