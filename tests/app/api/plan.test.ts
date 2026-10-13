@@ -12,6 +12,8 @@ vi.mock("@/lib/qloo", () => ({ getQlooApi: () => fakeApi(data) }));
 vi.mock("@/lib/agent/model", () => ({ getModel: () => null }));
 vi.mock("@/lib/store/plans", () => ({ savePlan: async (p: unknown) => { saved.push(p); }, getPlan: async () => null }));
 vi.mock("@/lib/ratelimit", () => ({ limitByIp: vi.fn(async () => true) }));
+const budget = vi.hoisted(() => ({ ok: true }));
+vi.mock("@/lib/budget", () => ({ qlooBudgetOk: async () => budget.ok }));
 
 const { POST } = await import("@/app/api/plan/route");
 const { limitByIp } = await import("@/lib/ratelimit");
@@ -19,13 +21,19 @@ const req = (body: unknown) => new Request("http://x/api/plan", { method: "POST"
 const good = { city: "Houston", startDate: "2026-11-14", endDate: "2026-11-30" };
 
 describe("POST /api/plan", () => {
-  beforeEach(() => { saved.length = 0; });
+  beforeEach(() => { saved.length = 0; budget.ok = true; });
   it("streams NDJSON events ending in done and saves the plan", async () => {
     const res = await POST(req(good));
     expect(res.headers.get("content-type")).toContain("application/x-ndjson");
     const lines = (await res.text()).trim().split("\n").map((l) => JSON.parse(l));
     expect(lines.at(-1).type).toBe("done");
     expect(saved).toHaveLength(1);
+  });
+  it("refuses new live plans once today's Qloo budget is spent, pointing to the examples", async () => {
+    budget.ok = false;
+    const res = await POST(req(good));
+    expect(res.status).toBe(429);
+    expect((await res.json()).error).toContain("example");
   });
   it("rejects bad input, huge bodies and rate-limited callers", async () => {
     expect((await POST(req({ ...good, city: "x".repeat(500) }))).status).toBe(400);

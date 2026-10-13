@@ -62,6 +62,14 @@ describe("createQlooClient", () => {
     const f = vi.fn(async () => ok({ fine: true }));
     expect(await make(f as unknown as typeof fetch, { cache: broken }).get("/p", {})).toEqual({ fine: true });
   });
+  it("reports each network attempt (not cache hits) for the daily budget", async () => {
+    let n = 0;
+    const f = vi.fn().mockResolvedValueOnce(status(503)).mockResolvedValue(ok({ fine: true }));
+    const c = make(f as unknown as typeof fetch, { onNetworkCall: () => { n++; } });
+    await c.get("/p", { a: 1 });
+    await c.get("/p", { a: 1 });
+    expect(n).toBe(2);
+  });
   it("never includes the api key in error messages", async () => {
     const err = (await make((async () => status(500)) as unknown as typeof fetch).get("/p", {}).catch((e) => e)) as QlooError;
     expect(String(err.message)).not.toContain("secret");

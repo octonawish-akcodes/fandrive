@@ -1,3 +1,4 @@
+import { getQlooBudget } from "@/lib/budget";
 import { getConfig } from "@/lib/config";
 import { getRedis, resetRedisForTests } from "@/lib/redis";
 import { createQlooApi, type QlooApi } from "./api";
@@ -17,7 +18,7 @@ let api: QlooApi | null = null;
 export function getQlooApi(): QlooApi {
   if (api) return api;
   const c = getConfig();
-  api = createQlooApi(createQlooClient({ baseUrl: c.qlooBaseUrl, apiKey: c.qlooApiKey, cache: pickCache() }));
+  api = createQlooApi(createQlooClient({ baseUrl: c.qlooBaseUrl, apiKey: c.qlooApiKey, cache: pickCache(), onNetworkCall: () => { void getQlooBudget().spend(); } }));
   return api;
 }
 export function resetQlooForTests() { api = null; resetRedisForTests(); }

@@ -1,4 +1,5 @@
 import { getModel } from "@/lib/agent/model";
+import { qlooBudgetOk } from "@/lib/budget";
 import { runPlan } from "@/lib/agent/run";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema, type RunEvent } from "@/lib/plan/schema";
@@ -17,6 +18,7 @@ export async function POST(req: Request) {
   const parsed = PlanInputSchema.safeParse(body);
   if (!parsed.success) return Response.json({ error: "Invalid input", issues: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`) }, { status: 400 });
   if (!(await limitByIp(ip, "plan"))) return Response.json({ error: "Too many plans from your network. Try an example city or wait a few minutes." }, { status: 429 });
+  if (!(await qlooBudgetOk())) return Response.json({ error: "Today's live-planning budget is used up. Watch an example city, or come back tomorrow." }, { status: 429 });
 
   const enc = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({

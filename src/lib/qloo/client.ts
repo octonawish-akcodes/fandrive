@@ -14,6 +14,7 @@ export type QlooClientOptions = {
   concurrency?: number; timeoutMs?: number; ttlSec?: number; retryDelayMs?: number;
   /** Qloo allows 5 requests/second per key and counts the previous second too; the default gate allows 3. */
   rateGate?: RateGate; rateLimitDelayMs?: number;
+  onNetworkCall?: () => void; // counts uncached calls for the daily budget
 };
 
 export function buildUrl(baseUrl: string, path: string, params: Params): string {
@@ -42,6 +43,7 @@ export function createQlooClient(o: QlooClientOptions): QlooClient {
     const ac = new AbortController();
     const timer = setTimeout(() => ac.abort(), timeoutMs);
     try {
+      o.onNetworkCall?.();
       const res = await fetchImpl(url, { headers: { "X-Api-Key": o.apiKey, accept: "application/json" }, signal: ac.signal });
       if (!res.ok) throw new QlooError(kindFor(res.status), res.status, `Qloo ${path} failed with HTTP ${res.status}`);
       return await res.json();
