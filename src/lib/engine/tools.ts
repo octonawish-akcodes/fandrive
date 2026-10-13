@@ -1,9 +1,9 @@
 import { QlooError } from "@/lib/qloo/client";
 import { ageSignal, type QlooApi } from "@/lib/qloo/api";
-import type { AgeBand, Demographics, EntityType, HeatCell, Locality } from "@/lib/qloo/types";
+import type { AgeBand, Demographics, EntityType, HeatCell, Locality, QlooPlace } from "@/lib/qloo/types";
 import { matchConfidence } from "./match";
 import { confidenceLevel, pullScores, youthSkew } from "./scoring";
-import { clusterZones, liftCells, type LiftCell, type Zone } from "./zones";
+import { clusterZones, haversineKm, liftCells, type LiftCell, type Zone } from "./zones";
 import { rankVenues, type Venue } from "./venues";
 import { BADGE, MATCH_OK, VENUE_RADIUS_M, ZONE } from "./weights";
 
@@ -88,8 +88,7 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     return clusterZones(await partnerLift(city, entityId));
   }
 
-  async function venuesNear(zone: Zone, entityId: string, date?: string) {
-    const places = await api.placesNear({ lat: zone.lat, lon: zone.lon, radiusM: VENUE_RADIUS_M, signalIds: [entityId], take: 20 }).catch(orSoft([]));
+  function zoneVenues(zone: Zone, places: QlooPlace[], date?: string) {
     const counts = new Map<string, number>();
     for (const p of places) if (p.neighborhood) counts.set(p.neighborhood, (counts.get(p.neighborhood) ?? 0) + 1);
     const top = [...counts].sort((a, b) => b[1] - a[1])[0]?.[0];
@@ -136,7 +135,17 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
   async function mapPartner(a: { city: string; partner: Pick<Partner, "entityId" | "name">; date?: string }): Promise<MappedZone[]> {
     emit({ tool: "map_partner", message: `Mapping where ${a.partner.name} fans live and finding venues nearby` });
     const zones = await fanZones(a.city, a.partner.entityId);
-    const mapped = await Promise.all(zones.map(async (z) => ({ ...z, ...(await venuesNear(z, a.partner.entityId, a.date)) })));
+    const found = await Promise.all(zones.map((z) =>
+      api.placesNear({ lat: z.lat, lon: z.lon, radiusM: VENUE_RADIUS_M, signalIds: [a.partner.entityId], take: 20 }).catch(orSoft<QlooPlace[]>([]))));
+    const owner = new Map<string, number>(); // search circles overlap, so each place belongs to its nearest zone only
+    found.forEach((places, i) => places.forEach((p) => {
+      const cur = owner.get(p.entityId);
+      if (cur === undefined || haversineKm(p, zones[i]) < haversineKm(p, zones[cur])) owner.set(p.entityId, i);
+    }));
+    const mapped = zones.map((z, i) => {
+      const mine = [...new Map(found[i].filter((p) => owner.get(p.entityId) === i).map((p) => [p.entityId, p])).values()];
+      return { ...z, ...zoneVenues(z, mine, a.date) };
+    });
     const used = new Set<string>();
     for (const z of mapped) { // a wide venue radius can give two zones the same neighbourhood
       const near = z.venues.host[0] ?? z.venues.promote[0];
@@ -159,6 +168,6 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     return { refs: typed.filter((x): x is NameRef => x !== null), unresolved: names.filter((_, i) => typed[i] === null) };
   }
 
-  return { findAndConfirm, typeNames, fanAge, cityFit, cityStrength, fanZones, venuesNear, scorePartners, mapPartner };
+  return { findAndConfirm, typeNames, fanAge, cityFit, cityStrength, fanZones, scorePartners, mapPartner };
 }
 export type Tools = ReturnType<typeof createTools>;

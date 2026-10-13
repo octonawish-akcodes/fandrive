@@ -75,6 +75,18 @@ describe("mapPartner", () => {
     expect(zones.length).toBeGreaterThan(1);
     expect(new Set(zones.map((z) => z.name)).size).toBe(zones.length);
   });
+  it("lists each venue once, in the zone nearest to it", async () => {
+    const far = heat([["g1", 0.95], ["g2", 0.9], ["g3", 0.85]]).map((c, i) => ({ ...c, lat: 29.7 + i * 0.1, lon: -95.5 }));
+    const P = (name: string, lat: number, genre: string) => ({ entityId: name, name, lat, lon: -95.5, affinity: 0.8, neighborhood: name, genre, tags: [] });
+    const places = [P("Gym A", 29.7, "gym"), P("Mall B", 29.8, "shopping_mall"), P("Bar D", 29.8, "bar"), P("Campus C", 29.9, "university")];
+    const zones = await createTools(fakeApi({ ...base, places, heat: { ...base.heat, [id("Sabrina Carpenter")]: far } }))
+      .mapPartner({ city: "Houston", partner: { entityId: id("Sabrina Carpenter"), name: "Sabrina Carpenter" } });
+    const at = (lat: number) => zones.find((z) => Math.abs(z.lat - lat) < 0.01)!;
+    expect(at(29.7).venues.host.map((v) => v.name)).toEqual(["Gym A"]);
+    expect(at(29.8).venues.host.map((v) => v.name)).toEqual(["Mall B"]);
+    expect(at(29.8).venues.promote.map((v) => v.name)).toEqual(["Bar D"]);
+    expect(at(29.9).venues.host.map((v) => v.name)).toEqual(["Campus C"]);
+  });
   it("labels a zone with no venues as a numbered fan zone", async () => {
     const zones = await createTools(fakeApi({ ...base, places: [] }))
       .mapPartner({ city: "Houston", partner: { entityId: id("Sabrina Carpenter"), name: "Sabrina Carpenter" } });

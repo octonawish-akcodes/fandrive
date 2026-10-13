@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { runPlan } from "@/lib/agent/run";
+import { runPlan, skippedNote } from "@/lib/agent/run";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema, type RunEvent } from "@/lib/plan/schema";
 import { fakeApi, heat, id, type FakeData } from "../../helpers/fakeApi";
@@ -46,6 +46,10 @@ describe("runPlan", () => {
     const { plan } = await run(data, model);
     expect(plan?.engine).toBe("autopilot");
     expect(plan?.plainAi?.[0].name).toBe("Sabrina Carpenter");
+  });
+  it("words the skipped-names limit for one and for many", () => {
+    expect(skippedNote(1)).toBe("1 name was skipped (not found, wrong match, or no audience data yet).");
+    expect(skippedNote(3)).toBe("3 names were skipped (not found, wrong match, or no audience data yet).");
   });
   it("reports unknown cities", async () => {
     const { plan, events } = await run({ ...data, badCities: ["asdfgh"] }, null, { ...input, city: "asdfgh" });

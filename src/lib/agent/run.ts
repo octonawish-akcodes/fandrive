@@ -9,6 +9,8 @@ import { runPlainAi } from "./plainAi";
 
 export type RunDeps = { makeTools: (onTool: (e: ToolEvent) => void) => Tools; model: LanguageModel | null; now?: () => number; newId?: () => string };
 
+export const skippedNote = (n: number) => `${n} ${n === 1 ? "name was" : "names were"} skipped (not found, wrong match, or no audience data yet).`;
+
 export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEvent) => void): Promise<Plan | null> {
   const now = deps.now ?? Date.now;
   const t0 = now();
@@ -53,7 +55,7 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
 
     const limits = [
       ...(city.badge !== "strong" ? [`Qloo data for ${city.name} is ${city.badge}; treat rankings as directional.`] : []),
-      ...(core.excluded.length ? [`${core.excluded.length} names were skipped (not found, wrong match, or no audience data yet).`] : []),
+      ...(core.excluded.length ? [skippedNote(core.excluded.length)] : []),
       ...(engine === "autopilot" ? ["Planned by autopilot: same Qloo data, fixed steps, template copy."] : []),
       ...(core.usedTemplate && engine === "agent" ? ["Campaign copy uses templates (AI writer unavailable)."] : []),
       "Scores describe crowd-level tendencies, not individuals. Eligibility rules vary; follow your blood service's guidance.",
