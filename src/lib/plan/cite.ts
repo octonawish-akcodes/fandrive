@@ -10,8 +10,12 @@ export function allowedNumbers(sources: string[]): Set<string> {
   return set;
 }
 
+// Statistics written in words ("Forty percent", "Thousands of fans"). Words up to ten and donor ages are fine.
+const NUMBER_WORDS = /\b(eleven|twelve|thirteen|fourteen|fifteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundreds?|thousands?|millions?|billions?|dozens?|percent|per cent)\b/i;
+const isYear = (n: string) => /^20[2-3]\d$/.test(n);
+
 export function hasUncited(text: string, allowed: Set<string>): boolean {
-  return numbersIn(text).some((n) => !allowed.has(n));
+  return numbersIn(text).some((n) => !allowed.has(n) && !isYear(n)) || NUMBER_WORDS.test(text);
 }
 
 const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

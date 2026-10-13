@@ -11,6 +11,15 @@ describe("citation guard", () => {
     expect(hasUncited("73% of fans will donate", allowed)).toBe(true);
     expect(hasUncited("Join 12,000 donors", allowed)).toBe(true);
   });
+  it("flags invented statistics written in words", () => {
+    for (const t of ["Forty percent of Houston teens already give", "Thousands of fans already signed up", "Join hundreds of donors", "Twenty fans per hour"])
+      expect(hasUncited(t, allowed), t).toBe(true);
+  });
+  it("allows small counts, donor ages and the year in words or digits", () => {
+    const bare = allowedNumbers(["300"]);
+    for (const t of ["One donation can help save lives", "Bring two friends", "Donors aged seventeen and up", "See you in November 2026"])
+      expect(hasUncited(t, bare), t).toBe(false);
+  });
   it("replaces only the offending fields with template text", () => {
     const fb = templateCreative({ city: "Houston", partnerName: "Bad Bunny", dateLabel: "Sat, Nov 14", band: "16-24", goalDonors: 300 });
     const model = { ...fb, theme: "Bad Bunny Blood Night", socialPosts: ["Saves 3 lives!", "73% of fans agree", "See you there"] as [string, string, string] };
