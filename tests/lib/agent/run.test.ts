@@ -51,6 +51,23 @@ describe("runPlan", () => {
     expect(skippedNote(1)).toBe("1 name was skipped (not found, wrong match, or no audience data yet).");
     expect(skippedNote(3)).toBe("3 names were skipped (not found, wrong match, or no audience data yet).");
   });
+  it("keeps the user's full city (with state) on every Qloo location query", async () => {
+    const calls: string[] = [];
+    const base = fakeApi(data);
+    const api = { ...base,
+      async heatmap(a: Parameters<typeof base.heatmap>[0]) {
+        calls.push(`heatmap:${a.city}`);
+        const r = await base.heatmap(a);
+        return { ...r, locality: { name: "Springfield", disambiguation: "Springfield, Hampden County, Massachusetts", lat: 42.1, lon: -72.59 } };
+      },
+      async cityAffinity(a: Parameters<typeof base.cityAffinity>[0]) { calls.push(`affinity:${a.city}`); return base.cityAffinity(a); },
+    };
+    const events: RunEvent[] = [];
+    await runPlan(PlanInputSchema.parse({ city: "Springfield, MA", startDate: "2026-11-14", endDate: "2026-11-30" }),
+      { makeTools: (on) => createTools(api, on), model: null, newId: () => "p", now: () => 0 }, (e) => events.push(e));
+    expect(calls.length).toBeGreaterThan(3);
+    expect(calls.filter((c) => !c.endsWith(":Springfield, MA"))).toEqual([]);
+  });
   it("reports unknown cities", async () => {
     const { plan, events } = await run({ ...data, badCities: ["asdfgh"] }, null, { ...input, city: "asdfgh" });
     expect(plan).toBeNull();

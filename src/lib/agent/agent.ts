@@ -52,7 +52,7 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
       description: "Look up candidate partners in Qloo and score their young-donor pull in this city. Returns ranked partners (with ids) and excluded names.",
       inputSchema: z.object({ candidates: z.array(z.object({ name: z.string().min(1).max(60), type: z.enum(PARTNER_TYPES) })).min(3).max(16) }),
       execute: async ({ candidates }) => {
-        const r = await a.tools.scorePartners({ city: a.city.name, band: a.input.band, cityBadge: a.city.badge, refs: candidates });
+        const r = await a.tools.scorePartners({ city: a.input.city, band: a.input.band, cityBadge: a.city.badge, refs: candidates });
         const merged = new Map([...(state.ranked ?? []), ...r.ranked].map((p) => [p.entityId, p]));
         state.ranked = [...merged.values()].sort((x, y) => y.pull - x.pull);
         state.excluded = [...(state.excluded ?? []), ...r.excluded];
@@ -68,7 +68,7 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
       execute: async ({ id }) => {
         const p = state.ranked?.find((x) => x.entityId === id);
         if (!p) return { error: "Unknown id. Use an id returned by score_partners." };
-        const zones = await a.tools.mapPartner({ city: a.city.name, partner: p, date: a.input.startDate });
+        const zones = await a.tools.mapPartner({ city: a.input.city, partner: p, date: a.input.startDate });
         maps.set(p.entityId, { partnerId: p.entityId, partnerName: p.name, zones });
         return { zones: zones.map((z) => ({ name: z.name, hostVenues: z.venues.host.map((v) => v.name), promoteOnly: z.venues.promote.map((v) => v.name) })) };
       },

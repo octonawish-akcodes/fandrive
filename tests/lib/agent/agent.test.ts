@@ -5,7 +5,7 @@ import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema } from "@/lib/plan/schema";
 import { templateCreative } from "@/lib/plan/templates";
 import { fakeApi, heat, id } from "../../helpers/fakeApi";
-import { calls, hangingModel, mockModel, text } from "../../helpers/mockModel";
+import { calls, calls as calls_, hangingModel, mockModel, text } from "../../helpers/mockModel";
 
 const young = { age: { "24_and_younger": 0.8 }, gender: {} };
 const data = {
@@ -46,6 +46,22 @@ describe("runAgent", () => {
     expect(r.partners[0].name).toBe("Bad Bunny");
     expect(r.maps[0].partnerName).toBe("Bad Bunny");
     expect(model.doGenerateCalls).toHaveLength(3);
+  });
+  it("queries Qloo with the user's full city string, not the short locality name", async () => {
+    const calls: string[] = [];
+    const base = fakeApi(data);
+    const api = { ...base,
+      async heatmap(x: Parameters<typeof base.heatmap>[0]) { calls.push(x.city); return base.heatmap(x); },
+      async cityAffinity(x: Parameters<typeof base.cityAffinity>[0]) { calls.push(x.city); return base.cityAffinity(x); } };
+    const model = mockModel([
+      calls_(["score_partners", cands]),
+      calls_(["map_partner", { id: id("Sabrina Carpenter") }]),
+      calls_(["finish", { ids: [id("Sabrina Carpenter")], rationale: "Young fans" }]),
+      text(creative("Fan Day")),
+    ]);
+    await runAgent({ input: { ...input, city: "Houston, TX" }, city, tools: createTools(api), model });
+    expect(calls.length).toBeGreaterThan(3);
+    expect(calls.filter((c) => c !== "Houston, TX")).toEqual([]);
   });
   it("stops the tool loop at 4 steps even if the model never finishes", async () => {
     const model = mockModel([calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), text(creative("T"))]);

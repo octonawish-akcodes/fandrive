@@ -17,7 +17,7 @@ export function ctxFrom(input: PlanInput, city: CityInfo, top: Partner, map?: Ma
 export async function mapTop(tools: Tools, input: PlanInput, city: CityInfo, ranked: Partner[], have: MapResult[] = [], n = 2): Promise<MapResult[]> {
   const known = new Map(have.map((m) => [m.partnerId, m]));
   return Promise.all(ranked.slice(0, n).map(async (p) => known.get(p.entityId) ??
-    { partnerId: p.entityId, partnerName: p.name, zones: await tools.mapPartner({ city: city.name, partner: p, date: input.startDate }) }));
+    { partnerId: p.entityId, partnerName: p.name, zones: await tools.mapPartner({ city: input.city, partner: p, date: input.startDate }) }));
 }
 
 export async function runAutopilot(a: { input: PlanInput; city: CityInfo; tools: Tools; state?: AutopilotState }): Promise<CoreResult> {
@@ -25,7 +25,7 @@ export async function runAutopilot(a: { input: PlanInput; city: CityInfo; tools:
   let excluded = a.state?.excluded ?? [];
   if (!ranked) {
     const typed = await a.tools.typeNames(a.input.partners);
-    const r = await a.tools.scorePartners({ city: a.city.name, band: a.input.band, cityBadge: a.city.badge, refs: [...typed.refs, ...seedPartners(a.city.name)] });
+    const r = await a.tools.scorePartners({ city: a.input.city, band: a.input.band, cityBadge: a.city.badge, refs: [...typed.refs, ...seedPartners(a.city.name)] });
     ranked = r.ranked;
     excluded = [...typed.unresolved.map((q): Excluded => ({ query: q, type: "artist", reason: "Not found in Qloo" })), ...r.excluded];
   }
