@@ -8,8 +8,8 @@ describe("getConfig", () => {
     vi.stubEnv("QLOO_API_KEY", "k");
     const c = getConfig();
     expect(c.qlooBaseUrl).toBe("https://hackathon.api.qloo.com");
-    expect(c.geminiModel).toBe("gemini-3.5-flash-lite");
-    expect(c.geminiFallbackModels).toEqual(["gemini-3.5-flash", "gemini-3-flash-preview", "gemini-3.6-flash", "gemini-3.1-flash-lite"]);
+    expect(c.geminiModel).toBe("gemini-3.1-flash-lite");
+    expect(c.geminiFallbackModels).toEqual(["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3-flash-preview"]);
     expect(c.upstashUrl).toBeUndefined();
   });
   it("throws without a Qloo key", () => {
