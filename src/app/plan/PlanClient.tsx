@@ -49,14 +49,14 @@ export function PlanClient() {
 
   const view = loaded ?? state;
   return (
-    <main className="mx-auto max-w-7xl p-4">
+    <main className="mx-auto w-full max-w-7xl p-4">
       <h1 className="mb-4 text-2xl font-bold">Plan young-donor drives</h1>
       <PlanForm onSubmit={start} disabled={state.status === "running"} />
       {recordedAt && <p className="mt-4 rounded bg-amber-50 p-2 text-sm text-amber-900">Recorded run from {recordedAt}, replayed. Use the form above to run it live.</p>}
       {view.status !== "idle" && (
         <div className="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
-          <aside className="h-fit lg:sticky lg:top-4"><StepLog steps={view.steps} running={view.status === "running"} /></aside>
-          <ReportView state={view} />
+          <aside className="h-fit min-w-0 lg:sticky lg:top-4"><StepLog steps={view.steps} running={view.status === "running"} /></aside>
+          <div className="min-w-0"><ReportView state={view} /></div>
         </div>
       )}
     </main>

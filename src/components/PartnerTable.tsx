@@ -5,7 +5,7 @@ const pill: Record<Partner["confidence"], string> = { high: "bg-emerald-100 text
 export function PartnerTable({ partners, excluded }: { partners: Partner[]; excluded: Excluded[] }) {
   return (
     <div>
-      <table className="w-full text-sm">
+      <div className="-mx-1 overflow-x-auto px-1"><table className="w-full min-w-[560px] text-sm">
         <thead className="text-left text-xs uppercase text-zinc-500">
           <tr><th className="py-2">#</th><th>Partner</th><th>Young-Donor Pull</th><th>Fans skew young</th><th>Local love</th><th>Confidence</th></tr>
         </thead>
@@ -27,7 +27,7 @@ export function PartnerTable({ partners, excluded }: { partners: Partner[]; excl
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
       {excluded.length > 0 && (
         <details className="mt-3 text-xs text-zinc-500"><summary className="cursor-pointer">{excluded.length} names skipped</summary>
           <ul className="mt-1 list-disc pl-5">{excluded.map((e, i) => <li key={i}>{e.query}: {e.reason}</li>)}</ul>

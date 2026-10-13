@@ -4,7 +4,7 @@ const EXAMPLES = [["houston", "Houston"], ["atlanta", "Atlanta"], ["seattle", "S
 
 export default function Home() {
   return (
-    <main className="mx-auto max-w-3xl p-6">
+    <main className="mx-auto w-full max-w-3xl p-6">
       <p className="text-sm font-semibold uppercase tracking-wide text-rose-600">FanDrive</p>
       <h1 className="mt-2 text-4xl font-bold">Every fandom is a blood drive waiting to happen.</h1>
       <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-300">
