@@ -107,7 +107,7 @@ Report what comes back honestly in the README and the Devpost write-up.
   - Youth skew Y: the `24_and_younger` skew for band 16–24, or the mean of `24_and_younger` and `25_to_29` for band 18–29.
   - Local love L: `city_fit` affinity. Missing values are treated as low, with the note "not a top young-audience signal here".
   - Fan density D: concentration of the partner's high-lift heatmap cells in the city, normalised across candidates.
-  - **Young-Donor Pull** = 0.45·Y′ + 0.35·L′ + 0.20·D′, where ′ means min-max normalised across this run's candidates.
+  - **Young-Donor Pull** = 0.45·Y′ + 0.35·L′ + 0.20·D′. Y′ = (Y+1)/2 and L′ = L (absolute, so an all-old shortlist can't look young). D′ is min-max normalised across this run's candidates.
   - Confidence: high / medium / low, from match confidence, data presence and the city badge.
   - The weights and the exact D normalisation are tuned in the day-1 data spike (§12), against sanity checks.
 - **Lift zones:**
