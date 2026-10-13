@@ -20,15 +20,19 @@ export function hasUncited(text: string, allowed: Set<string>): boolean {
 
 const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-/** Public copy must treat the partner as a theme ("X fans"), never as a participant or sponsor. */
+// Allowlist: in public copy every mention of the partner must read as fandom ("X fans", "fans of X", "X-themed").
+// Anything else ("X is hosting", "Meet X", "X x Red Cross") could imply the partner is involved, so it falls back.
+const FANDOM_AFTER = /^(?:['’]s\s+(?:\w+\s+)?(?:fans?|fan\s?base|fanbase|followers|audience)|[\s-]+(?:fans?|fandom|fan\s?base|fanbase|fan\s+community|community|lovers|players|gamers|viewers|listeners|followers|themed|inspired|vibes?|energy|style))\b/i;
+const FANDOM_BEFORE = /(?:fans?\s+of|inspired\s+by|a\s+nod\s+to|(?:who|you|everyone|anyone)\s+(?:loves?|plays?|watch(?:es)?|streams?|follows?|listens?\s+to))\s+(?:the\s+)?$/i;
+
 export function impliesEndorsement(text: string, partner: string): boolean {
-  const n = esc(partner.trim());
+  const n = partner.trim();
   if (!n) return false;
-  return [
-    new RegExp(`\\b${n}['’]s\\s+(?!fans?\\b|fan\\s?base\\b|fanbase\\b|audience\\b|followers\\b)`, "i"),
-    new RegExp(`\\b(with|by|join|presented by|sponsored by|hosted by|powered by)\\s+(the\\s+)?${n}\\b(?!\\s+fans?\\b)`, "i"),
-    new RegExp(`\\b${n}\\s+(squad|team|crew|nation|army|presents|invites?|wants|needs|asks|says|calls)\\b`, "i"),
-  ].some((r) => r.test(text));
+  for (const m of text.matchAll(new RegExp(`\\b${esc(n)}\\b`, "gi"))) {
+    const before = text.slice(0, m.index), after = text.slice(m.index + m[0].length);
+    if (!FANDOM_AFTER.test(after) && !FANDOM_BEFORE.test(before)) return true;
+  }
+  return false;
 }
 
 /** The writer sometimes repeats its own instructions ("No medical claims, ..."). */

@@ -39,6 +39,14 @@ describe("copy guards", () => {
   it("allows fan-themed copy", () => {
     for (const t of ["Kai Cenat fans, Houston needs you", "Calling all Kai Cenat fans", "For fans of Kai Cenat: give blood"]) expect(impliesEndorsement(t, "Kai Cenat"), t).toBe(false);
   });
+  it("flags any mention that isn't phrased as fandom (allowlist)", () => {
+    for (const t of ["Kai Cenat is hosting a blood drive", "Meet Kai Cenat at the drive", "Kai Cenat will be there!", "Kai Cenat x Red Cross: give blood", "Kai Cenat and the Red Cross invite you", "An official Kai Cenat event", "A Kai Cenat-approved drive"])
+      expect(impliesEndorsement(t, "Kai Cenat"), t).toBe(true);
+  });
+  it("allows fandom phrasings such as themed, inspired and community", () => {
+    for (const [t, n] of [["Inspired by Stranger Things", "Stranger Things"], ["Join the Fortnite community", "Fortnite"], ["Calling Fortnite's biggest fans", "Fortnite"], ["A Stranger Things-themed drive", "Stranger Things"], ["For everyone who plays Fortnite", "Fortnite"], ["Fans of the Houston Rockets, this one's for you", "Houston Rockets"]])
+      expect(impliesEndorsement(t, n), t).toBe(false);
+  });
   it("flags copy that leaks the writing instructions", () => {
     expect(leaksInstructions("No medical claims, just pure community energy.")).toBe(true);
     expect(leaksInstructions("No official logos here, just fans.")).toBe(true);
