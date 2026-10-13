@@ -36,6 +36,17 @@ describe("runAgent", () => {
     expect(r.usedTemplate).toBe(false);
     expect(model.doGenerateCalls.length).toBeLessThanOrEqual(5);
   });
+  it("maps the agent's chosen partners when it finishes straight after scoring", async () => {
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: [id("Bad Bunny")], rationale: "Local favourite" }]),
+      text(creative("Bad Bunny Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
+    expect(r.partners[0].name).toBe("Bad Bunny");
+    expect(r.maps[0].partnerName).toBe("Bad Bunny");
+    expect(model.doGenerateCalls).toHaveLength(3);
+  });
   it("stops the tool loop at 4 steps even if the model never finishes", async () => {
     const model = mockModel([calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), text(creative("T"))]);
     const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });

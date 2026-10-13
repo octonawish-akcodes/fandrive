@@ -3,7 +3,8 @@ import { runPlan } from "@/lib/agent/run";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema, type RunEvent } from "@/lib/plan/schema";
 import { fakeApi, heat, id, type FakeData } from "../../helpers/fakeApi";
-import { failingModel } from "../../helpers/mockModel";
+import { failingModel, text } from "../../helpers/mockModel";
+import { MockLanguageModelV4 } from "ai/test";
 
 const young = { age: { "24_and_younger": 0.8 }, gender: {} };
 const data: FakeData = {
@@ -35,6 +36,16 @@ describe("runPlan", () => {
     expect(plan?.engine).toBe("autopilot");
     expect(events.some((e) => e.type === "step" && e.step.message.includes("switching to autopilot"))).toBe(true);
     expect(plan?.plainAi).toBeNull();
+  });
+  it("still fact-checks plain-AI picks when the agent falls back to autopilot", async () => {
+    let n = 0;
+    const model = new MockLanguageModelV4({ doGenerate: async () => {
+      if (n++ === 0) throw new Error("planner timed out");
+      return text(JSON.stringify({ picks: [{ name: "Sabrina Carpenter", type: "artist", why: "Pop star" }] })) as never;
+    } });
+    const { plan } = await run(data, model);
+    expect(plan?.engine).toBe("autopilot");
+    expect(plan?.plainAi?.[0].name).toBe("Sabrina Carpenter");
   });
   it("reports unknown cities", async () => {
     const { plan, events } = await run({ ...data, badCities: ["asdfgh"] }, null, { ...input, city: "asdfgh" });

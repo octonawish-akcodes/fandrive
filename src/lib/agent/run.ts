@@ -45,7 +45,7 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
     emit({ type: "creative", creative: core.creative });
 
     let plainAi: PlainAiCheck[] | null = null;
-    if (deps.model && engine === "agent") {
+    if (deps.model) { // also after an agent fallback: the comparison is cheap and has its own timeout
       step("plain_ai", "Asking plain AI (no Qloo) for its picks, then fact-checking them with Qloo");
       plainAi = await runPlainAi({ input, city, tools, model: deps.model }).catch(() => null);
     }
