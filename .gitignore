@@ -10,3 +10,7 @@ test-results/
 .superpowers/
 .DS_Store
 *.log
+*.tsbuildinfo
+next-env.d.ts
+*.pem
+.pnpm-debug.log*
