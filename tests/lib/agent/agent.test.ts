@@ -63,6 +63,17 @@ describe("runAgent", () => {
     expect(calls.length).toBeGreaterThan(3);
     expect(calls.filter((c) => c !== "Houston, TX")).toEqual([]);
   });
+  it("always scores the partners the user entered, even if the planner leaves them out", async () => {
+    const without = { candidates: [{ name: "Sabrina Carpenter", type: "artist" }, { name: "Bad Bunny", type: "artist" }, { name: "Metallica", type: "artist" }] };
+    const model = mockModel([
+      calls(["score_partners", without]),
+      calls(["finish", { ids: [id("Sabrina Carpenter")], rationale: "Young fans" }]),
+      text(creative("Fan Day")),
+    ]);
+    const r = await runAgent({ input: { ...input, partners: ["Olivia Rodrigo", "Nobody Real"] }, city, tools: createTools(fakeApi({ ...data, notFound: ["Nobody Real"] })), model });
+    expect(r.partners.map((p) => p.name)).toContain("Olivia Rodrigo");
+    expect(r.excluded.map((e) => e.query)).toContain("Nobody Real");
+  });
   it("stops the tool loop at 4 steps even if the model never finishes", async () => {
     const model = mockModel([calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), text(creative("T"))]);
     const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });

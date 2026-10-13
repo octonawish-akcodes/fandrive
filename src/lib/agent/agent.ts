@@ -1,7 +1,7 @@
 import { generateText, hasToolCall, Output, stepCountIs, tool, type LanguageModel } from "ai";
 import { z } from "zod";
 import { byYoungDonorFit } from "@/lib/engine/scoring";
-import type { Partner, Tools } from "@/lib/engine/tools";
+import type { Excluded, NameRef, Partner, Tools } from "@/lib/engine/tools";
 import { allowedNumbers, sanitizeCreative } from "@/lib/plan/cite";
 import { fitCreative } from "@/lib/plan/fit";
 import { CreativeDraftSchema, PARTNER_TYPES, type CityInfo, type Creative, type MapResult, type PlanInput } from "@/lib/plan/schema";
@@ -46,17 +46,27 @@ export async function writeCreative(a: { input: PlanInput; city: CityInfo; partn
 export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Tools; model: LanguageModel; maxSteps?: number; deadlineMs?: number }): Promise<CoreResult> {
   const state: AutopilotState & { chosen?: string[] } = {};
   const maps = new Map<string, MapResult>();
+  let userNamesScored = false;
   const snapshot = (): AutopilotState => ({ ranked: state.ranked, excluded: state.excluded, maps: [...maps.values()] });
 
   const tools = {
     score_partners: tool({
-      description: "Look up candidate partners in Qloo and score their young-donor pull in this city. Returns ranked partners (with ids) and excluded names.",
+      description: "Look up candidate partners in Qloo and score their young-donor pull in this city. Sports teams and leagues use type brand. Returns ranked partners (with ids) and excluded names.",
       inputSchema: z.object({ candidates: z.array(z.object({ name: z.string().min(1).max(60), type: z.enum(PARTNER_TYPES) })).min(3).max(16) }),
       execute: async ({ candidates }) => {
-        const r = await a.tools.scorePartners({ city: a.input.city, band: a.input.band, cityBadge: a.city.badge, refs: candidates });
+        let refs: NameRef[] = candidates;
+        let unresolved: Excluded[] = [];
+        if (!userNamesScored) { // the user's own names are always scored, whatever the planner proposes
+          userNamesScored = true;
+          const typed = await a.tools.typeNames(a.input.partners);
+          const have = new Set(candidates.map((c) => c.name.toLowerCase()));
+          refs = [...typed.refs.filter((t) => !have.has(t.name.toLowerCase())), ...candidates];
+          unresolved = typed.unresolved.map((q) => ({ query: q, type: "artist", reason: "Not found in Qloo" }));
+        }
+        const r = await a.tools.scorePartners({ city: a.input.city, band: a.input.band, cityBadge: a.city.badge, refs });
         const merged = new Map([...(state.ranked ?? []), ...r.ranked].map((p) => [p.entityId, p]));
         state.ranked = [...merged.values()].sort(byYoungDonorFit);
-        state.excluded = [...(state.excluded ?? []), ...r.excluded];
+        state.excluded = [...(state.excluded ?? []), ...unresolved, ...r.excluded];
         return {
           ranked: state.ranked.slice(0, 10).map((p) => ({ id: p.entityId, name: p.name, type: p.type, pull: +p.pull.toFixed(2), youthSkew: +p.youthSkew.toFixed(2), localLove: p.localLove === null ? null : +p.localLove.toFixed(2), confidence: p.confidence })),
           excluded: r.excluded.map((e) => `${e.query}: ${e.reason}`),
