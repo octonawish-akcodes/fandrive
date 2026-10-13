@@ -1,6 +1,8 @@
+"use client";
 import type { ReactNode } from "react";
 import type { RunState } from "@/lib/client/runState";
 import { CreativePanel } from "./CreativePanel";
+import { FanMap } from "./FanMap";
 import { PartnerTable } from "./PartnerTable";
 import { PlainAiPanel } from "./PlainAiPanel";
 import { VenueList } from "./VenueList";
@@ -30,7 +32,7 @@ export function ReportView({ state }: { state: RunState }) {
       )}
       {status !== "error" && <>
         <Section title="1 · Best partners for young first-time donors" ready={!!partners}>{partners && <PartnerTable partners={partners} excluded={excluded ?? []} />}</Section>
-        <Section title="2 · Where their fans are, and where to host" ready={!!maps}>{maps && <VenueList maps={maps} />}</Section>
+        <Section title="2 · Where their fans are, and where to host" ready={!!maps}>{maps && city && <><FanMap city={city} maps={maps} /><div className="mt-4"><VenueList maps={maps} /></div></>}</Section>
         <Section title="3 · Campaign copy" ready={!!creative}>{creative && <CreativePanel c={creative} />}</Section>
         <Section title="4 · FanDrive vs plain AI" ready={plainAi !== undefined}><PlainAiPanel checks={plainAi ?? null} /></Section>
         {plan && <Section title="Data limits for this run" ready><ul className="list-disc pl-5 text-sm text-zinc-600 dark:text-zinc-400">{plan.limits.map((l) => <li key={l}>{l}</li>)}</ul></Section>}

@@ -137,7 +137,7 @@ Report what comes back honestly in the README and the Devpost write-up.
   - `/api/mcp` via Vercel's `mcp-handler` (2.x, MCP SDK v2, streamable HTTP).
   - Tools: `fandrive_find`, `fandrive_fan_age`, `fandrive_city_fit`, `fandrive_fan_zones`, `fandrive_venues`, `fandrive_plan_drive` (autopilot pipeline, so no Gemini quota is used).
   - Read-only and rate-limited; the README shows how to connect Claude and ChatGPT.
-- **Recorded example runs:** JSON fixtures of full runs (steps and plan) committed under `fixtures/runs/`, replayed with step timing in the UI, labelled with the recording date.
+- **Recorded example runs:** JSON recordings of full runs (steps and plan) committed under `public/examples/` (served statically), replayed with step timing in the UI, labelled with the recording date.
 
 ## 6. Plan data shape (summary)
 

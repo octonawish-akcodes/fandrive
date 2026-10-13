@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "spike": "tsx --env-file=.env.local scripts/spike.ts"
+    "spike": "tsx --env-file=.env.local scripts/spike.ts",
+    "record": "tsx --env-file=.env.local scripts/record-run.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.94",
