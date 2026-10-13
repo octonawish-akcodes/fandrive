@@ -57,6 +57,11 @@ describe("createQlooClient", () => {
     await make(f as unknown as typeof fetch, { rateGate: gate }).get("/p", {});
     expect(gate).toHaveBeenCalledTimes(2);
   });
+  it("treats a broken cache as a miss instead of failing the request", async () => {
+    const broken = { get: async () => { throw new Error("redis down"); }, set: async () => { throw new Error("value too large"); } };
+    const f = vi.fn(async () => ok({ fine: true }));
+    expect(await make(f as unknown as typeof fetch, { cache: broken }).get("/p", {})).toEqual({ fine: true });
+  });
   it("never includes the api key in error messages", async () => {
     const err = (await make((async () => status(500)) as unknown as typeof fetch).get("/p", {}).catch((e) => e)) as QlooError;
     expect(String(err.message)).not.toContain("secret");

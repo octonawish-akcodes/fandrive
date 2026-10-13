@@ -56,7 +56,7 @@ export function createQlooClient(o: QlooClientOptions): QlooClient {
     async get<T>(path: string, params: Params): Promise<T> {
       const url = buildUrl(o.baseUrl, path, params);
       const key = createHash("sha1").update(url).digest("hex");
-      const hit = await o.cache.get<T>(key);
+      const hit = await o.cache.get<T>(key).catch(() => null); // a cache outage or size limit is a miss, never a failed plan
       if (hit !== null) return hit;
       const body = await limit(async () => {
         let rateLimitRetries = 2, otherRetries = 1;
@@ -70,7 +70,7 @@ export function createQlooClient(o: QlooClientOptions): QlooClient {
           }
         }
       });
-      await o.cache.set(key, body, ttl);
+      await o.cache.set(key, body, ttl).catch(() => {});
       return body as T;
     },
   };
