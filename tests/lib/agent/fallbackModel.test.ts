@@ -22,10 +22,15 @@ describe("withFallback", () => {
     const m = withFallback([hanging(), ok("fast")], { attemptTimeoutMs: 20 });
     expect((await generateText({ model: m, prompt: "x" })).text).toBe("fast");
   });
-  it("gives up with one non-retryable error when every model fails", async () => {
+  it("gives up with one non-retryable error after two rounds of the chain", async () => {
     const a = overloaded(), b = overloaded();
-    await expect(generateText({ model: withFallback([a, b]), prompt: "x" })).rejects.toThrow("No AI model is available right now");
-    expect(a.doGenerateCalls.length + b.doGenerateCalls.length).toBe(2);
+    await expect(generateText({ model: withFallback([a, b], { pauseMs: 0 }), prompt: "x" })).rejects.toThrow("No AI model is available right now");
+    expect(a.doGenerateCalls.length + b.doGenerateCalls.length).toBe(4);
+  });
+  it("runs the chain again after a pause when every model was briefly overloaded", async () => {
+    let n = 0;
+    const flaky = new MockLanguageModelV4({ doGenerate: async () => { if (n++ === 0) throw new Error("503 high demand"); return text("second round") as any; } });
+    expect((await generateText({ model: withFallback([flaky], { pauseMs: 1 }), prompt: "x" })).text).toBe("second round");
   });
   it("stops at once when the caller aborts", async () => {
     const ac = new AbortController();

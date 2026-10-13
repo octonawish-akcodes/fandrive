@@ -5,7 +5,7 @@ const Env = z.object({
   QLOO_BASE_URL: z.string().url().default("https://hackathon.api.qloo.com"),
   GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default("gemini-3.5-flash-lite"),
-  GEMINI_FALLBACK_MODELS: z.string().default("gemini-3.1-flash-lite,gemini-3.5-flash"),
+  GEMINI_FALLBACK_MODELS: z.string().default("gemini-3.5-flash,gemini-3-flash-preview,gemini-3.6-flash,gemini-3.1-flash-lite"),
   UPSTASH_REDIS_REST_URL: z.string().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
   QLOO_CACHE_DIR: z.string().optional(),
