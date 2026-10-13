@@ -16,19 +16,27 @@ export const PlanInputSchema = z.object({
 }).refine((v) => v.startDate <= v.endDate, { message: "startDate must be on or before endDate", path: ["endDate"] });
 export type PlanInput = z.infer<typeof PlanInputSchema>;
 
+/** Display limits for campaign copy (characters). */
+export const CREATIVE_LIMITS = { theme: 80, posterHeadline: 90, posterBody: 400, socialPost: 280, invite: 320, subject: 120, body: 1500 } as const;
+const L = CREATIVE_LIMITS;
 export const CreativeSchema = z.object({
-  theme: z.string().min(3).max(80),
-  posterHeadline: z.string().min(3).max(90),
-  posterBody: z.string().min(10).max(400),
-  socialPosts: z.array(z.string().min(5).max(280)).length(3),
-  invite: z.string().min(10).max(320),
-  pitchEmail: z.object({ subject: z.string().min(3).max(120), body: z.string().min(20).max(1500) }),
+  theme: z.string().min(3).max(L.theme),
+  posterHeadline: z.string().min(3).max(L.posterHeadline),
+  posterBody: z.string().min(10).max(L.posterBody),
+  socialPosts: z.array(z.string().min(5).max(L.socialPost)).length(3),
+  invite: z.string().min(10).max(L.invite),
+  pitchEmail: z.object({ subject: z.string().min(3).max(L.subject), body: z.string().min(20).max(L.body) }),
 });
+/** What the model is asked for: Gemini ignores maxLength, so lengths are enforced afterwards by fitCreative. */
+export const CreativeDraftSchema = z.object({
+  theme: z.string(), posterHeadline: z.string(), posterBody: z.string(), socialPosts: z.array(z.string()),
+  invite: z.string(), pitchEmail: z.object({ subject: z.string(), body: z.string() }),
+});
+export type CreativeDraft = z.infer<typeof CreativeDraftSchema>;
 export type Creative = z.infer<typeof CreativeSchema>;
 
-export const PlainAiPicksSchema = z.object({
-  picks: z.array(z.object({ name: z.string().max(60), type: z.enum(PARTNER_TYPES), why: z.string().max(200) })).min(1).max(5),
-});
+/** What the model is asked for. Gemini ignores length limits, so runPlainAi keeps 5 picks and trims name to 60 and why to 200 chars. */
+export const PlainAiDraftSchema = z.object({ picks: z.array(z.object({ name: z.string(), type: z.enum(PARTNER_TYPES), why: z.string() })).min(1) });
 
 export type PlainAiCheck = { name: string; type: EntityType; why: string; matchedName?: string; youthSkew: number | null; note: string };
 export type MapResult = { partnerId: string; partnerName: string; zones: MappedZone[] };

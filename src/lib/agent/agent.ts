@@ -2,8 +2,9 @@ import { generateText, hasToolCall, Output, stepCountIs, tool, type LanguageMode
 import { z } from "zod";
 import type { Partner, Tools } from "@/lib/engine/tools";
 import { allowedNumbers, sanitizeCreative } from "@/lib/plan/cite";
-import { CreativeSchema, PARTNER_TYPES, type CityInfo, type Creative, type MapResult, type PlanInput } from "@/lib/plan/schema";
-import { templateCreative } from "@/lib/plan/templates";
+import { fitCreative } from "@/lib/plan/fit";
+import { CreativeDraftSchema, PARTNER_TYPES, type CityInfo, type Creative, type MapResult, type PlanInput } from "@/lib/plan/schema";
+import { dateLabel, templateCreative } from "@/lib/plan/templates";
 import { ctxFrom, mapTop, TooFewPartnersError, type AutopilotState, type CoreResult } from "./autopilot";
 
 export const SYSTEM = `You are FanDrive, a planning agent for blood-donation recruitment teams.
@@ -23,18 +24,18 @@ export class AgentIncompleteError extends Error {
 export async function writeCreative(a: { input: PlanInput; city: CityInfo; partners: Partner[]; maps: MapResult[]; model: LanguageModel; timeoutMs?: number }): Promise<{ creative: Creative; usedTemplate: boolean }> {
   const fallback = templateCreative(ctxFrom(a.input, a.city, a.partners[0], a.maps[0]));
   const facts = {
-    city: a.city.name, ageBand: a.input.band, goalDonors: a.input.goalDonors, date: a.input.startDate,
+    city: a.city.name, ageBand: a.input.band, goalDonors: a.input.goalDonors, date: dateLabel(a.input.startDate),
     topPartner: { name: a.partners[0].name, evidence: a.partners[0].evidence },
     zones: (a.maps[0]?.zones ?? []).map((z) => ({ name: z.name, hostVenues: z.venues.host.map((v) => ({ name: v.name, address: v.address })) })),
   };
   try {
     const r = await generateText({
-      model: a.model, maxRetries: 1, output: Output.object({ schema: CreativeSchema }), abortSignal: AbortSignal.timeout(a.timeoutMs ?? 30_000),
-      system: "Write blood-drive campaign copy for young first-time donors: fan-themed and warm, with no official logos. Use only numbers present in FACTS. Make no medical claims, and tell people to check eligibility.",
+      model: a.model, maxRetries: 1, output: Output.object({ schema: CreativeDraftSchema }), abortSignal: AbortSignal.timeout(a.timeoutMs ?? 30_000),
+      system: "Write blood-drive campaign copy for young first-time donors: fan-themed and warm, with no official logos. Use only numbers present in FACTS. Make no medical claims, and tell people to check eligibility. Keep it short: theme under 60 characters, headline under 70, poster body under 300, exactly 3 social posts under 220 each, invite under 250, email subject under 90 and body under 1200.",
       prompt: `FACTS: ${JSON.stringify(facts)}`,
     });
     const allowed = allowedNumbers([JSON.stringify(facts), fallback.posterBody, fallback.pitchEmail.body]);
-    return { creative: sanitizeCreative(r.output, fallback, allowed).creative, usedTemplate: false };
+    return { creative: sanitizeCreative(fitCreative(r.output, fallback), fallback, allowed).creative, usedTemplate: false };
   } catch {
     return { creative: fallback, usedTemplate: true };
   }

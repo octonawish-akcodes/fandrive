@@ -72,10 +72,30 @@ describe("runPlainAi", () => {
   it("plain-AI check rejects when the model is slower than its timeout", async () => {
     await expect(runPlainAi({ input, city, tools: createTools(fakeApi(data)), model: hangingModel(), timeoutMs: 20 })).rejects.toThrow();
   });
+  it("keeps long AI copy (trimmed) instead of discarding it, and gives the writer a friendly date", async () => {
+    const tools = createTools(fakeApi(data));
+    const { ranked } = await tools.scorePartners({ city: "Houston", band: "16-24", cityBadge: "strong", refs: cands.candidates as never });
+    const body = "Squad up, Houston. ".repeat(40).trim();
+    const model = mockModel([text(JSON.stringify({ ...JSON.parse(creative("Squad Up Day")), posterBody: body }))]);
+    const r = await writeCreative({ input, city, partners: ranked, maps: [], model });
+    expect(r.usedTemplate).toBe(false);
+    expect(r.creative.theme).toBe("Squad Up Day");
+    expect(r.creative.posterBody.length).toBeLessThanOrEqual(400);
+    const prompt = JSON.stringify(model.doGenerateCalls[0].prompt);
+    expect(prompt).toContain("Sat, Nov 14");
+    expect(prompt).not.toContain("2026-11-14");
+  });
   it("fact-checks plain-AI picks with Qloo", async () => {
     const model = mockModel([text(JSON.stringify({ picks: [{ name: "Metallica", type: "artist", why: "Iconic" }, { name: "Sabrina Carpenter", type: "artist", why: "Pop star" }] }))]);
     const r = await runPlainAi({ input, city, tools: createTools(fakeApi(data)), model });
     expect(r[0].note).toContain("older");
     expect(r[1].note).toContain("young");
+  });
+  it("accepts plain-AI picks with long reasons or too many picks, trimming them", async () => {
+    const why = "Because this artist has a huge following among students in the city and posts constantly. ".repeat(4);
+    const picks = ["Sabrina Carpenter", "Metallica", "Bad Bunny", "Olivia Rodrigo", "Sabrina Carpenter", "Metallica"].map((name) => ({ name, type: "artist", why }));
+    const r = await runPlainAi({ input, city, tools: createTools(fakeApi(data)), model: mockModel([text(JSON.stringify({ picks }))]) });
+    expect(r).toHaveLength(5);
+    expect(r.every((p) => p.why.length <= 200)).toBe(true);
   });
 });
