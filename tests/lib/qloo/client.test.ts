@@ -44,13 +44,15 @@ describe("createQlooClient", () => {
     expect(err.kind).toBe("timeout");
     expect(f).toHaveBeenCalledTimes(2);
   });
-  it("retries once on 429 (Qloo allows 5 requests a second)", async () => {
-    const f = vi.fn().mockResolvedValueOnce(status(429)).mockResolvedValueOnce(ok({ fine: true }));
-    expect(await make(f as unknown as typeof fetch).get("/p", {})).toEqual({ fine: true });
-    expect(f).toHaveBeenCalledTimes(2);
+  it("on 429 pauses the shared gate and retries up to twice", async () => {
+    const gate = Object.assign(vi.fn(async () => {}), { pause: vi.fn() });
+    const f = vi.fn().mockResolvedValueOnce(status(429)).mockResolvedValueOnce(status(429)).mockResolvedValueOnce(ok({ fine: true }));
+    expect(await make(f as unknown as typeof fetch, { rateGate: gate }).get("/p", {})).toEqual({ fine: true });
+    expect(f).toHaveBeenCalledTimes(3);
+    expect(gate.pause).toHaveBeenCalledTimes(2);
   });
   it("passes every attempt, including retries, through the rate gate", async () => {
-    const gate = vi.fn(async () => {});
+    const gate = Object.assign(vi.fn(async () => {}), { pause: vi.fn() });
     const f = vi.fn().mockResolvedValueOnce(status(503)).mockResolvedValueOnce(ok({ fine: true }));
     await make(f as unknown as typeof fetch, { rateGate: gate }).get("/p", {});
     expect(gate).toHaveBeenCalledTimes(2);

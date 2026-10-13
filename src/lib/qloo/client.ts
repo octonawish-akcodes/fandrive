@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import pLimit from "p-limit";
 import type { Cache } from "./cache";
-import { createRateGate } from "./rateGate";
+import { createRateGate, type RateGate } from "./rateGate";
 import type { Params } from "./types";
 
 export type QlooErrorKind = "bad_request" | "auth" | "rate_limited" | "server" | "timeout" | "network";
@@ -12,8 +12,8 @@ export type QlooClient = { get<T = unknown>(path: string, params: Params): Promi
 export type QlooClientOptions = {
   baseUrl: string; apiKey: string; cache: Cache; fetchImpl?: typeof fetch;
   concurrency?: number; timeoutMs?: number; ttlSec?: number; retryDelayMs?: number;
-  /** Qloo allows 5 requests/second per key; the default gate allows 4 for headroom. */
-  rateGate?: () => Promise<void>; rateLimitDelayMs?: number;
+  /** Qloo allows 5 requests/second per key and counts the previous second too; the default gate allows 3. */
+  rateGate?: RateGate; rateLimitDelayMs?: number;
 };
 
 export function buildUrl(baseUrl: string, path: string, params: Params): string {
@@ -27,7 +27,7 @@ export function buildUrl(baseUrl: string, path: string, params: Params): string 
 
 const kindFor = (s: number): QlooErrorKind =>
   s === 401 || s === 403 ? "auth" : s === 429 ? "rate_limited" : s >= 500 ? "server" : "bad_request";
-const retryable = (k: QlooErrorKind) => k === "server" || k === "timeout" || k === "network" || k === "rate_limited";
+const retryable = (k: QlooErrorKind) => k === "server" || k === "timeout" || k === "network";
 
 export function createQlooClient(o: QlooClientOptions): QlooClient {
   const fetchImpl = o.fetchImpl ?? fetch;
@@ -36,7 +36,7 @@ export function createQlooClient(o: QlooClientOptions): QlooClient {
   const ttl = o.ttlSec ?? 604_800;
   const delay = o.retryDelayMs ?? 400;
   const rateLimitDelay = o.rateLimitDelayMs ?? 1100;
-  const gate = o.rateGate ?? createRateGate(4, 1000);
+  const gate = o.rateGate ?? createRateGate(3, 1000);
 
   async function attempt(url: string, path: string): Promise<unknown> {
     const ac = new AbortController();
@@ -59,12 +59,15 @@ export function createQlooClient(o: QlooClientOptions): QlooClient {
       const hit = await o.cache.get<T>(key);
       if (hit !== null) return hit;
       const body = await limit(async () => {
-        try { await gate(); return await attempt(url, path); }
-        catch (e) {
-          if (!(e instanceof QlooError) || !retryable(e.kind)) throw e;
-          await new Promise((r) => setTimeout(r, e.kind === "rate_limited" ? rateLimitDelay : delay));
-          await gate();
-          return attempt(url, path);
+        let rateLimitRetries = 2, otherRetries = 1;
+        for (;;) {
+          try { await gate(); return await attempt(url, path); }
+          catch (e) {
+            if (!(e instanceof QlooError)) throw e;
+            if (e.kind === "rate_limited" && rateLimitRetries-- > 0) { gate.pause(rateLimitDelay); continue; }
+            if (retryable(e.kind) && otherRetries-- > 0) { await new Promise((r) => setTimeout(r, delay)); continue; }
+            throw e;
+          }
         }
       });
       await o.cache.set(key, body, ttl);

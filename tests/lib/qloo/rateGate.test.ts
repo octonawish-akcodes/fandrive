@@ -19,4 +19,12 @@ describe("createRateGate", () => {
     await gate(); clock.t = 600; await gate(); clock.t = 1200; await gate();
     expect(clock.slept).toEqual([]);
   });
+  it("pause holds every caller until the cooldown ends", async () => {
+    const clock = fakeClock();
+    const gate = createRateGate(5, 1000, clock);
+    await gate();
+    gate.pause(1100);
+    await gate();
+    expect(clock.slept).toEqual([1100]);
+  });
 });
