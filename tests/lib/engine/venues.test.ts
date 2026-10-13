@@ -23,6 +23,26 @@ describe("classifyVenue", () => {
   });
 });
 
+describe("classifyVenue genre rules (from live Qloo genres)", () => {
+  const role = (genre: string) => classifyVenue(P({ genre })).role;
+  const alcohol = (genre: string) => classifyVenue(P({ genre })).reasons.some((r) => r.includes("alcohol"));
+  it("matches alcohol genres as whole words only", () => {
+    for (const g of ["bar", "sports_bar", "cocktail_bar", "bar_&_grill", "night_club", "pub", "brewery", "beer_hall", "lounge"]) expect(alcohol(g), g).toBe(true);
+    for (const g of ["barbecue", "espresso_bar", "juice_bar", "public_library"]) expect(alcohol(g), g).toBe(false);
+  });
+  it("skips venues unsuitable for a youth health campaign or not open to the public", () => {
+    for (const g of ["shooting_range", "cigar_shop", "tattoo_shop", "liquor_store", "beer_store", "vape_shop", "hookah_lounge", "casino", "hotel", "apartment_complex", "condominium_complex", "furnished_apartment_building", "funeral_home"])
+      expect(role(g), g).toBe("skip");
+  });
+  it("treats cafes as promote spots, not hosts", () => {
+    for (const g of ["coffee_shop", "cafe", "espresso_bar"]) expect(role(g), g).toBe("promote");
+  });
+  it("hosts at schools, colleges, halls, cultural centres and places of worship", () => {
+    for (const g of ["high_school", "junior_college", "private_educational_institution", "banquet_hall", "cultural_center", "gurdwara", "synagogue", "hindu_temple", "public_library", "city_park", "fitness_center", "convention_center"])
+      expect(role(g), g).toBe("host");
+  });
+});
+
 describe("rankVenues", () => {
   it("returns hosts first by score and caps the lists", () => {
     const places = [

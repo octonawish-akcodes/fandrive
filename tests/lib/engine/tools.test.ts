@@ -68,6 +68,18 @@ describe("mapPartner", () => {
     expect(zones[0].venues.host.map((v) => v.name)).toContain("Fitness Connection");
     expect(zones[0].venues.promote.map((v) => v.name)).toContain("Club Tropicana");
   });
+  it("gives every zone a distinct name even when venues share a neighbourhood", async () => {
+    const far = heat([["g1", 0.95], ["g2", 0.9], ["g3", 0.85]]).map((c, i) => ({ ...c, lat: 29.7 + i * 0.1 }));
+    const zones = await createTools(fakeApi({ ...base, heat: { ...base.heat, [id("Sabrina Carpenter")]: far } }))
+      .mapPartner({ city: "Houston", partner: { entityId: id("Sabrina Carpenter"), name: "Sabrina Carpenter" } });
+    expect(zones.length).toBeGreaterThan(1);
+    expect(new Set(zones.map((z) => z.name)).size).toBe(zones.length);
+  });
+  it("labels a zone with no venues as a numbered fan zone", async () => {
+    const zones = await createTools(fakeApi({ ...base, places: [] }))
+      .mapPartner({ city: "Houston", partner: { entityId: id("Sabrina Carpenter"), name: "Sabrina Carpenter" } });
+    expect(zones[0].name).toBe("Fan zone 1");
+  });
 });
 
 describe("seedPartners", () => {

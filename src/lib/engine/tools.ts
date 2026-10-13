@@ -94,7 +94,7 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     for (const p of places) if (p.neighborhood) counts.set(p.neighborhood, (counts.get(p.neighborhood) ?? 0) + 1);
     const top = [...counts].sort((a, b) => b[1] - a[1])[0]?.[0];
     const venues = rankVenues(places, date);
-    return { name: top ?? (venues.host[0] ? `Near ${venues.host[0].name}` : `Zone ${zone.id}`), venues };
+    return { name: top ?? (venues.host[0] ? `Near ${venues.host[0].name}` : `Fan zone ${zone.id.replace(/^z/, "")}`), venues };
   }
 
   async function scorePartners(a: { city: string; band: AgeBand; refs: NameRef[]; cityBadge: CityBadge }): Promise<{ ranked: Partner[]; excluded: Excluded[] }> {
@@ -136,7 +136,15 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
   async function mapPartner(a: { city: string; partner: Pick<Partner, "entityId" | "name">; date?: string }): Promise<MappedZone[]> {
     emit({ tool: "map_partner", message: `Mapping where ${a.partner.name} fans live and finding venues nearby` });
     const zones = await fanZones(a.city, a.partner.entityId);
-    return Promise.all(zones.map(async (z) => ({ ...z, ...(await venuesNear(z, a.partner.entityId, a.date)) })));
+    const mapped = await Promise.all(zones.map(async (z) => ({ ...z, ...(await venuesNear(z, a.partner.entityId, a.date)) })));
+    const used = new Set<string>();
+    for (const z of mapped) { // a wide venue radius can give two zones the same neighbourhood
+      const near = z.venues.host[0] ?? z.venues.promote[0];
+      const options = [z.name, ...(near ? [`Near ${near.name}`] : []), ...[2, 3, 4].map((n) => `${z.name} ${n}`)];
+      z.name = options.find((o) => !used.has(o)) ?? `Fan zone ${z.id.replace(/^z/, "")}`;
+      used.add(z.name);
+    }
+    return mapped;
   }
 
   async function typeNames(names: string[]): Promise<{ refs: NameRef[]; unresolved: string[] }> {
