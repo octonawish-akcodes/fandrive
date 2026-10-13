@@ -39,13 +39,13 @@ describe("createQlooClient", () => {
   it("times out, retries once, then throws timeout", async () => {
     const f = vi.fn((_u: string, init: RequestInit) => new Promise<Response>((_, rej) =>
       init.signal?.addEventListener("abort", () => rej(Object.assign(new Error("aborted"), { name: "AbortError" })))));
-    const err = await make(f as unknown as typeof fetch, { timeoutMs: 5 }).get("/p", {}).catch((e) => e);
+    const err = (await make(f as unknown as typeof fetch, { timeoutMs: 5 }).get("/p", {}).catch((e) => e)) as QlooError;
     expect(err).toBeInstanceOf(QlooError);
     expect(err.kind).toBe("timeout");
     expect(f).toHaveBeenCalledTimes(2);
   });
   it("never includes the api key in error messages", async () => {
-    const err = await make((async () => status(500)) as unknown as typeof fetch).get("/p", {}).catch((e) => e);
+    const err = (await make((async () => status(500)) as unknown as typeof fetch).get("/p", {}).catch((e) => e)) as QlooError;
     expect(String(err.message)).not.toContain("secret");
   });
 });
