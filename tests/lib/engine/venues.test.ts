@@ -34,6 +34,12 @@ describe("classifyVenue genre rules (from live Qloo genres)", () => {
     for (const g of ["shooting_range", "cigar_shop", "tattoo_shop", "liquor_store", "beer_store", "vape_shop", "hookah_lounge", "casino", "hotel", "apartment_complex", "condominium_complex", "furnished_apartment_building", "funeral_home"])
       expect(role(g), g).toBe("skip");
   });
+  it("never hosts at venues for young children and skips residential parks", () => {
+    for (const g of ["elementary_school", "middle_school", "primary_school", "preschool", "kindergarten", "day_care_center", "child_care_agency", "nursery_school", "trailer_park", "mobile_home_park", "rv_park"])
+      expect(role(g), g).toBe("skip");
+    expect(role("dog_park")).not.toBe("host");
+    expect(role("high_school")).toBe("host");
+  });
   it("treats cafes as promote spots, not hosts", () => {
     for (const g of ["coffee_shop", "cafe", "espresso_bar"]) expect(role(g), g).toBe("promote");
   });
