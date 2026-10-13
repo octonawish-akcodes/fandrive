@@ -7,11 +7,12 @@ const Env = z.object({
   GEMINI_MODEL: z.string().default("gemini-3.5-flash-lite"),
   UPSTASH_REDIS_REST_URL: z.string().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+  QLOO_CACHE_DIR: z.string().optional(),
 });
 
 export type Config = {
   qlooApiKey: string; qlooBaseUrl: string; geminiApiKey?: string; geminiModel: string;
-  upstashUrl?: string; upstashToken?: string;
+  upstashUrl?: string; upstashToken?: string; qlooCacheDir?: string;
 };
 
 let cached: Config | null = null;
@@ -26,6 +27,7 @@ export function getConfig(): Config {
   cached = {
     qlooApiKey: key, qlooBaseUrl: e.QLOO_BASE_URL, geminiApiKey: blankToUndef(e.GOOGLE_GENERATIVE_AI_API_KEY),
     geminiModel: e.GEMINI_MODEL, upstashUrl: blankToUndef(e.UPSTASH_REDIS_REST_URL), upstashToken: blankToUndef(e.UPSTASH_REDIS_REST_TOKEN),
+    qlooCacheDir: blankToUndef(e.QLOO_CACHE_DIR),
   };
   return cached;
 }

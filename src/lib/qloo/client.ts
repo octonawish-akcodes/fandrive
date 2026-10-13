@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import pLimit from "p-limit";
 import type { Cache } from "./cache";
+import { createRateGate } from "./rateGate";
 import type { Params } from "./types";
 
 export type QlooErrorKind = "bad_request" | "auth" | "rate_limited" | "server" | "timeout" | "network";
@@ -11,6 +12,8 @@ export type QlooClient = { get<T = unknown>(path: string, params: Params): Promi
 export type QlooClientOptions = {
   baseUrl: string; apiKey: string; cache: Cache; fetchImpl?: typeof fetch;
   concurrency?: number; timeoutMs?: number; ttlSec?: number; retryDelayMs?: number;
+  /** Qloo allows 5 requests/second per key; the default gate allows 4 for headroom. */
+  rateGate?: () => Promise<void>; rateLimitDelayMs?: number;
 };
 
 export function buildUrl(baseUrl: string, path: string, params: Params): string {
@@ -24,7 +27,7 @@ export function buildUrl(baseUrl: string, path: string, params: Params): string 
 
 const kindFor = (s: number): QlooErrorKind =>
   s === 401 || s === 403 ? "auth" : s === 429 ? "rate_limited" : s >= 500 ? "server" : "bad_request";
-const retryable = (k: QlooErrorKind) => k === "server" || k === "timeout" || k === "network";
+const retryable = (k: QlooErrorKind) => k === "server" || k === "timeout" || k === "network" || k === "rate_limited";
 
 export function createQlooClient(o: QlooClientOptions): QlooClient {
   const fetchImpl = o.fetchImpl ?? fetch;
@@ -32,6 +35,8 @@ export function createQlooClient(o: QlooClientOptions): QlooClient {
   const timeoutMs = o.timeoutMs ?? 20_000;
   const ttl = o.ttlSec ?? 604_800;
   const delay = o.retryDelayMs ?? 400;
+  const rateLimitDelay = o.rateLimitDelayMs ?? 1100;
+  const gate = o.rateGate ?? createRateGate(4, 1000);
 
   async function attempt(url: string, path: string): Promise<unknown> {
     const ac = new AbortController();
@@ -54,10 +59,12 @@ export function createQlooClient(o: QlooClientOptions): QlooClient {
       const hit = await o.cache.get<T>(key);
       if (hit !== null) return hit;
       const body = await limit(async () => {
-        try { return await attempt(url, path); }
+        try { await gate(); return await attempt(url, path); }
         catch (e) {
-          if (e instanceof QlooError && retryable(e.kind)) { await new Promise((r) => setTimeout(r, delay)); return attempt(url, path); }
-          throw e;
+          if (!(e instanceof QlooError) || !retryable(e.kind)) throw e;
+          await new Promise((r) => setTimeout(r, e.kind === "rate_limited" ? rateLimitDelay : delay));
+          await gate();
+          return attempt(url, path);
         }
       });
       await o.cache.set(key, body, ttl);

@@ -5,7 +5,7 @@ import { createQlooClient, QlooError } from "@/lib/qloo/client";
 const ok = (body: unknown) => new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
 const status = (s: number) => new Response("{}", { status: s });
 const make = (fetchImpl: typeof fetch, extra: object = {}) =>
-  createQlooClient({ baseUrl: "https://q.test", apiKey: "secret", cache: new MemoryCache(), fetchImpl, retryDelayMs: 0, ...extra });
+  createQlooClient({ baseUrl: "https://q.test", apiKey: "secret", cache: new MemoryCache(), fetchImpl, retryDelayMs: 0, rateLimitDelayMs: 0, ...extra });
 
 describe("createQlooClient", () => {
   it("sends the key header, sorts params, drops undefined, clamps take", async () => {
@@ -43,6 +43,17 @@ describe("createQlooClient", () => {
     expect(err).toBeInstanceOf(QlooError);
     expect(err.kind).toBe("timeout");
     expect(f).toHaveBeenCalledTimes(2);
+  });
+  it("retries once on 429 (Qloo allows 5 requests a second)", async () => {
+    const f = vi.fn().mockResolvedValueOnce(status(429)).mockResolvedValueOnce(ok({ fine: true }));
+    expect(await make(f as unknown as typeof fetch).get("/p", {})).toEqual({ fine: true });
+    expect(f).toHaveBeenCalledTimes(2);
+  });
+  it("passes every attempt, including retries, through the rate gate", async () => {
+    const gate = vi.fn(async () => {});
+    const f = vi.fn().mockResolvedValueOnce(status(503)).mockResolvedValueOnce(ok({ fine: true }));
+    await make(f as unknown as typeof fetch, { rateGate: gate }).get("/p", {});
+    expect(gate).toHaveBeenCalledTimes(2);
   });
   it("never includes the api key in error messages", async () => {
     const err = (await make((async () => status(500)) as unknown as typeof fetch).get("/p", {}).catch((e) => e)) as QlooError;
