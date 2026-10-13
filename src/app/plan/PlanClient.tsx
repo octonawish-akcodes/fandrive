@@ -4,7 +4,7 @@ import { useEffect, useReducer, useState } from "react";
 import { PlanForm, type PlanFormValues } from "@/components/PlanForm";
 import { ReportView } from "@/components/ReportView";
 import { StepLog } from "@/components/StepLog";
-import { readNdjson } from "@/lib/client/ndjson";
+import { consumePlanStream } from "@/lib/client/consume";
 import { replay, type Recording } from "@/lib/client/replay";
 import { applyEvent, fromPlan, initialRun, type RunState } from "@/lib/client/runState";
 
@@ -41,10 +41,8 @@ export function PlanClient() {
       dispatch({ type: "error", code: res?.status === 429 ? "rate_limited" : "bad_input", message: j.error ?? "Request failed. Check your connection and try again." });
       return;
     }
-    for await (const e of readNdjson(res.body)) {
-      dispatch(e);
-      if (e.type === "done") window.history.replaceState(null, "", `/plan?id=${e.plan.id}`);
-    }
+    const plan = await consumePlanStream(res.body, dispatch);
+    if (plan) window.history.replaceState(null, "", `/plan?id=${plan.id}`);
   }
 
   const view = loaded ?? state;

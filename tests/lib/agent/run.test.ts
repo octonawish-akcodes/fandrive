@@ -92,6 +92,12 @@ describe("runPlan", () => {
     const last = events.filter((e) => e.type === "partners").at(-1);
     expect(last && last.type === "partners" && last.picks?.ids).toEqual([id("Olivia Rodrigo")]);
   });
+  it("reports an internal error instead of throwing when the tools can't be built", async () => {
+    const events: RunEvent[] = [];
+    const plan = await runPlan(input, { makeTools: () => { throw new Error("Missing QLOO_API_KEY"); }, model: null }, (e) => events.push(e));
+    expect(plan).toBeNull();
+    expect(events.at(-1)).toMatchObject({ type: "error", code: "internal" });
+  });
   it("reports unknown cities", async () => {
     const { plan, events } = await run({ ...data, badCities: ["asdfgh"] }, null, { ...input, city: "asdfgh" });
     expect(plan).toBeNull();

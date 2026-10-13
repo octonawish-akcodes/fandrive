@@ -22,9 +22,14 @@ export async function POST(req: Request) {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (e: RunEvent) => controller.enqueue(enc.encode(`${JSON.stringify(e)}\n`));
-      const plan = await runPlan(parsed.data, { makeTools: (on) => createTools(getQlooApi(), on), model: getModel() }, send);
-      if (plan) await savePlan(plan).catch(() => undefined);
-      controller.close();
+      try {
+        const plan = await runPlan(parsed.data, { makeTools: (on) => createTools(getQlooApi(), on), model: getModel() }, send);
+        if (plan) await savePlan(plan).catch(() => undefined);
+      } catch (e) { // misconfiguration (e.g. a missing key): tell the client without leaking details
+        console.error(`[fandrive] plan failed: ${e instanceof Error ? e.name : "error"}`);
+        try { send({ type: "error", code: "internal", message: "Something went wrong while planning." }); } catch { /* client gone */ }
+      }
+      try { controller.close(); } catch { /* already closed */ }
     },
   });
   return new Response(stream, { headers: { "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store" } });

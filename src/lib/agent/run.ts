@@ -16,10 +16,9 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
   const t0 = now();
   const steps: Step[] = [];
   const step = (tool: string, message: string) => { const s = { at: now() - t0, tool, message }; steps.push(s); emit({ type: "step", step: s }); };
-  const base = deps.makeTools((e) => step(e.tool, e.message));
-  const tools: Tools = { ...base, scorePartners: async (x) => { const r = await base.scorePartners(x); emit({ type: "partners", partners: r.ranked, excluded: r.excluded }); return r; } };
-
   try {
+    const base = deps.makeTools((e) => step(e.tool, e.message));
+    const tools: Tools = { ...base, scorePartners: async (x) => { const r = await base.scorePartners(x); emit({ type: "partners", partners: r.ranked, excluded: r.excluded }); return r; } };
     const s = await tools.cityStrength(input.city); // every later Qloo location query uses input.city too, so a state qualifier is never dropped
     const city: CityInfo = { name: s.locality.name, disambiguation: s.locality.disambiguation, lat: s.locality.lat, lon: s.locality.lon, badge: s.badge, cells: s.cells };
     emit({ type: "city", city });
