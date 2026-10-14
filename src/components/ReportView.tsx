@@ -6,6 +6,7 @@ import { MapCard } from "./MapCard";
 import { PartnerTable } from "./PartnerTable";
 import { PickCard, SkeletonCard } from "./PickCard";
 import { PlainAiPanel } from "./PlainAiPanel";
+import { ReceiptsPanel } from "./ReceiptsPanel";
 import { StepLog } from "./StepLog";
 
 const BADGE = { strong: "bg-mint", medium: "bg-sun", thin: "bg-bubble" };
@@ -36,6 +37,7 @@ export function ReportView({ state }: { state: RunState }) {
         </div>
         {partners && <PartnerTable partners={partners} excluded={excluded ?? []} picks={picks} />}
         {creative && <CreativePanel c={creative} />}
+        {plan?.receipts && plan.receipts.length > 0 && <ReceiptsPanel receipts={plan.receipts} />}
         {plan && (
           <footer className="border-t-[3px] border-black pt-4">
             <h3 className="font-bold">Data limits for this run</h3>

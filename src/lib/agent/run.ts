@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import { CityNotFoundError, type ToolEvent, type Tools } from "@/lib/engine/tools";
 import type { CityInfo, PlainAiCheck, Plan, PlanInput, RunEvent, Step } from "@/lib/plan/schema";
 import { QlooError } from "@/lib/qloo/client";
+import { runWithReceipts, type Receipt } from "@/lib/qloo/receipts";
 import { AgentIncompleteError, runAgent } from "./agent";
 import { runAutopilot, TooFewPartnersError, type CoreResult } from "./autopilot";
 import { runPlainAi } from "./plainAi";
@@ -15,6 +16,11 @@ export type RunDeps = {
 export const skippedNote = (n: number) => `${n} ${n === 1 ? "name was" : "names were"} skipped (not found, wrong match, or no audience data yet).`;
 
 export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEvent) => void): Promise<Plan | null> {
+  const receipts: Receipt[] = [];
+  return runWithReceipts(receipts, () => planWithin(input, deps, emit, receipts));
+}
+
+async function planWithin(input: PlanInput, deps: RunDeps, emit: (e: RunEvent) => void, receipts: Receipt[]): Promise<Plan | null> {
   const now = deps.now ?? Date.now;
   const t0 = now();
   const steps: Step[] = [];
@@ -70,7 +76,7 @@ export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEven
     ];
     const plan: Plan = {
       id: (deps.newId ?? (() => nanoid(10)))(), createdAt: new Date(now()).toISOString(), engine, input, city,
-      partners: core.partners, excluded: core.excluded, maps: core.maps, creative: core.creative, plainAi, steps, limits, agentPicks: core.picks ?? null,
+      partners: core.partners, excluded: core.excluded, maps: core.maps, creative: core.creative, plainAi, steps, limits, agentPicks: core.picks ?? null, receipts,
     };
     emit({ type: "done", plan });
     return plan;

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { CityBadge, Excluded, MappedZone, Partner } from "@/lib/engine/tools";
+import type { Receipt } from "@/lib/qloo/receiptFormat";
 import type { EntityType } from "@/lib/qloo/types";
 
 const ISO = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
@@ -48,6 +49,7 @@ export type Plan = {
   id: string; createdAt: string; engine: "agent" | "autopilot" | "recorded"; input: PlanInput; city: CityInfo;
   partners: Partner[]; excluded: Excluded[]; maps: MapResult[]; creative: Creative; plainAi: PlainAiCheck[] | null; steps: Step[]; limits: string[];
   agentPicks?: AgentPicks | null; // optional: plans saved before this field existed
+  receipts?: Receipt[]; // every Qloo request behind the plan (no keys)
 };
 export type ErrorCode = "bad_input" | "city_not_found" | "too_few_partners" | "rate_limited" | "upstream" | "internal";
 export type RunEvent =

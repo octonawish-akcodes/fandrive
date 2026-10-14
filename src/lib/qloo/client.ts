@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import pLimit from "p-limit";
 import type { Cache } from "./cache";
 import { createRateGate, type RateGate } from "./rateGate";
+import { recordReceipt } from "./receipts";
 import type { Params } from "./types";
 
 export type QlooErrorKind = "bad_request" | "auth" | "rate_limited" | "server" | "timeout" | "network";
@@ -17,12 +18,15 @@ export type QlooClientOptions = {
   onNetworkCall?: () => void; // counts uncached calls for the daily budget
 };
 
-export function buildUrl(baseUrl: string, path: string, params: Params): string {
-  const entries = Object.entries(params)
+function normalized(params: Params): [string, string][] {
+  return Object.entries(params)
     .filter(([, v]) => v !== undefined)
     .map(([k, v]) => [k, k === "take" ? String(Math.max(1, Math.min(50, Number(v)))) : String(v)] as [string, string])
     .sort(([a], [b]) => a.localeCompare(b));
-  const qs = new URLSearchParams(entries).toString();
+}
+
+export function buildUrl(baseUrl: string, path: string, params: Params): string {
+  const qs = new URLSearchParams(normalized(params)).toString();
   return `${baseUrl.replace(/\/$/, "")}${path}${qs ? `?${qs}` : ""}`;
 }
 
@@ -58,8 +62,9 @@ export function createQlooClient(o: QlooClientOptions): QlooClient {
     async get<T>(path: string, params: Params): Promise<T> {
       const url = buildUrl(o.baseUrl, path, params);
       const key = createHash("sha1").update(url).digest("hex");
+      const receipt = { path, params: Object.fromEntries(normalized(params)) };
       const hit = await o.cache.get<T>(key).catch(() => null); // a cache outage or size limit is a miss, never a failed plan
-      if (hit !== null) return hit;
+      if (hit !== null) { recordReceipt({ ...receipt, cached: true }); return hit; }
       const body = await limit(async () => {
         let rateLimitRetries = 2, otherRetries = 1;
         for (;;) {
@@ -73,6 +78,7 @@ export function createQlooClient(o: QlooClientOptions): QlooClient {
         }
       });
       await o.cache.set(key, body, ttl).catch(() => {});
+      recordReceipt({ ...receipt, cached: false });
       return body as T;
     },
   };

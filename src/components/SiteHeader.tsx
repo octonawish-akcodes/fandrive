@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StatusBadges } from "./StatusBadges";
 
 export function SiteHeader() {
   return (
@@ -10,7 +11,7 @@ export function SiteHeader() {
           <Link href="/#examples" className="underline-offset-4 hover:underline">Example cities</Link>
           <Link href="/#how" className="underline-offset-4 hover:underline">How it works</Link>
         </nav>
-        <Link href="/plan" className="press ml-auto border-[3px] border-black bg-black px-4 py-2 font-bold text-white">For blood banks</Link>
+        <div className="ml-auto flex flex-wrap items-center gap-3"><StatusBadges /><Link href="/plan" className="press border-[3px] border-black bg-black px-4 py-2 font-bold text-white">For blood banks</Link></div>
       </div>
     </header>
   );

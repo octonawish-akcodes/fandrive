@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { runPlan, skippedNote } from "@/lib/agent/run";
+import { recordReceipt } from "@/lib/qloo/receipts";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema, type RunEvent } from "@/lib/plan/schema";
 import { fakeApi, heat, id, type FakeData } from "../../helpers/fakeApi";
@@ -104,6 +105,16 @@ describe("runPlan", () => {
     const plan = await runPlan(input, { makeTools: (on) => createTools(fakeApi(data), on), model: hangingModel(), agentDeadlineMs: 30, plainAiTimeoutMs: 30, newId: () => "p" }, (e) => events.push(e));
     warn.mockRestore();
     expect(plan?.engine).toBe("autopilot");
+  });
+  it("attaches the Qloo receipts made during the run to the plan", async () => {
+    const base = fakeApi(data);
+    const api = { ...base, async search(...a: Parameters<typeof base.search>) { recordReceipt({ path: "/search", params: { query: a[0] }, cached: false }); return base.search(...a); } };
+    const { plan } = await run(data, null);
+    expect(plan?.receipts).toEqual([]);
+    const events: RunEvent[] = [];
+    const p2 = await runPlan(input, { makeTools: (on) => createTools(api, on), model: null, newId: () => "p" }, (e) => events.push(e));
+    expect(p2?.receipts?.length).toBeGreaterThan(3);
+    expect(p2?.receipts?.[0]).toMatchObject({ path: "/search", cached: false });
   });
   it("reports unknown cities", async () => {
     const { plan, events } = await run({ ...data, badCities: ["asdfgh"] }, null, { ...input, city: "asdfgh" });
