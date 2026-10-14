@@ -94,6 +94,15 @@ describe("runAgent", () => {
     expect(r.partners[0].name).toBe("Bad Bunny");
     expect(r.partners.findIndex((p) => p.name === "Metallica")).toBe(r.partners.length - 1);
   });
+  it("strips internal ids the planner echoes into its rationale", async () => {
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: [id("Bad Bunny")], rationale: "Bad Bunny (38AE774E-F217-4C96-BE77-B3B40A6344E4) and Sabrina (id:Sabrina Carpenter) lead" }]),
+      text(creative("Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
+    expect(r.picks?.rationale).toBe("Bad Bunny and Sabrina lead");
+  });
   it("drops a rationale that cites numbers no tool returned, keeping the picks", async () => {
     const model = mockModel([
       calls(["score_partners", cands]),

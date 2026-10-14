@@ -17,6 +17,10 @@ Rules:
 - Then call finish with 1-3 recommended partner ids and a short rationale. Weigh youth skew, local love and confidence, not pull alone. The app maps your picks automatically, so call map_partner only if venue details would change your choice.
 - Never invent numbers; only tool results are facts.`;
 
+const UUID = "[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}";
+/** The planner sometimes echoes entity ids ("Valorant (38AE…)") into its rationale; readers don't need them. */
+const stripIds = (t: string) => t.replace(new RegExp(`\\s*\\((?:id:[^)]*|${UUID})\\)`, "gi"), "").replace(new RegExp(`\\b${UUID}\\b`, "gi"), "").replace(/\s{2,}/g, " ").trim();
+
 export class AgentIncompleteError extends Error {
   constructor(public state: AutopilotState, public reason?: unknown) { super("AI planner did not finish"); this.name = "AgentIncompleteError"; }
 }
@@ -111,7 +115,8 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
   const partners = [...chosen, ...state.ranked.filter((p) => !chosen.includes(p))];
   const finalMaps = await mapTop(a.tools, a.input, a.city, partners, [...maps.values()]);
   const c = await writeCreative({ input: a.input, city: a.city, partners, maps: finalMaps, model: a.model });
-  const why = state.rationale?.trim() ? clamp(state.rationale, 400) : null;
+  const cleaned = state.rationale ? stripIds(state.rationale) : "";
+  const why = cleaned ? clamp(cleaned, 400) : null;
   const rationale = why && !overruled && !hasUncited(why, allowedNumbers(toolOutput)) && !leaksInstructions(why) ? why : null;
   const picks = { ids: chosen.map((p) => p.entityId), rationale };
   return { partners, excluded: state.excluded ?? [], maps: finalMaps, creative: c.creative, usedTemplate: c.usedTemplate, picks };
