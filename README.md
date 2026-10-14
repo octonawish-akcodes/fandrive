@@ -13,6 +13,8 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 ![Tests](https://img.shields.io/badge/tests-156%20passing-23C78A?style=flat-square)
 ![Qloo Agentic Hackathon](https://img.shields.io/badge/Qloo%20Agentic%20Hackathon-2026-FFC900?style=flat-square)
 
+### [▶ Try the live demo](https://fandrive-nu.vercel.app) · [Watch Houston](https://fandrive-nu.vercel.app/plan?example=houston) · [Watch Mumbai](https://fandrive-nu.vercel.app/plan?example=mumbai)
+
 <img src="docs/images/hero.png" alt="FanDrive planner: 'Houston's next blood drive is a Kai Cenat party.' with the yellow plan form" width="100%">
 
 </div>
@@ -23,11 +25,11 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 
 | | |
 |---|---|
-| **1. Watch the agent** | Open the app and click **Watch Houston** (or Atlanta, Seattle, Mumbai). A recorded agent run replays in about 8 seconds. |
+| **1. Watch the agent** | Open [the app](https://fandrive-nu.vercel.app) and click **Watch Houston** (or Atlanta, Seattle, Mumbai). A recorded agent run replays in about 8 seconds. |
 | **2. Run it live** | Type any city and press **Plan my drives**. The agent tests a dozen fandoms against Qloo and builds the plan live, usually in 25–90 seconds. |
 | **3. Check the receipts** | Every partner has a **Qloo evidence** drop-down, and the **Plain AI check** shows what the same model suggests *without* Qloo. |
 
-> **Live demo:** link added on deploy. Until then, [run it locally](#run-locally) in two minutes.
+> **Live demo: https://fandrive-nu.vercel.app** · no sign-up, no API key.
 
 ---
 
