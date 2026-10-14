@@ -17,4 +17,14 @@ describe("getConfig", () => {
     vi.stubEnv("QLOO_API_KEY", "");
     expect(() => getConfig()).toThrow("Missing QLOO_API_KEY");
   });
+  it("accepts Vercel's KV_REST_API_* names for Upstash when the UPSTASH_* ones are absent", () => {
+    vi.stubEnv("QLOO_API_KEY", "k");
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "");
+    vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "");
+    vi.stubEnv("KV_REST_API_URL", "https://kv.example");
+    vi.stubEnv("KV_REST_API_TOKEN", "t");
+    const c = getConfig();
+    expect(c.upstashUrl).toBe("https://kv.example");
+    expect(c.upstashToken).toBe("t");
+  });
 });

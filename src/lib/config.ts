@@ -28,7 +28,8 @@ export function getConfig(): Config {
   if (!key) throw new Error("Missing QLOO_API_KEY");
   cached = {
     qlooApiKey: key, qlooBaseUrl: e.QLOO_BASE_URL, geminiApiKey: blankToUndef(e.GOOGLE_GENERATIVE_AI_API_KEY),
-    geminiModel: e.GEMINI_MODEL, geminiFallbackModels: e.GEMINI_FALLBACK_MODELS.split(",").map((m) => m.trim()).filter(Boolean), upstashUrl: blankToUndef(e.UPSTASH_REDIS_REST_URL), upstashToken: blankToUndef(e.UPSTASH_REDIS_REST_TOKEN),
+    geminiModel: e.GEMINI_MODEL, geminiFallbackModels: e.GEMINI_FALLBACK_MODELS.split(",").map((m) => m.trim()).filter(Boolean), upstashUrl: blankToUndef(e.UPSTASH_REDIS_REST_URL) ?? blankToUndef(process.env.KV_REST_API_URL), // Vercel's Upstash integration may use KV_* names
+    upstashToken: blankToUndef(e.UPSTASH_REDIS_REST_TOKEN) ?? blankToUndef(process.env.KV_REST_API_TOKEN),
     qlooCacheDir: blankToUndef(e.QLOO_CACHE_DIR), qlooDailyBudget: e.QLOO_DAILY_BUDGET,
   };
   return cached;
