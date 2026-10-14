@@ -83,6 +83,17 @@ describe("runAgent", () => {
     const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
     expect(r.picks).toEqual({ ids: [id("Bad Bunny"), id("Sabrina Carpenter")], rationale: "Young fans and strong local love" });
   });
+  it("never lets an older-skewing pick jump the young-first ranking (and drops the rationale that argued for it)", async () => {
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: [id("Metallica"), id("Bad Bunny")], rationale: "Metallica is a youth-focused option" }]),
+      text(creative("Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
+    expect(r.picks).toEqual({ ids: [id("Bad Bunny")], rationale: null });
+    expect(r.partners[0].name).toBe("Bad Bunny");
+    expect(r.partners.findIndex((p) => p.name === "Metallica")).toBe(r.partners.length - 1);
+  });
   it("drops a rationale that cites numbers no tool returned, keeping the picks", async () => {
     const model = mockModel([
       calls(["score_partners", cands]),

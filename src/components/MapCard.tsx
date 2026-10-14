@@ -8,7 +8,7 @@ export function MapCard({ city, maps }: { city: CityInfo; maps: MapResult[] }) {
   const m = maps[Math.min(sel, maps.length - 1)];
   return (
     <div className="brut col-span-full flex flex-wrap overflow-hidden bg-sky">
-      <div className="min-w-0 flex-[999_1_420px] border-b-[3px] border-black bg-white lg:border-r-[3px] lg:border-b-0"><FanMap city={city} maps={maps} /></div>
+      <div className="min-h-96 min-w-0 flex-[999_1_420px] border-b-[3px] border-black bg-white lg:border-r-[3px] lg:border-b-0"><FanMap city={city} maps={maps} /></div>
       <div className="flex min-w-0 flex-[1_1_300px] flex-col gap-3 p-5">
         <h3 className="font-display text-2xl">Where to host</h3>
         {maps.length > 1 && (

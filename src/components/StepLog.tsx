@@ -8,7 +8,7 @@ function Tick() {
 export function StepLog({ steps, running }: { steps: Step[]; running: boolean }) {
   const done = !running ? doneLabel(steps) : null;
   return (
-    <section aria-labelledby="agent-log-h" className="brut flex flex-col gap-3 bg-mint p-6">
+    <section aria-labelledby="agent-log-h" className="brut flex flex-col gap-3 self-start bg-mint p-6">
       <h3 id="agent-log-h" className="font-bold">{running ? "The agent is working…" : "What the agent did"}</h3>
       <ol aria-live="polite" className="flex flex-col gap-2 font-semibold">
         {steps.map((s, i) => {

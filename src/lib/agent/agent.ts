@@ -105,12 +105,14 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
   }
   if (!state.ranked?.length) throw new AgentIncompleteError(snapshot());
   if (state.ranked.length < 3) throw new TooFewPartnersError(state.ranked.length);
-  const chosen = (state.chosen ?? []).map((id) => state.ranked!.find((p) => p.entityId === id)).filter((p): p is Partner => !!p);
+  const asked = (state.chosen ?? []).map((id) => state.ranked!.find((p) => p.entityId === id)).filter((p): p is Partner => !!p);
+  const chosen = asked.filter((p) => p.youthSkew >= 0); // the planner may not lift an older-skewing fan base above young ones
+  const overruled = chosen.length < asked.length;
   const partners = [...chosen, ...state.ranked.filter((p) => !chosen.includes(p))];
   const finalMaps = await mapTop(a.tools, a.input, a.city, partners, [...maps.values()]);
   const c = await writeCreative({ input: a.input, city: a.city, partners, maps: finalMaps, model: a.model });
   const why = state.rationale?.trim() ? clamp(state.rationale, 400) : null;
-  const rationale = why && !hasUncited(why, allowedNumbers(toolOutput)) && !leaksInstructions(why) ? why : null;
+  const rationale = why && !overruled && !hasUncited(why, allowedNumbers(toolOutput)) && !leaksInstructions(why) ? why : null;
   const picks = { ids: chosen.map((p) => p.entityId), rationale };
   return { partners, excluded: state.excluded ?? [], maps: finalMaps, creative: c.creative, usedTemplate: c.usedTemplate, picks };
 }

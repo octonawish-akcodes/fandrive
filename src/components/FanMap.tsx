@@ -30,8 +30,8 @@ export function FanMap({ city, maps }: { city: CityInfo; maps: MapResult[] }) {
     return () => { cancelled = true; map?.remove(); };
   }, [city, maps]);
   return (
-    <div className="relative">
-      <div ref={ref} className="h-96 w-full" role="img" aria-label={`Map of fan zones in ${city.name}: ${maps.map((m) => `${m.partnerName} fans near ${m.zones.map((z) => z.name).join(", ")}`).join("; ")}`} />
+    <div className="relative h-full min-h-96">
+      <div ref={ref} className="h-full min-h-96 w-full" role="img" aria-label={`Map of fan zones in ${city.name}: ${maps.map((m) => `${m.partnerName} fans near ${m.zones.map((z) => z.name).join(", ")}`).join("; ")}`} />
       <div className="absolute top-3 left-3 flex flex-wrap gap-2 text-sm font-bold">{maps.map((m, i) => <span key={m.partnerId} className="flex items-center gap-1.5 border-2 border-black bg-white px-2 py-0.5"><span className="h-3 w-3 rounded-full border-2 border-black" style={{ background: COLORS[i % COLORS.length] }} />{m.partnerName} fans</span>)}</div>
     </div>
   );

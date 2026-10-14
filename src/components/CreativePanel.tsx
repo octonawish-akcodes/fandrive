@@ -3,14 +3,14 @@ import { CopyButton } from "./CopyButton";
 
 export function PosterCard({ c }: { c: Creative }) {
   return (
-    <div className="brut flex flex-col gap-3 bg-alarm p-6">
+    <div className="brut flex flex-col gap-3 self-start bg-alarm p-6">
       <div className="font-bold">Poster, ready to print</div>
       <div className="flex -rotate-1 flex-col gap-2 border-[3px] border-black bg-white p-5">
         <div className="text-xs font-bold uppercase tracking-wider">{c.theme}</div>
         <div className="font-display text-3xl leading-none">{c.posterHeadline}</div>
         <p className="text-sm font-semibold">{c.posterBody}</p>
       </div>
-      <div className="mt-auto flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3">
         <CopyButton text={`${c.posterHeadline}\n\n${c.posterBody}`} label="Copy poster text" />
         <CopyButton text={c.socialPosts.join("\n\n")} label="Copy 3 posts" />
       </div>
