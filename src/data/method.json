@@ -1,0 +1,49 @@
+{
+  "generatedAt": "2026-10-14",
+  "cases": [
+    {
+      "name": "Metallica",
+      "type": "artist",
+      "partnership": "Red Cross × Metallica (from April 2025)",
+      "outcome": "25,000+ donations; 16% of participants were first-time donors, nearly half of them aged 16–24.",
+      "source": "American Red Cross press release, 2026",
+      "url": "https://www.redcross.org/about-us/news-and-events/press-release/2026/more-than-25-000-blood-donations-made-in-metallica-partnership.html",
+      "matchedName": "Metallica",
+      "youthSkew": -0.13,
+      "mostOverIndexedAge": "45–54"
+    },
+    {
+      "name": "National Football League",
+      "type": "brand",
+      "partnership": "Red Cross × NFL (7 years)",
+      "outcome": "More than 150,000 first-time blood donors over seven years.",
+      "source": "American Red Cross press release, 2026",
+      "url": "https://www.redcross.org/about-us/news-and-events/press-release/2026/-red-cross-teeters-on-blood-shortage--give-to-win-super-bowl-tri.html",
+      "matchedName": "National Football League",
+      "youthSkew": 0.04,
+      "mostOverIndexedAge": "25–29"
+    },
+    {
+      "name": "Peanuts",
+      "type": "tv_show",
+      "partnership": "Red Cross × Peanuts Snoopy shirt (April 2023)",
+      "outcome": "Traffic to the appointment page up 50% and organic search up 600% after the shirt went viral on TikTok.",
+      "source": "NBC News, April 2023",
+      "url": "https://www.nbcnews.com/pop-culture/pop-culture-news/red-cross-snoopy-shirt-drives-blood-donations-tiktok-rcna78749",
+      "matchedName": "Peanuts",
+      "youthSkew": null,
+      "mostOverIndexedAge": null
+    },
+    {
+      "name": "Game of Thrones",
+      "type": "tv_show",
+      "partnership": "HBO × Red Cross “Bleed for the Throne” (2019)",
+      "outcome": "The largest blood-donation promotion by an entertainment company in Red Cross history: drives in 43 states and at 9 colleges.",
+      "source": "American Red Cross, 2019",
+      "url": "https://www.redcross.org/about-us/news-and-events/news/2019/red-cross-and-hbo-urge-game-of-thrones-fans-to-bleed-for-the-throne.html",
+      "matchedName": "Game of Thrones",
+      "youthSkew": -0.02,
+      "mostOverIndexedAge": "30–34"
+    }
+  ]
+}

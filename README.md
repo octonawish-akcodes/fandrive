@@ -37,7 +37,7 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 
 - 🩸 The American Red Cross declared its **second-ever national blood supply crisis** in August 2026.
 - 📉 **Donors under 30 fell 47% in ten years** (Blood Centers of America). Only about **3% of eligible Americans** donate (AABB, 2026).
-- 🎸 **Fandoms already fill blood drives:** *Bleed for the Throne* brought **60,000** new donors, and the NFL partnership **150,000+** first-time donors.
+- 🎸 **Fandoms already fill blood drives:** the Red Cross × NFL partnership brought **150,000+ first-time donors**, and the Peanuts Snoopy shirt sent Red Cross search interest up **600%**.
 - 🎯 **But partners are picked by gut feel.** Metallica's drives recruited only **16% first-timers**, and on Qloo their fans skew 45–54.
 
 **FanDrive replaces the gut feel with taste data**, and tells you exactly where to set up.

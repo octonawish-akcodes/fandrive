@@ -10,7 +10,8 @@
     "test": "vitest run",
     "typecheck": "next typegen && tsc --noEmit",
     "spike": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/spike.ts",
-    "record": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/record-run.ts"
+    "record": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/record-run.ts",
+    "method-data": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/method-data.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.94",

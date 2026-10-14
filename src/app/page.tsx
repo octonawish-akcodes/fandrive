@@ -8,9 +8,9 @@ const STEPS: [string, string, string][] = [
   ["Where are the fans?", "Qloo heatmaps show the neighbourhoods. FanDrive picks halls, campuses and gyms nearby that can host.", "bg-mint"],
 ];
 const PROOF: [string, string][] = [
-  ["60,000", "new donors from Game of Thrones’ “Bleed for the Throne”"],
-  ["150,000+", "first-time donors from the NFL partnership over seven years"],
-  ["16%", "first-timers at Metallica drives — Qloo says their fans skew 45–54"],
+  ["150,000+", "first-time donors from the Red Cross × NFL partnership over seven years"],
+  ["+600%", "search interest for Red Cross after the Peanuts Snoopy shirt went viral"],
+  ["16%", "first-timers at Metallica drives. Qloo says their fans skew 45–54"],
 ];
 
 export default function Home() {
@@ -68,11 +68,11 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <p className="text-lg font-semibold">The partner is still picked by gut feel. FanDrive picks it with data, and tells you where to set up.</p>
+          <p className="text-lg font-semibold">The partner is still picked by gut feel. FanDrive picks it with data, and tells you where to set up. <Link href="/method" className="underline underline-offset-4">See the method →</Link></p>
         </section>
 
         <footer className="border-t-[3px] border-black pt-4 text-sm font-semibold">
-          Sources: American Red Cross (Aug 2026 national blood crisis); Blood Centers of America via KBIA (Aug 2026); AABB (Jan 2026); Red Cross partnership results.
+          Sources: American Red Cross (Aug 2026 national blood crisis); Blood Centers of America via KBIA (Aug 2026); AABB (Jan 2026); Red Cross partnership results (2026); NBC News (2023).
           FanDrive gives crowd-level guidance, not medical advice. Check eligibility with your blood service. Fandoms are a theme only; no artist, team or game endorses these drives.
         </footer>
       </main>
