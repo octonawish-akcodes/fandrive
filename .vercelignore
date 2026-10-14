@@ -1,0 +1,11 @@
+# Never upload secrets, caches or local scratch on CLI deploys
+.env*
+!.env.example
+.cache
+.superpowers
+.vercel
+.next
+node_modules
+coverage
+*.log
+*.pem
