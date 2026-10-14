@@ -10,7 +10,7 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs)
 ![Qloo Taste AI](https://img.shields.io/badge/Qloo-Taste%20AI-FF4949?style=flat-square)
 ![Gemini](https://img.shields.io/badge/agent-Gemini-90A8FF?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-156%20passing-23C78A?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-182%20passing-23C78A?style=flat-square)
 ![Qloo Agentic Hackathon](https://img.shields.io/badge/Qloo%20Agentic%20Hackathon-2026-FFC900?style=flat-square)
 
 ### [▶ Try the live demo](https://fandrive-nu.vercel.app) · [Watch Houston](https://fandrive-nu.vercel.app/plan?example=houston) · [Watch Mumbai](https://fandrive-nu.vercel.app/plan?example=mumbai)
@@ -107,6 +107,8 @@ flowchart LR
 
 **Young-Donor Pull** = 0.35 × youth skew + 0.45 × local love + 0.20 × fan density. Any fandom whose fans skew older always ranks below the young ones, and the agent can't override that.
 
+**The full method**, with past blood-drive partners (NFL, Metallica, Game of Thrones, Peanuts) checked against Qloo next to their published results: **[fandrive-nu.vercel.app/method](https://fandrive-nu.vercel.app/method)**.
+
 ## How Qloo is used
 
 | Endpoint and parameters | Why |
@@ -116,6 +118,26 @@ flowchart LR
 | `GET /v2/insights` `filter.type=urn:entity:<type>` + `signal.location.query` + `signal.demographics.age` + `filter.results.entities` | How much young people in *this* city like each shortlisted fandom, in one call per type. |
 | `GET /v2/insights` `filter.type=urn:heatmap` + `filter.location.query` + `signal.interests.entities` | Where the fans are. Lift = fandom affinity rank minus a baseline of mass brands (Coca-Cola, Netflix, McDonald's, NFL, Taylor Swift). |
 | `GET /v2/insights` `filter.type=urn:entity:place` + `filter.location=POINT(lon lat)` + `filter.location.radius` | Venues near each fan zone, ranked by affinity, young-crowd tags, event space and opening hours on the drive date. |
+
+## 🤖 Use FanDrive from any AI agent (MCP)
+
+FanDrive is also an MCP server, so Claude, Cursor or any other agent can plan drives with it. Same Qloo tools, same guards (rate limits, daily budget, input limits), read-only.
+
+```bash
+claude mcp add --transport http fandrive https://fandrive-nu.vercel.app/api/mcp
+```
+
+```json
+{ "mcpServers": { "fandrive": { "url": "https://fandrive-nu.vercel.app/api/mcp" } } }
+```
+
+| Tool | What it does |
+|---|---|
+| `plan_blood_drive` | The full plan for a city: young-skewing fandoms, fan zones, host venues, the poster and a link to the report. |
+| `score_fandoms` | Rank up to 12 names you choose by youth skew, local love and fan density. |
+| `city_strength` | Is there enough Qloo data for this city? (strong, medium or thin) |
+
+Then ask your agent: *"Which fandoms should a Houston blood drive partner with to reach 18–24 year olds?"*
 
 ## 🛡️ Built to be trusted
 
@@ -149,7 +171,7 @@ pnpm dev                     # http://localhost:3000
 
 ## Quality
 
-- **156 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
+- **182 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
 - Reviewed end to end by a separate code-review agent; every critical and important finding was fixed test-first.
 - Live data spike and tuning notes: [`docs/spike/2026-10-13.md`](docs/spike/2026-10-13.md). Design spec: [`docs/superpowers/specs`](docs/superpowers/specs).
 
@@ -168,8 +190,6 @@ pnpm test && pnpm typecheck && pnpm lint && pnpm build
 ## Roadmap
 
 - **Organiser mode** for student groups (NSS, Rotaract, college clubs), with a simpler form and a shareable drive page.
-- **MCP endpoint**, so other AI agents can plan drives with FanDrive.
-- **Method page:** Qloo youth skew of past blood-drive partners next to their published results.
 
 ## Licence
 

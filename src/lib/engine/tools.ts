@@ -207,7 +207,7 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     const typed = await Promise.all(names.map(async (n) => {
       const hits = (await api.search(n, undefined, 8).catch(orSoft([]))).filter((h) => PRIORITY.includes(h.type));
       const best = hits.map((h) => ({ h, m: matchConfidence(n, h.name) })).filter((x) => x.m >= MATCH_OK)
-        .sort((a, b) => b.m - a.m || PRIORITY.indexOf(a.h.type) - PRIORITY.indexOf(b.h.type))[0];
+        .sort((a, b) => b.m - a.m || b.h.popularity - a.h.popularity || PRIORITY.indexOf(a.h.type) - PRIORITY.indexOf(b.h.type))[0]; // the popular entity is the one people mean
       return best ? { name: n, type: best.h.type } : null;
     }));
     return { refs: typed.filter((x): x is NameRef => x !== null), unresolved: names.filter((_, i) => typed[i] === null) };

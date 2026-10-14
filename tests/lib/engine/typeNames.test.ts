@@ -8,3 +8,12 @@ it("types user names from untyped search and reports unknown ones", async () => 
   expect(r.refs).toEqual([{ name: "Houston Astros", type: "brand" }, { name: "Stranger Things", type: "tv_show" }]);
   expect(r.unresolved).toEqual(["zzqx"]);
 });
+
+it("picks the entity people mean when a name exists under several types (Kai Cenat: person, not his little-known music page)", async () => {
+  const api = fakeApi({});
+  api.search = async (q) => [
+    { entityId: "kai-person", name: q, type: "person", popularity: 0.95 },
+    { entityId: "kai-artist", name: q, type: "artist", popularity: 0.12 },
+  ];
+  expect((await createTools(api).typeNames(["Kai Cenat"])).refs).toEqual([{ name: "Kai Cenat", type: "person" }]);
+});

@@ -108,6 +108,12 @@ export default function MethodPage() {
           </ul>
         </section>
 
+        <section aria-labelledby="mcp-h" className="brut flex flex-col gap-3 bg-mint p-6">
+          <h2 id="mcp-h" className="font-display text-2xl">Use it from your own agent</h2>
+          <p className="font-semibold">FanDrive is an MCP server with three read-only tools: <code>plan_blood_drive</code>, <code>score_fandoms</code> and <code>city_strength</code>. Same Qloo data, same guardrails.</p>
+          <code className="block overflow-x-auto border-[3px] border-black bg-white p-3 text-sm font-bold">claude mcp add --transport http fandrive https://fandrive-nu.vercel.app/api/mcp</code>
+        </section>
+
         <section aria-labelledby="limits-h" className="border-t-[3px] border-black pt-6">
           <h2 id="limits-h" className="font-display text-2xl">Data limits</h2>
           <ul className="mt-2 list-disc pl-5 font-semibold">
