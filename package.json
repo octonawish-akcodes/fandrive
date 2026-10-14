@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "spike": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/spike.ts",
     "record": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/record-run.ts"
   },
