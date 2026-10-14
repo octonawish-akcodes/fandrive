@@ -58,4 +58,25 @@ describe("qloo api", () => {
     expect(ageSignal("16-24")).toBe("24_and_younger");
     expect(ageSignal("18-29")).toBe("24_and_younger,25_to_29");
   });
+  it("tasteTags returns trimmed tag names with their Qloo subtype", async () => {
+    const c = fakeClient(() => ({ results: { tags: [{ name: " Hip Hop", tag_id: "urn:tag:genre:music:hip_hop", subtype: "urn:tag:genre:music" }, { name: "trap", subtype: "urn:tag:genre:music" }] } }));
+    expect(await createQlooApi(c).tasteTags("E1")).toEqual([{ name: "Hip Hop", subtype: "urn:tag:genre:music" }, { name: "trap", subtype: "urn:tag:genre:music" }]);
+    expect(c.calls[0]).toEqual(["/v2/insights", { "filter.type": "urn:tag", "signal.interests.entities": "E1", take: 20 }]);
+  });
+  it("findTags looks up Qloo tag ids by name", async () => {
+    const c = fakeClient(() => ({ results: { tags: [{ id: "urn:tag:category:place:university", name: "University" }] } }));
+    expect(await createQlooApi(c).findTags("university", "place")).toEqual([{ id: "urn:tag:category:place:university", name: "University" }]);
+    expect(c.calls[0]).toEqual(["/v2/tags", { "filter.query": "university", "filter.parents.types": "urn:entity:place", "feature.semantic_search": "true", take: 5 }]);
+  });
+  it("trending returns dated popularity percentiles", async () => {
+    const c = fakeClient(() => ({ results: { trending: [{ date: "2025-09-28", population_percentile: 0.21 }, { date: "2025-09-25", population_percentile: 0.2 }] } }));
+    expect(await createQlooApi(c).trending({ id: "E1", type: "tv_show", start: "2025-06-08", end: "2025-09-28" }))
+      .toEqual([{ date: "2025-09-28", percentile: 0.21 }, { date: "2025-09-25", percentile: 0.2 }]);
+    expect(c.calls[0]).toEqual(["/v2/trending", { "filter.type": "urn:entity:tv_show", "signal.interests.entities": "E1", "filter.start_date": "2025-06-08", "filter.end_date": "2025-09-28" }]);
+  });
+  it("placesNear can restrict to Qloo place tags (union)", async () => {
+    const c = fakeClient(() => ({ results: { entities: [] } }));
+    await createQlooApi(c).placesNear({ lat: 1, lon: 2, radiusM: 4000, signalIds: ["A"], tags: ["urn:tag:category:place:university", "urn:tag:category:place:library"] });
+    expect(c.calls[0][1]).toMatchObject({ "filter.tags": "urn:tag:category:place:university,urn:tag:category:place:library", "operator.filter.tags": "union" });
+  });
 });

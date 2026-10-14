@@ -56,12 +56,28 @@ export function createQlooApi(client: QlooClient) {
       }));
       return { cells, locality: parseLocality(b) };
     },
-    async placesNear(a: { lat: number; lon: number; radiusM: number; signalIds: string[]; take?: number }): Promise<QlooPlace[]> {
+    async placesNear(a: { lat: number; lon: number; radiusM: number; signalIds: string[]; take?: number; tags?: string[] }): Promise<QlooPlace[]> {
       const b = await client.get<Raw>("/v2/insights", {
         "filter.type": "urn:entity:place", "filter.location": `POINT(${a.lon} ${a.lat})`, "filter.location.radius": a.radiusM,
         "signal.interests.entities": a.signalIds.join(","), take: a.take ?? 20,
+        "filter.tags": a.tags?.length ? a.tags.join(",") : undefined, "operator.filter.tags": a.tags?.length ? "union" : undefined,
       });
       return (b.results?.entities ?? []).map(parsePlace);
+    },
+    /** Tags a fan base over-indexes on, with Qloo's subtype (genre, category, religion, place…). Callers must filter. */
+    async tasteTags(entityId: string, take = 20): Promise<{ name: string; subtype: string }[]> {
+      const b = await client.get<Raw>("/v2/insights", { "filter.type": "urn:tag", "signal.interests.entities": entityId, take });
+      return (b.results?.tags ?? []).map((t: Raw) => ({ name: String(t.name ?? "").trim(), subtype: String(t.subtype ?? "") })).filter((t: { name: string }) => t.name);
+    },
+    /** Qloo tag ids by name, e.g. "university" → urn:tag:category:place:university. */
+    async findTags(query: string, parentType: EntityType, take = 5): Promise<{ id: string; name: string }[]> {
+      const b = await client.get<Raw>("/v2/tags", { "filter.query": query, "filter.parents.types": `urn:entity:${parentType}`, "feature.semantic_search": "true", take });
+      return (b.results?.tags ?? []).map((t: Raw) => ({ id: t.id, name: t.name }));
+    },
+    /** Popularity percentile over time for one entity. */
+    async trending(a: { id: string; type: EntityType; start: string; end: string }): Promise<{ date: string; percentile: number }[]> {
+      const b = await client.get<Raw>("/v2/trending", { "filter.type": `urn:entity:${a.type}`, "signal.interests.entities": a.id, "filter.start_date": a.start, "filter.end_date": a.end });
+      return (b.results?.trending ?? []).map((t: Raw) => ({ date: t.date, percentile: Number(t.population_percentile) }));
     },
   };
 }

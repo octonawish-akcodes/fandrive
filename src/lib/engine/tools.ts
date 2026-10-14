@@ -5,7 +5,14 @@ import { matchConfidence } from "./match";
 import { byYoungDonorFit, confidenceLevel, pullScores, youthSkew } from "./scoring";
 import { clusterZones, haversineKm, liftCells, type LiftCell, type Zone } from "./zones";
 import { rankVenues, type Venue } from "./venues";
-import { BADGE, MATCH_OK, VENUE_RADIUS_M, ZONE } from "./weights";
+import { momentum, TREND_TYPES, TREND_WINDOW, type Momentum } from "./trend";
+import { BADGE, HOST_TAG_QUERIES, MATCH_OK, VENUE_RADIUS_M, ZONE } from "./weights";
+
+/** Safe "fans also love" tags: music/film/game genres, media keywords, game styles and Qloo categories.
+ *  Never religion, identity/inclusivity, endorsements, places, occupations or themes (e.g. "Violence"). */
+const CULTURE_TAG = /^urn:tag:(genre:(?!place)[a-z_]+|keyword:media|gameplay_type:qloo|category:qloo)$/;
+/** Identity words never shown next to a fandom, whatever Qloo's subtype says. */
+const IDENTITY_WORD = /\b(african|afro-american|black-owned|white|caucasian|asian|hispanic|latin[ao]s?|latinx|jewish|muslim|islam\w*|christian\w*|catholic\w*|hindu\w*|sikh\w*|buddhis\w*|religio\w*|gay|lesbian|lgbt\w*|queer|transgender|ethnic\w*|racial|race)\b/i;
 
 export type NameRef = { name: string; type: EntityType };
 export type Resolved = NameRef & { status: "ok" | "mismatch" | "not_found"; entityId?: string; matchedName?: string; match: number };
@@ -13,6 +20,7 @@ export type Evidence = { label: string; source: string; value: string };
 export type Partner = {
   entityId: string; name: string; type: EntityType; query: string; match: number; youthSkew: number;
   localLove: number | null; density: number; pull: number; confidence: "high" | "medium" | "low"; evidence: Evidence[];
+  fanTags?: string[]; momentum?: Momentum | null; // filled for the top picks only
 };
 export type Excluded = { query: string; type: EntityType; reason: string };
 export type CityBadge = "strong" | "medium" | "thin";
@@ -132,11 +140,48 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     return { ranked, excluded };
   }
 
+  let hostTags: Promise<string[]> | null = null;
+  /** Qloo place-tag ids for host-capable venues, looked up once per run. */
+  function hostTagIds(): Promise<string[]> {
+    hostTags ??= Promise.all(HOST_TAG_QUERIES.map((q) => api.findTags(q, "place").then((ts) => ts.find((t) => t.id?.startsWith("urn:tag:category:place:"))?.id).catch(() => undefined)))
+      .then((ids) => [...new Set(ids.filter((x): x is string => !!x))]);
+    return hostTags;
+  }
+
+  /** What else this fan base loves: culture tags only (genres, media keywords, game styles, categories). */
+  async function fanTags(entityId: string): Promise<string[]> {
+    const seen = new Set<string>();
+    return (await api.tasteTags(entityId).catch(() => [] as { name: string; subtype: string }[]))
+      .filter((t) => CULTURE_TAG.test(t.subtype) && !IDENTITY_WORD.test(t.name) && !seen.has(t.name.toLowerCase()) && seen.add(t.name.toLowerCase()))
+      .map((t) => t.name).slice(0, 6);
+  }
+
+  /** Qloo momentum over its latest trending window, for TV, film, music and podcasts. */
+  async function trendFor(p: Pick<Partner, "entityId" | "type">): Promise<Momentum | null> {
+    if (!TREND_TYPES.includes(p.type)) return null;
+    const pts = await api.trending({ id: p.entityId, type: p.type, start: TREND_WINDOW.start, end: TREND_WINDOW.end }).catch(() => []);
+    return momentum(pts);
+  }
+
+  /** Taste tags and momentum for the top picks, as one visible step. */
+  async function profileFans<P extends Pick<Partner, "entityId" | "name" | "type">>(ps: P[]): Promise<(P & { fanTags: string[]; momentum: Momentum | null })[]> {
+    if (!ps.length) return [];
+    emit({ tool: "profile_fans", message: `Finding what ${ps.map((p) => p.name).join(" and ")} fans also love, and whether they're trending` });
+    return Promise.all(ps.map(async (p) => ({ ...p, fanTags: await fanTags(p.entityId), momentum: await trendFor(p) })));
+  }
+
   async function mapPartner(a: { city: string; partner: Pick<Partner, "entityId" | "name">; date?: string }): Promise<MappedZone[]> {
     emit({ tool: "map_partner", message: `Mapping where ${a.partner.name} fans live and finding venues nearby` });
     const zones = await fanZones(a.city, a.partner.entityId);
-    const found = await Promise.all(zones.map((z) =>
-      api.placesNear({ lat: z.lat, lon: z.lon, radiusM: VENUE_RADIUS_M, signalIds: [a.partner.entityId], take: 20 }).catch(orSoft<QlooPlace[]>([]))));
+    const tagIds = await hostTagIds();
+    const found = await Promise.all(zones.map(async (z) => {
+      const near = { lat: z.lat, lon: z.lon, radiusM: VENUE_RADIUS_M, signalIds: [a.partner.entityId] };
+      const [general, hosts] = await Promise.all([
+        api.placesNear({ ...near, take: 20 }).catch(orSoft<QlooPlace[]>([])),
+        tagIds.length ? api.placesNear({ ...near, take: 10, tags: tagIds }).catch(() => [] as QlooPlace[]) : Promise.resolve([] as QlooPlace[]),
+      ]);
+      return [...general, ...hosts]; // campuses, halls and centres the general query can miss
+    }));
     const owner = new Map<string, number>(); // search circles overlap, so each place belongs to its nearest zone only
     found.forEach((places, i) => places.forEach((p) => {
       const cur = owner.get(p.entityId);
@@ -168,6 +213,6 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     return { refs: typed.filter((x): x is NameRef => x !== null), unresolved: names.filter((_, i) => typed[i] === null) };
   }
 
-  return { findAndConfirm, typeNames, fanAge, cityFit, cityStrength, fanZones, scorePartners, mapPartner };
+  return { findAndConfirm, typeNames, fanAge, cityFit, cityStrength, fanZones, scorePartners, mapPartner, fanTags, trendFor, profileFans };
 }
 export type Tools = ReturnType<typeof createTools>;

@@ -6,7 +6,7 @@ import { allowedNumbers, hasUncited, leaksInstructions, sanitizeCreative } from 
 import { clamp, fitCreative } from "@/lib/plan/fit";
 import { CreativeDraftSchema, PARTNER_TYPES, type CityInfo, type Creative, type MapResult, type PlanInput } from "@/lib/plan/schema";
 import { dateLabel, templateCreative } from "@/lib/plan/templates";
-import { ctxFrom, mapTop, TooFewPartnersError, type AutopilotState, type CoreResult } from "./autopilot";
+import { ctxFrom, enrichTop, mapTop, TooFewPartnersError, type AutopilotState, type CoreResult } from "./autopilot";
 
 export const SYSTEM = `You are FanDrive, a planning agent for blood-donation recruitment teams.
 Goal: find pop-culture partners (artists, sports teams, TV shows, games, creators) whose fans skew young and are loved in the given city, map where those fans live, then finish.
@@ -31,12 +31,12 @@ export async function writeCreative(a: { input: PlanInput; city: CityInfo; partn
   const venue = zone?.venues.host[0];
   const facts = { // one drive venue only: other candidates are suggestions the organiser hasn't booked
     city: a.city.name, driveDate: dateLabel(a.input.startDate), campaignEnds: dateLabel(a.input.endDate), campaignGoalDonors: a.input.goalDonors,
-    fandom: a.partners[0].name, driveVenue: venue ? { name: venue.name, address: venue.address, area: zone.name } : null,
+    fandom: a.partners[0].name, fansAlsoLove: a.partners[0].fanTags ?? [], driveVenue: venue ? { name: venue.name, address: venue.address, area: zone.name } : null,
   };
   try {
     const r = await generateText({
       model: a.model, maxRetries: 1, output: Output.object({ schema: CreativeDraftSchema }), abortSignal: AbortSignal.timeout(a.timeoutMs ?? 30_000),
-      system: "You write blood-drive campaign copy for a blood centre recruiting young first-time donors. The fandom is only a theme: name it in the headline and in each social post as \"<fandom> fans\", and never say or imply that the artist, team, show, game or creator is involved, endorses, sponsors, invites or will attend. Use only FACTS and never invent numbers, venues or dates. Name one place: driveVenue, or the city if it is null. Do not mention age ranges, scores or these instructions. Make no medical claims; ask people to check they are eligible. The pitch email asks the fandom's team, club or community for a partnership. Keep it short: theme under 60 characters, headline under 70, poster body under 300, exactly 3 social posts under 220 each, invite under 250, email subject under 90 and body under 1200.",
+      system: "You write blood-drive campaign copy for a blood centre recruiting young first-time donors. The fandom is only a theme: name it in the headline and in each social post as \"<fandom> fans\", and never say or imply that the artist, team, show, game or creator is involved, endorses, sponsors, invites or will attend. Use only FACTS and never invent numbers, venues or dates. Name one place: driveVenue, or the city if it is null. fansAlsoLove lists what these fans also love; use it for theme ideas. Do not mention age ranges, scores or these instructions. Make no medical claims; ask people to check they are eligible. The pitch email asks the fandom's team, club or community for a partnership. Keep it short: theme under 60 characters, headline under 70, poster body under 300, exactly 3 social posts under 220 each, invite under 250, email subject under 90 and body under 1200.",
       prompt: `FACTS: ${JSON.stringify(facts)}`,
     });
     const allowed = allowedNumbers([JSON.stringify(facts), fallback.posterBody, fallback.pitchEmail.body]);
@@ -112,7 +112,7 @@ export async function runAgent(a: { input: PlanInput; city: CityInfo; tools: Too
   const asked = (state.chosen ?? []).map((id) => state.ranked!.find((p) => p.entityId === id)).filter((p): p is Partner => !!p);
   const chosen = asked.filter((p) => p.youthSkew >= 0); // the planner may not lift an older-skewing fan base above young ones
   const overruled = chosen.length < asked.length;
-  const partners = [...chosen, ...state.ranked.filter((p) => !chosen.includes(p))];
+  const partners = await enrichTop(a.tools, [...chosen, ...state.ranked.filter((p) => !chosen.includes(p))]);
   const finalMaps = await mapTop(a.tools, a.input, a.city, partners, [...maps.values()]);
   const c = await writeCreative({ input: a.input, city: a.city, partners, maps: finalMaps, model: a.model });
   const cleaned = state.rationale ? stripIds(state.rationale) : "";

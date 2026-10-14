@@ -20,6 +20,12 @@ export async function mapTop(tools: Tools, input: PlanInput, city: CityInfo, ran
     { partnerId: p.entityId, partnerName: p.name, zones: await tools.mapPartner({ city: input.city, partner: p, date: input.startDate }) }));
 }
 
+/** Taste tags and momentum for the first n partners (the ones the report leads with). */
+export async function enrichTop(tools: Tools, partners: Partner[], n = 2): Promise<Partner[]> {
+  const top = await tools.profileFans(partners.slice(0, n));
+  return [...top, ...partners.slice(n)];
+}
+
 export async function runAutopilot(a: { input: PlanInput; city: CityInfo; tools: Tools; state?: AutopilotState }): Promise<CoreResult> {
   let ranked = a.state?.ranked;
   let excluded = a.state?.excluded ?? [];
@@ -30,6 +36,7 @@ export async function runAutopilot(a: { input: PlanInput; city: CityInfo; tools:
     excluded = [...typed.unresolved.map((q): Excluded => ({ query: q, type: "artist", reason: "Not found in Qloo" })), ...r.excluded];
   }
   if (ranked.length < 3) throw new TooFewPartnersError(ranked.length);
+  ranked = await enrichTop(a.tools, ranked);
   const maps = await mapTop(a.tools, a.input, a.city, ranked, a.state?.maps);
   return { partners: ranked, excluded, maps, creative: templateCreative(ctxFrom(a.input, a.city, ranked[0], maps[0])), usedTemplate: true };
 }

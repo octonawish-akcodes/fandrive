@@ -10,6 +10,17 @@ export function PickCard({ partner, rank, agentPick, rationale }: { partner: Par
       <div className="font-display text-4xl leading-none break-words sm:text-5xl">{partner.name}</div>
       <div className="font-display text-6xl leading-[0.9] sm:text-7xl">{signed(partner.youthSkew)}</div>
       <div className="font-semibold">youth skew · local love {partner.localLove === null ? "below threshold" : partner.localLove.toFixed(2)}</div>
+      {partner.momentum && (
+        <div className="text-sm font-bold">
+          {{ rising: "↑ Rising", steady: "→ Steady", cooling: "↓ Cooling" }[partner.momentum.direction]} {partner.momentum.changePct > 0 ? "+" : ""}{partner.momentum.changePct}% · Qloo trending, {partner.momentum.window}
+        </div>
+      )}
+      {partner.fanTags && partner.fanTags.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5 text-sm">
+          <span className="font-bold">Fans also love:</span>
+          {partner.fanTags.slice(0, 5).map((t) => <span key={t} className="border-2 border-black bg-white px-1.5 font-semibold">{t}</span>)}
+        </div>
+      )}
       {rationale && <p className="mt-2 border-t-[3px] border-black pt-2 font-semibold">&ldquo;{rationale}&rdquo;</p>}
     </div>
   );

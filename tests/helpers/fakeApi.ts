@@ -5,7 +5,8 @@ import type { Demographics, EntityType, HeatCell, QlooPlace } from "@/lib/qloo/t
 export type FakeData = {
   alias?: Record<string, string>; notFound?: string[]; types?: Record<string, EntityType>;
   demo?: Record<string, Demographics | "invalid">; cityFit?: Record<string, number>;
-  heat?: Record<string, HeatCell[]>; places?: QlooPlace[]; badCities?: string[]; authFail?: boolean;
+  heat?: Record<string, HeatCell[]>; places?: QlooPlace[]; hostPlaces?: QlooPlace[]; badCities?: string[]; authFail?: boolean;
+  fanTags?: Record<string, string[]>; rawTags?: Record<string, { name: string; subtype: string }[]>; trend?: Record<string, { date: string; percentile: number }[]>; tagLookups?: string[];
 };
 export const id = (name: string) => `id:${name}`;
 export const heat = (pairs: [string, number][]): HeatCell[] =>
@@ -29,6 +30,9 @@ export function fakeApi(d: FakeData): QlooApi {
       if (d.badCities?.includes(city)) throw bad();
       return { cells: d.heat?.[ids[0]] ?? heat([["g1", 0.5], ["g2", 0.5], ["g3", 0.5]]), locality: { name: city, lat: 29.76, lon: -95.37 } };
     },
-    async placesNear() { return d.places ?? []; },
+    async placesNear(a) { return a.tags?.length ? d.hostPlaces ?? [] : d.places ?? []; },
+    async tasteTags(entityId) { return d.rawTags?.[entityId] ?? (d.fanTags?.[entityId] ?? []).map((name) => ({ name, subtype: "urn:tag:genre:music" })); },
+    async findTags(query) { d.tagLookups?.push(query); return [{ id: `urn:tag:category:place:${query.replace(/\s+/g, "_")}`, name: query }]; },
+    async trending({ id: eid }) { return d.trend?.[eid] ?? []; },
   };
 }

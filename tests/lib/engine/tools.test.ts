@@ -97,6 +97,17 @@ describe("mapPartner", () => {
     expect(at(29.8).venues.promote.map((v) => v.name)).toEqual(["Bar D"]);
     expect(at(29.9).venues.host.map((v) => v.name)).toEqual(["Campus C"]);
   });
+  it("adds host-capable venues found by Qloo place tags, looking the tags up once", async () => {
+    const lookups: string[] = [];
+    const campus = { entityId: "h1", name: "Campus Hall", lat: 29.701, lon: -95.521, affinity: 0.7, neighborhood: "Sharpstown", genre: "university", tags: [] };
+    const tools = createTools(fakeApi({ ...base, hostPlaces: [campus], tagLookups: lookups }));
+    const z1 = await tools.mapPartner({ city: "Houston", partner: { entityId: id("Sabrina Carpenter"), name: "Sabrina Carpenter" } });
+    await tools.mapPartner({ city: "Houston", partner: { entityId: id("Sabrina Carpenter"), name: "Sabrina Carpenter" } });
+    expect(z1.flatMap((z) => z.venues.host.map((v) => v.name))).toContain("Campus Hall");
+    expect(z1.flatMap((z) => z.venues.host.map((v) => v.name))).toContain("Fitness Connection");
+    expect(lookups.length).toBeGreaterThan(3);
+    expect(new Set(lookups).size).toBe(lookups.length);
+  });
   it("labels a zone with no venues as a numbered fan zone", async () => {
     const zones = await createTools(fakeApi({ ...base, places: [] }))
       .mapPartner({ city: "Houston", partner: { entityId: id("Sabrina Carpenter"), name: "Sabrina Carpenter" } });
@@ -108,5 +119,35 @@ describe("seedPartners", () => {
   it("adds local teams for known cities and always returns a youth-heavy default", () => {
     expect(seedPartners("Houston, TX").map((s) => s.name)).toContain("Houston Astros");
     expect(seedPartners("Nowhere").length).toBeGreaterThanOrEqual(12);
+  });
+});
+
+describe("enrichment", () => {
+  it("fetches what fans also love and Qloo momentum (TV, film, music, podcasts only)", async () => {
+    const t = createTools(fakeApi({ ...base, fanTags: { [id("Stranger Things")]: ["sci-fi", "nostalgia"] },
+      trend: { [id("Stranger Things")]: [0.5, 0.55, 0.6].map((p, i) => ({ date: `2025-08-0${i + 1}`, percentile: p })) } }));
+    expect(await t.fanTags(id("Stranger Things"))).toEqual(["sci-fi", "nostalgia"]);
+    expect(await t.trendFor({ entityId: id("Stranger Things"), type: "tv_show" })).toMatchObject({ direction: "rising", window: "Jun–Sep 2025" });
+    expect(await t.trendFor({ entityId: id("Fortnite"), type: "videogame" })).toBeNull();
+  });
+  it("keeps only culture tags: never religion, identity, endorsements, places or dark themes", async () => {
+    const raw = [
+      { name: "Online Streamer", subtype: "urn:tag:occupation:qloo" }, { name: "Catholicism", subtype: "urn:tag:religion:qloo" },
+      { name: "Identifies as Black-owned", subtype: "urn:tag:inclusivity:place" }, { name: "McDonald's", subtype: "urn:tag:endorsement:qloo" },
+      { name: "Violence", subtype: "urn:tag:theme:qloo" }, { name: "Shrimp Grits", subtype: "urn:tag:offerings:place" }, { name: "Sports complex", subtype: "urn:tag:genre:place" },
+      { name: "Gaming", subtype: "urn:tag:category:qloo" }, { name: "Hip Hop", subtype: "urn:tag:genre:music" }, { name: "anime animation", subtype: "urn:tag:keyword:media" },
+      { name: "Multi-Player", subtype: "urn:tag:gameplay_type:qloo" }, { name: "Sandbox", subtype: "urn:tag:genre:qloo" }, { name: "hip hop", subtype: "urn:tag:genre:music" },
+    ];
+    const t = createTools(fakeApi({ ...base, rawTags: { [id("Kai Cenat")]: raw } }));
+    expect(await t.fanTags(id("Kai Cenat"))).toEqual(["Gaming", "Hip Hop", "anime animation", "Multi-Player", "Sandbox"]);
+  });
+  it("also drops ethnicity, religion and identity words whatever their subtype, keeping real genres", async () => {
+    const raw = [
+      { name: "african american", subtype: "urn:tag:keyword:media" }, { name: "Christian rock", subtype: "urn:tag:genre:music" },
+      { name: "LGBTQ+ cinema", subtype: "urn:tag:keyword:media" }, { name: "Latin trap", subtype: "urn:tag:genre:music" },
+      { name: "Afrobeats", subtype: "urn:tag:genre:music" }, { name: "basketball", subtype: "urn:tag:keyword:media" },
+    ];
+    const t = createTools(fakeApi({ ...base, rawTags: { [id("Atlanta Hawks")]: raw } }));
+    expect(await t.fanTags(id("Atlanta Hawks"))).toEqual(["Latin trap", "Afrobeats", "basketball"]);
   });
 });

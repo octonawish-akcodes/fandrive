@@ -103,6 +103,16 @@ describe("runAgent", () => {
     const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
     expect(r.picks?.rationale).toBe("Bad Bunny and Sabrina lead");
   });
+  it("gives the top picks what their fans also love, and hands it to the copy writer", async () => {
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: [id("Bad Bunny")], rationale: "Young fans" }]),
+      text(creative("Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi({ ...data, fanTags: { [id("Bad Bunny")]: ["reggaeton", "streetwear"] } })), model });
+    expect(r.partners[0].fanTags).toEqual(["reggaeton", "streetwear"]);
+    expect(JSON.stringify(model.doGenerateCalls[2].prompt)).toContain("reggaeton");
+  });
   it("drops a rationale that cites numbers no tool returned, keeping the picks", async () => {
     const model = mockModel([
       calls(["score_partners", cands]),
