@@ -27,25 +27,30 @@ export function PlanForm({ onSubmit, disabled, initialCity = "" }: { onSubmit: (
   }, [city]);
 
   return (
-    <form className="grid gap-3 rounded-xl border border-zinc-200 p-4 sm:grid-cols-2 lg:grid-cols-6 dark:border-zinc-800"
+    <form aria-label="Plan a drive" className="brut flex h-full flex-col gap-3 bg-sun p-6"
       onSubmit={(e) => { e.preventDefault(); onSubmit({ city: city.trim(), band, goalDonors: goal, firstTimers: true, startDate: start, endDate: end,
         partners: partners.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 8) }); }}>
-      <label className="lg:col-span-2 text-sm">City
-        <input required maxLength={80} value={city} onChange={(e) => setCity(e.target.value)} placeholder="Houston, TX" className="mt-1 w-full rounded border px-2 py-1.5" />
-        {cityInfo?.for === city.trim() && <span className="text-xs text-zinc-500">{cityInfo.label}{cityInfo.badge ? ` · Qloo data: ${cityInfo.badge}` : ""}</span>}
+      <h2 className="font-display text-2xl">Plan a drive</h2>
+      <label className="flex flex-col gap-1 font-bold">City
+        <input required maxLength={80} value={city} onChange={(e) => setCity(e.target.value)} placeholder="Houston, TX" className="field font-normal" />
+        <span className="min-h-5 text-sm font-semibold">{cityInfo?.for === city.trim() ? `${cityInfo.label}${cityInfo.badge ? ` · Qloo data: ${cityInfo.badge}` : ""}` : ""}</span>
       </label>
-      <label className="text-sm">Ages
-        <select value={band} onChange={(e) => setBand(e.target.value as "16-24" | "18-29")} className="mt-1 w-full rounded border px-2 py-1.5"><option value="16-24">16–24</option><option value="18-29">18–29</option></select>
+      <div className="grid grid-cols-2 gap-3">
+        <label className="flex flex-col gap-1 font-bold">Ages
+          <select value={band} onChange={(e) => setBand(e.target.value as "16-24" | "18-29")} className="field font-normal"><option value="16-24">16–24</option><option value="18-29">18–29</option></select>
+        </label>
+        <label className="flex flex-col gap-1 font-bold">Donor goal
+          <input type="number" min={10} max={100000} value={goal} onChange={(e) => setGoal(Number(e.target.value))} className="field font-normal" />
+        </label>
+        <label className="flex flex-col gap-1 font-bold">From<input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="field font-normal" /></label>
+        <label className="flex flex-col gap-1 font-bold">To<input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="field font-normal" /></label>
+      </div>
+      <label className="flex flex-col gap-1 font-bold">Fandoms to test (optional)
+        <input maxLength={500} value={partners} onChange={(e) => setPartners(e.target.value)} placeholder="Houston Astros, Bad Bunny" className="field font-normal" />
       </label>
-      <label className="text-sm">First-time donors goal
-        <input type="number" min={10} max={100000} value={goal} onChange={(e) => setGoal(Number(e.target.value))} className="mt-1 w-full rounded border px-2 py-1.5" />
-      </label>
-      <label className="text-sm">From<input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="mt-1 w-full rounded border px-2 py-1.5" /></label>
-      <label className="text-sm">To<input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="mt-1 w-full rounded border px-2 py-1.5" /></label>
-      <label className="text-sm sm:col-span-2 lg:col-span-5">Partners to test (optional, comma-separated)
-        <input maxLength={500} value={partners} onChange={(e) => setPartners(e.target.value)} placeholder="Houston Astros, Bad Bunny" className="mt-1 w-full rounded border px-2 py-1.5" />
-      </label>
-      <button disabled={disabled} className="self-end rounded bg-rose-600 px-4 py-2 font-medium text-white disabled:opacity-50">{disabled ? "Planning…" : "Plan my drives"}</button>
+      <button disabled={disabled} className="press mt-2 min-h-14 border-[3px] border-black bg-black px-4 py-3 font-display text-xl text-white shadow-[4px_4px_0_#FF4949] disabled:cursor-wait disabled:opacity-70">
+        {disabled ? "Planning…" : "Plan my drives →"}
+      </button>
     </form>
   );
 }

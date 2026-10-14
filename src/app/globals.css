@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* FanDrive "Sticker Kit": white paper, black ink, flat colour blocks, thick outlines, hard shadows. */
+@theme {
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-sun: #ffc900;
+  --color-bubble: #ff90e8;
+  --color-sky: #90a8ff;
+  --color-mint: #23c78a;
+  --color-alarm: #ff4949;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-archivo-black), "Arial Black", sans-serif;
+  --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@utility brut {
+  border: 3px solid #000;
+  box-shadow: 8px 8px 0 #000;
+}
+@utility brut-sm {
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 #000;
+}
+@utility field {
+  width: 100%;
+  border: 3px solid #000;
+  background: #fff;
+  color: #000;
+  padding: 10px 12px;
+  font-size: 16px;
+  border-radius: 0;
+}
+@utility press {
+  transition: transform 80ms, box-shadow 80ms;
+  &:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #000; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html { color-scheme: light; }
+body { background: #fff; color: #000; font-family: var(--font-sans); }
+:focus-visible { outline: 3px solid #3d5afe; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }
