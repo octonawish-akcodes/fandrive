@@ -1,0 +1,47 @@
+{
+  "city": "Chennai",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Anirudh Ravichander",
+      "type": "artist",
+      "why": "His energetic youth appeal and chart-topping Tamil tracks instantly connect with college students and Gen Z in Chennai.",
+      "matchedName": "Anirudh Ravichander",
+      "youthSkew": -0.23,
+      "note": "Qloo: fans skew older (-0.23)"
+    },
+    {
+      "name": "Chennai Super Kings",
+      "type": "brand",
+      "why": "As the city's ultimate sporting icon, their badge on a donation drive builds instant trust and enthusiastic participation.",
+      "matchedName": "Chennai Super Kings",
+      "youthSkew": -0.04,
+      "note": "Qloo: fans are not especially young (-0.04)"
+    },
+    {
+      "name": "Biswa Kalyan Rath",
+      "type": "person",
+      "why": "Popular stand-up comedian whose relatable humor can demystify needle anxiety for first-time teen donors.",
+      "matchedName": "Biswa Kalyan Rath",
+      "youthSkew": -0.36,
+      "note": "Qloo: fans skew older (-0.36)"
+    },
+    {
+      "name": "Valorant",
+      "type": "videogame",
+      "why": "Extremely popular tactical shooter among Chennai youth that can be leveraged via co-branded gaming tournament drives.",
+      "matchedName": "Valorant",
+      "youthSkew": 0.57,
+      "note": "Qloo: fans skew young (+0.57)"
+    },
+    {
+      "name": "The Ranveer Show",
+      "type": "podcast",
+      "why": "A massive hit among college students, making it a great platform to spread awareness on youth health and social impact.",
+      "matchedName": "Adam Carolla Show",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    }
+  ]
+}

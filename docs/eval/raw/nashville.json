@@ -1,0 +1,47 @@
+{
+  "city": "Nashville, TN",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "CMA Fest",
+      "type": "artist",
+      "why": "Massive pull for young country music fans and tourists visiting Nashville.",
+      "matchedName": "CMA",
+      "youthSkew": -0.37,
+      "note": "Qloo: fans skew older (-0.37)"
+    },
+    {
+      "name": "Nashville SC",
+      "type": "brand",
+      "why": "Major local sports franchise with a heavily youthful, energetic fan base.",
+      "matchedName": "Nashville SC",
+      "youthSkew": -0.03,
+      "note": "Qloo: fans are not especially young (-0.03)"
+    },
+    {
+      "name": "The Try Guys",
+      "type": "artist",
+      "why": "Popular digital creators who resonate strongly with Gen Z audiences.",
+      "matchedName": "The Try Guys",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "Grand Ole Opry",
+      "type": "artist",
+      "why": "Iconic Nashville institution bridging traditional culture with modern youth music trends.",
+      "matchedName": "Grand Ole Party",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "Taylor Swift",
+      "type": "artist",
+      "why": "Nashville-rooted global superstar whose fanbase heavily overlaps with the target demographic.",
+      "matchedName": "Taylor Swift",
+      "youthSkew": -0.05,
+      "note": "Qloo: fans are not especially young (-0.05)"
+    }
+  ]
+}

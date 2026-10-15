@@ -1,0 +1,39 @@
+{
+  "city": "Houston, TX",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Travis Scott",
+      "type": "artist",
+      "why": "Massive cultural influence in Houston and high appeal among Gen Z.",
+      "matchedName": "Travis Scott",
+      "youthSkew": 0.46,
+      "note": "Qloo: fans skew young (+0.46)"
+    },
+    {
+      "name": "Houston Astros",
+      "type": "brand",
+      "why": "Local sports pride that resonates strongly with young adults in the area.",
+      "matchedName": "Houston Astros",
+      "youthSkew": -0.01,
+      "note": "Qloo: fans are not especially young (-0.01)"
+    },
+    {
+      "name": "Stranger Things",
+      "type": "tv_show",
+      "why": "Popular streaming show with a dedicated youth fanbase that fits a suspenseful, heroic theme.",
+      "matchedName": "Stranger Things",
+      "youthSkew": 0.71,
+      "note": "Qloo: fans skew young (+0.71)"
+    },
+    {
+      "name": "Apex Legends",
+      "type": "videogame",
+      "why": "Team-oriented multiplayer game that aligns well with community-driven blood donation squads.",
+      "matchedName": "Apex Legends",
+      "youthSkew": 0.34,
+      "note": "Qloo: fans skew young (+0.34)"
+    }
+  ]
+}

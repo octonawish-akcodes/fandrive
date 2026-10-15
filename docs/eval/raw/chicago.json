@@ -1,0 +1,39 @@
+{
+  "city": "Chicago, IL",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Chance the Rapper",
+      "type": "artist",
+      "why": "Deeply connected to Chicago youth culture and local philanthropy, making him an ideal voice to inspire first-time donors.",
+      "matchedName": "Chance the Rapper",
+      "youthSkew": 0.30000000000000004,
+      "note": "Qloo: fans skew young (+0.30)"
+    },
+    {
+      "name": "Chicago Bulls",
+      "type": "brand",
+      "why": "An iconic local sports franchise that commands high engagement among Gen Z Chicagoans and can offer exclusive team merch incentives.",
+      "matchedName": "Chicago Bulls",
+      "youthSkew": 0.02,
+      "note": "Qloo: fans are not especially young (+0.02)"
+    },
+    {
+      "name": "The Bear",
+      "type": "tv_show",
+      "why": "A critically acclaimed series deeply rooted in the Chicago culinary scene that resonates strongly with young adults.",
+      "matchedName": "The Bear",
+      "youthSkew": -0.23,
+      "note": "Qloo: fans skew older (-0.23)"
+    },
+    {
+      "name": "Lyrical Lemonade",
+      "type": "brand",
+      "why": "A Chicago-born multimedia company and brand synonymous with youth music culture and massive local festival presence.",
+      "matchedName": "Lyrical Lemonade",
+      "youthSkew": 0.61,
+      "note": "Qloo: fans skew young (+0.61)"
+    }
+  ]
+}

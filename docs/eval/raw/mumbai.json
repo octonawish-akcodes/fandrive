@@ -1,0 +1,46 @@
+{
+  "city": "Mumbai",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Minecraft",
+      "type": "videogame",
+      "why": "Extremely popular among Gen Z in Mumbai for collaborative building, making it a great thematic parallel for saving lives together.",
+      "matchedName": "Minecraft",
+      "youthSkew": 0.42,
+      "note": "Qloo: fans skew young (+0.42)"
+    },
+    {
+      "name": "Karan Aujla",
+      "type": "artist",
+      "why": "His upbeat Punjabi tracks dominate youth playlists in Mumbai and provide high-energy appeal for community events.",
+      "matchedName": "Karan Aujla",
+      "youthSkew": -0.2,
+      "note": "Qloo: fans skew older (-0.20)"
+    },
+    {
+      "name": "Kota Factory",
+      "type": "tv_show",
+      "why": "Resonates deeply with Mumbai's massive student and young adult demographic navigating academic and career stress.",
+      "matchedName": "Kota Factory",
+      "youthSkew": -0.23,
+      "note": "Qloo: fans skew older (-0.23)"
+    },
+    {
+      "name": "Mumbai Indians",
+      "type": "brand",
+      "why": "The ultimate local sporting pride that can easily rally Gen Z sports fans to step up for a vital community cause.",
+      "matchedName": "Mumbai Indians",
+      "youthSkew": -0.07,
+      "note": "Qloo: fans are not especially young (-0.07)"
+    },
+    {
+      "name": "BeerBiceps",
+      "type": "podcast",
+      "why": "Ranveer Allahbadia's podcast appeals directly to young, fitness-conscious, and health-curious Mumbaikars.",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    }
+  ]
+}

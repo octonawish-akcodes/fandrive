@@ -1,0 +1,47 @@
+{
+  "city": "Detroit, MI",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Eminem",
+      "type": "artist",
+      "why": "Detroit's ultimate icon resonates deeply with youth culture and local pride.",
+      "matchedName": "Eminem",
+      "youthSkew": -0.06,
+      "note": "Qloo: fans are not especially young (-0.06)"
+    },
+    {
+      "name": "Detroit Lions",
+      "type": "brand",
+      "why": "Current team excitement and massive local following can drive massive youth turnout.",
+      "matchedName": "Detroit Lions",
+      "youthSkew": 0,
+      "note": "Qloo: fans are not especially young (+0.00)"
+    },
+    {
+      "name": "Fortnite",
+      "type": "videogame",
+      "why": "Popular in-game rewards or streaming events can directly incentivize the 16-24 gaming demographic.",
+      "matchedName": "Fortnite",
+      "youthSkew": 0.72,
+      "note": "Qloo: fans skew young (+0.72)"
+    },
+    {
+      "name": "Big Sean",
+      "type": "artist",
+      "why": "Active in Detroit community youth initiatives and highly influential among local Gen Z.",
+      "matchedName": "Big Sean",
+      "youthSkew": 0.05,
+      "note": "Qloo: fans are not especially young (+0.05)"
+    },
+    {
+      "name": "Stranger Things",
+      "type": "tv_show",
+      "why": "The nostalgic, high-stakes aesthetic appeals strongly to teen and young adult pop-culture fans.",
+      "matchedName": "Stranger Things",
+      "youthSkew": 0.71,
+      "note": "Qloo: fans skew young (+0.71)"
+    }
+  ]
+}

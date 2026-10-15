@@ -1,0 +1,964 @@
+{
+  "generatedAt": "2026-10-14",
+  "band": "16-24",
+  "models": "gemini-3.1-flash-lite, then gemini-3.5-flash-lite, then gemini-3.5-flash, then gemini-3-flash-preview",
+  "youngThreshold": 0.3,
+  "aggregate": {
+    "cities": 20,
+    "plain": {
+      "picks": 96,
+      "young": 38,
+      "notYoung": 41,
+      "older": 30,
+      "noData": 17,
+      "meanSkew": 0.25
+    },
+    "fanDrive": {
+      "picks": 60,
+      "young": 57,
+      "meanSkew": 0.62
+    },
+    "citiesWithMiss": 19,
+    "missedPicks": 37
+  },
+  "cities": [
+    {
+      "city": "New York, NY",
+      "badge": "strong",
+      "plainAi": [
+        {
+          "name": "Grand Theft Auto VI",
+          "matchedName": "Grand Theft Auto VI",
+          "youthSkew": null
+        },
+        {
+          "name": "Kai Cenat",
+          "matchedName": "Kai Cenat",
+          "youthSkew": 0.88
+        },
+        {
+          "name": "Succession",
+          "matchedName": "Succession",
+          "youthSkew": 0.14
+        },
+        {
+          "name": "Ice Spice",
+          "matchedName": "ICE SPICE",
+          "youthSkew": 0.85
+        },
+        {
+          "name": "New York Knicks",
+          "matchedName": "New York Knicks",
+          "youthSkew": -0.01
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.91
+        },
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.9
+        },
+        {
+          "name": "Kai Cenat",
+          "youthSkew": 0.88,
+          "pull": 0.87
+        }
+      ]
+    },
+    {
+      "city": "Los Angeles, CA",
+      "badge": "strong",
+      "plainAi": [
+        {
+          "name": "100 Thieves",
+          "matchedName": "100% Pure",
+          "youthSkew": null
+        },
+        {
+          "name": "Euphoria",
+          "matchedName": "Euphoria",
+          "youthSkew": 0.62
+        },
+        {
+          "name": "Tyler, The Creator",
+          "matchedName": "Tyler, the Creator",
+          "youthSkew": 0.38
+        },
+        {
+          "name": "Los Angeles FC",
+          "matchedName": "Los Angeles FC",
+          "youthSkew": 0
+        },
+        {
+          "name": "Emma Chamberlain",
+          "matchedName": "Emma Chamberlain",
+          "youthSkew": 0.88
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Emma Chamberlain",
+          "youthSkew": 0.88,
+          "pull": 0.91
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.9
+        },
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.9
+        }
+      ]
+    },
+    {
+      "city": "Chicago, IL",
+      "badge": "strong",
+      "plainAi": [
+        {
+          "name": "Chance the Rapper",
+          "matchedName": "Chance the Rapper",
+          "youthSkew": 0.30000000000000004
+        },
+        {
+          "name": "Chicago Bulls",
+          "matchedName": "Chicago Bulls",
+          "youthSkew": 0.02
+        },
+        {
+          "name": "The Bear",
+          "matchedName": "The Bear",
+          "youthSkew": -0.23
+        },
+        {
+          "name": "Lyrical Lemonade",
+          "matchedName": "Lyrical Lemonade",
+          "youthSkew": 0.61
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Chance the Rapper",
+          "youthSkew": 0.3,
+          "pull": 0.87
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.87
+        },
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.86
+        }
+      ]
+    },
+    {
+      "city": "Houston, TX",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "Travis Scott",
+          "matchedName": "Travis Scott",
+          "youthSkew": 0.46
+        },
+        {
+          "name": "Houston Astros",
+          "matchedName": "Houston Astros",
+          "youthSkew": -0.01
+        },
+        {
+          "name": "Stranger Things",
+          "matchedName": "Stranger Things",
+          "youthSkew": 0.71
+        },
+        {
+          "name": "Apex Legends",
+          "matchedName": "Apex Legends",
+          "youthSkew": 0.34
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.89
+        },
+        {
+          "name": "Houston Rockets",
+          "youthSkew": 0.3,
+          "pull": 0.85
+        },
+        {
+          "name": "Travis Scott",
+          "youthSkew": 0.46,
+          "pull": 0.85
+        }
+      ]
+    },
+    {
+      "city": "Phoenix, AZ",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "Valorant",
+          "matchedName": "Valorant",
+          "youthSkew": 0.57
+        },
+        {
+          "name": "Phoenix Suns",
+          "matchedName": "Phoenix Suns",
+          "youthSkew": 0.5700000000000001
+        },
+        {
+          "name": "SZA",
+          "matchedName": "SZA",
+          "youthSkew": 0.32
+        },
+        {
+          "name": "Euphoria",
+          "matchedName": "Euphoria",
+          "youthSkew": 0.62
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.93
+        },
+        {
+          "name": "Phoenix Suns",
+          "youthSkew": 0.57,
+          "pull": 0.92
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.91
+        }
+      ]
+    },
+    {
+      "city": "Philadelphia, PA",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "The Philadelphia Eagles",
+          "matchedName": "Philadelphia Eagles",
+          "youthSkew": -0.04
+        },
+        {
+          "name": "Abbott Elementary",
+          "matchedName": "Abbott Elementary",
+          "youthSkew": 0.07
+        },
+        {
+          "name": "Lil Uzi Vert",
+          "matchedName": "LIL UZI VERT",
+          "youthSkew": 0.48
+        },
+        {
+          "name": "Call of Duty",
+          "matchedName": "Call of Duty",
+          "youthSkew": 0.39
+        },
+        {
+          "name": "Quinta Brunson",
+          "matchedName": "Quinta Brunson",
+          "youthSkew": 0.13
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.89
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.87
+        },
+        {
+          "name": "Quinta Brunson",
+          "youthSkew": 0.13,
+          "pull": 0.83
+        }
+      ]
+    },
+    {
+      "city": "San Antonio, TX",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "San Antonio Spurs",
+          "matchedName": "San Antonio Spurs",
+          "youthSkew": -0.07
+        },
+        {
+          "name": "Apex Legends",
+          "matchedName": "Apex Legends",
+          "youthSkew": 0.34
+        },
+        {
+          "name": "Gorillaz",
+          "matchedName": "Gorillaz",
+          "youthSkew": -0.06
+        },
+        {
+          "name": "Stranger Things",
+          "matchedName": "Stranger Things",
+          "youthSkew": 0.71
+        },
+        {
+          "name": "JRE MMA Show",
+          "matchedName": "Top Rated MMA Show",
+          "youthSkew": null
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.91
+        },
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.91
+        },
+        {
+          "name": "MrBeast",
+          "youthSkew": 0.51,
+          "pull": 0.86
+        }
+      ]
+    },
+    {
+      "city": "Dallas, TX",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "Dallas Mavericks",
+          "matchedName": "Dallas Mavericks",
+          "youthSkew": -0.03
+        },
+        {
+          "name": "Erykah Badu",
+          "matchedName": "Erykah Badu",
+          "youthSkew": -0.04
+        },
+        {
+          "name": "Stranger Things",
+          "matchedName": "Stranger Things",
+          "youthSkew": 0.71
+        },
+        {
+          "name": "Fortnite",
+          "matchedName": "Fortnite",
+          "youthSkew": 0.72
+        },
+        {
+          "name": "Dude Perfect",
+          "matchedName": "Dude Harlino",
+          "youthSkew": null
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.9
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.86
+        },
+        {
+          "name": "MrBeast",
+          "youthSkew": 0.51,
+          "pull": 0.84
+        }
+      ]
+    },
+    {
+      "city": "Atlanta, GA",
+      "badge": "strong",
+      "plainAi": [
+        {
+          "name": "Lil Baby",
+          "matchedName": "Lil Baby",
+          "youthSkew": 0.49
+        },
+        {
+          "name": "Atlanta Falcons",
+          "matchedName": "Atlanta Falcons",
+          "youthSkew": 0.64
+        },
+        {
+          "name": "Atlanta Dream",
+          "matchedName": "Atlanta Dream",
+          "youthSkew": -0.15
+        },
+        {
+          "name": "Kai Cenat",
+          "matchedName": "Kai Cenat",
+          "youthSkew": 0.88
+        },
+        {
+          "name": "Stranger Things",
+          "matchedName": "Stranger Things",
+          "youthSkew": 0.71
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Atlanta Falcons",
+          "youthSkew": 0.64,
+          "pull": 0.93
+        },
+        {
+          "name": "Atlanta Hawks",
+          "youthSkew": 0.72,
+          "pull": 0.93
+        },
+        {
+          "name": "Atlanta Braves",
+          "youthSkew": 0.45,
+          "pull": 0.88
+        }
+      ]
+    },
+    {
+      "city": "Seattle, WA",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "Seattle Kraken",
+          "matchedName": "Seattle Kraken",
+          "youthSkew": 0.55
+        },
+        {
+          "name": "Macklemore",
+          "matchedName": "Macklemore",
+          "youthSkew": -0.01
+        },
+        {
+          "name": "The Last of Us",
+          "matchedName": "The Last of Us",
+          "youthSkew": -0.04699999999999999
+        },
+        {
+          "name": "Stranger Things",
+          "matchedName": "Stranger Things",
+          "youthSkew": 0.71
+        },
+        {
+          "name": "Ludwig",
+          "matchedName": "Ludwig Ahgren",
+          "youthSkew": -0.04
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.87
+        },
+        {
+          "name": "Seattle Kraken",
+          "youthSkew": 0.55,
+          "pull": 0.87
+        },
+        {
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.85
+        }
+      ]
+    },
+    {
+      "city": "Miami, FL",
+      "badge": "strong",
+      "plainAi": [
+        {
+          "name": "Inter Miami CF",
+          "matchedName": "Inter Miami CF",
+          "youthSkew": null
+        },
+        {
+          "name": "DJ Khaled",
+          "matchedName": "DJ Khaled",
+          "youthSkew": 0.01
+        },
+        {
+          "name": "Stranger Things",
+          "matchedName": "Stranger Things",
+          "youthSkew": 0.71
+        },
+        {
+          "name": "Fortnite",
+          "matchedName": "Fortnite",
+          "youthSkew": 0.72
+        },
+        {
+          "name": "Rick Ross",
+          "matchedName": "Rick Ross",
+          "youthSkew": -0.14
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.91
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.86
+        },
+        {
+          "name": "MrBeast",
+          "youthSkew": 0.51,
+          "pull": 0.83
+        }
+      ]
+    },
+    {
+      "city": "Denver, CO",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "Denver Nuggets",
+          "matchedName": "Denver Nuggets",
+          "youthSkew": -0.08
+        },
+        {
+          "name": "Stranger Things",
+          "matchedName": "Stranger Things",
+          "youthSkew": 0.71
+        },
+        {
+          "name": "Fortnite",
+          "matchedName": "Fortnite",
+          "youthSkew": 0.72
+        },
+        {
+          "name": "Illenium",
+          "matchedName": "Illenium",
+          "youthSkew": -0.02
+        },
+        {
+          "name": "Red Rocks Amphitheatre",
+          "matchedName": "Red Bull",
+          "youthSkew": null
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.92
+        },
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.91
+        },
+        {
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.85
+        }
+      ]
+    },
+    {
+      "city": "Boston, MA",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "Boston Celtics",
+          "matchedName": "Boston Celtics",
+          "youthSkew": -0.04
+        },
+        {
+          "name": "Stranger Things",
+          "matchedName": "Stranger Things",
+          "youthSkew": 0.71
+        },
+        {
+          "name": "Fortnite",
+          "matchedName": "Fortnite",
+          "youthSkew": 0.72
+        },
+        {
+          "name": "Billie Eilish",
+          "matchedName": "Billie Eilish",
+          "youthSkew": 0.46
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.91
+        },
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.89
+        },
+        {
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.85
+        }
+      ]
+    },
+    {
+      "city": "Detroit, MI",
+      "badge": "thin",
+      "plainAi": [
+        {
+          "name": "Eminem",
+          "matchedName": "Eminem",
+          "youthSkew": -0.06
+        },
+        {
+          "name": "Detroit Lions",
+          "matchedName": "Detroit Lions",
+          "youthSkew": 0
+        },
+        {
+          "name": "Fortnite",
+          "matchedName": "Fortnite",
+          "youthSkew": 0.72
+        },
+        {
+          "name": "Big Sean",
+          "matchedName": "Big Sean",
+          "youthSkew": 0.05
+        },
+        {
+          "name": "Stranger Things",
+          "matchedName": "Stranger Things",
+          "youthSkew": 0.71
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.88
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.85
+        },
+        {
+          "name": "Big Sean",
+          "youthSkew": 0.05,
+          "pull": 0.83
+        }
+      ]
+    },
+    {
+      "city": "Nashville, TN",
+      "badge": "thin",
+      "plainAi": [
+        {
+          "name": "CMA Fest",
+          "matchedName": "CMA",
+          "youthSkew": -0.37
+        },
+        {
+          "name": "Nashville SC",
+          "matchedName": "Nashville SC",
+          "youthSkew": -0.03
+        },
+        {
+          "name": "The Try Guys",
+          "matchedName": "The Try Guys",
+          "youthSkew": null
+        },
+        {
+          "name": "Grand Ole Opry",
+          "matchedName": "Grand Ole Party",
+          "youthSkew": null
+        },
+        {
+          "name": "Taylor Swift",
+          "matchedName": "Taylor Swift",
+          "youthSkew": -0.05
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.91
+        },
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.86
+        },
+        {
+          "name": "Morgan Wallen",
+          "youthSkew": 0.21,
+          "pull": 0.82
+        }
+      ]
+    },
+    {
+      "city": "Mumbai",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "Minecraft",
+          "matchedName": "Minecraft",
+          "youthSkew": 0.42
+        },
+        {
+          "name": "Karan Aujla",
+          "matchedName": "Karan Aujla",
+          "youthSkew": -0.2
+        },
+        {
+          "name": "Kota Factory",
+          "matchedName": "Kota Factory",
+          "youthSkew": -0.23
+        },
+        {
+          "name": "Mumbai Indians",
+          "matchedName": "Mumbai Indians",
+          "youthSkew": -0.07
+        },
+        {
+          "name": "BeerBiceps",
+          "youthSkew": null
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.95
+        },
+        {
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.89
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.88
+        }
+      ]
+    },
+    {
+      "city": "New Delhi",
+      "badge": "thin",
+      "plainAi": [
+        {
+          "name": "PUBG Mobile India",
+          "matchedName": "PUBG MOBILE",
+          "youthSkew": 0.005200000000000007
+        },
+        {
+          "name": "Prateek Kuhad",
+          "matchedName": "Prateek Kuhad",
+          "youthSkew": -0.21
+        },
+        {
+          "name": "Kota Factory",
+          "matchedName": "Kota Factory",
+          "youthSkew": -0.23
+        },
+        {
+          "name": "Delhi Capitals",
+          "matchedName": "Delhi Daredevils",
+          "youthSkew": null
+        },
+        {
+          "name": "BeerBiceps (Ranveer Allahbadia)",
+          "youthSkew": null
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.95
+        },
+        {
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.9
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.87
+        }
+      ]
+    },
+    {
+      "city": "Bengaluru",
+      "badge": "medium",
+      "plainAi": [
+        {
+          "name": "Royal Challengers Bengaluru",
+          "matchedName": "Royal Challengers Bangalore",
+          "youthSkew": null
+        },
+        {
+          "name": "The Local Train",
+          "matchedName": "The Local train",
+          "youthSkew": 0.47000000000000003
+        },
+        {
+          "name": "PUBG Mobile India",
+          "matchedName": "PUBG MOBILE",
+          "youthSkew": 0.005200000000000007
+        },
+        {
+          "name": "Dice Media",
+          "matchedName": "The Dark Dice",
+          "youthSkew": null
+        },
+        {
+          "name": "Nikhil Kamath",
+          "matchedName": "Nikhil Kamath",
+          "youthSkew": -0.29
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.95
+        },
+        {
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.9
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.89
+        }
+      ]
+    },
+    {
+      "city": "Hyderabad",
+      "badge": "thin",
+      "plainAi": [
+        {
+          "name": "PUBG Mobile India",
+          "matchedName": "PUBG MOBILE",
+          "youthSkew": 0.005200000000000007
+        },
+        {
+          "name": "Allu Arjun",
+          "matchedName": "Allu Arjun",
+          "youthSkew": -0.37
+        },
+        {
+          "name": "Sunrisers Hyderabad",
+          "youthSkew": null
+        },
+        {
+          "name": "MTV Hustle",
+          "matchedName": "MTV Hustle",
+          "youthSkew": null
+        },
+        {
+          "name": "Nikhil Vijay",
+          "matchedName": "Vijay",
+          "youthSkew": null
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.94
+        },
+        {
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.9
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.87
+        }
+      ]
+    },
+    {
+      "city": "Chennai",
+      "badge": "thin",
+      "plainAi": [
+        {
+          "name": "Anirudh Ravichander",
+          "matchedName": "Anirudh Ravichander",
+          "youthSkew": -0.23
+        },
+        {
+          "name": "Chennai Super Kings",
+          "matchedName": "Chennai Super Kings",
+          "youthSkew": -0.04
+        },
+        {
+          "name": "Biswa Kalyan Rath",
+          "matchedName": "Biswa Kalyan Rath",
+          "youthSkew": -0.36
+        },
+        {
+          "name": "Valorant",
+          "matchedName": "Valorant",
+          "youthSkew": 0.57
+        },
+        {
+          "name": "The Ranveer Show",
+          "matchedName": "Adam Carolla Show",
+          "youthSkew": null
+        }
+      ],
+      "fanDrive": [
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.94
+        },
+        {
+          "name": "Valorant",
+          "youthSkew": 0.57,
+          "pull": 0.9
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.9
+        }
+      ]
+    }
+  ],
+  "skipped": []
+}

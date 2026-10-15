@@ -1,0 +1,47 @@
+{
+  "city": "San Antonio, TX",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "San Antonio Spurs",
+      "type": "brand",
+      "why": "Local sports royalty with immense pull among Gen Z San Antonians.",
+      "matchedName": "San Antonio Spurs",
+      "youthSkew": -0.07,
+      "note": "Qloo: fans are not especially young (-0.07)"
+    },
+    {
+      "name": "Apex Legends",
+      "type": "videogame",
+      "why": "Popular competitive multiplayer game that resonates strongly with gamers aged 16-24.",
+      "matchedName": "Apex Legends",
+      "youthSkew": 0.34,
+      "note": "Qloo: fans skew young (+0.34)"
+    },
+    {
+      "name": "Gorillaz",
+      "type": "artist",
+      "why": "A visually distinct and culturally relevant band that appeals to indie and alternative youth.",
+      "matchedName": "Gorillaz",
+      "youthSkew": -0.06,
+      "note": "Qloo: fans are not especially young (-0.06)"
+    },
+    {
+      "name": "Stranger Things",
+      "type": "tv_show",
+      "why": "An iconic sci-fi series with a massive teenage and young adult fanbase.",
+      "matchedName": "Stranger Things",
+      "youthSkew": 0.71,
+      "note": "Qloo: fans skew young (+0.71)"
+    },
+    {
+      "name": "JRE MMA Show",
+      "type": "podcast",
+      "why": "High-engagement podcast format that reaches a vast audience of young adults in Texas.",
+      "matchedName": "Top Rated MMA Show",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    }
+  ]
+}

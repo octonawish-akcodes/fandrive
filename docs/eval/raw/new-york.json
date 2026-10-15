@@ -1,0 +1,47 @@
+{
+  "city": "New York, NY",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Grand Theft Auto VI",
+      "type": "videogame",
+      "why": "Partnering with the most anticipated game of the generation creates massive excitement among young gamers.",
+      "matchedName": "Grand Theft Auto VI",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "Kai Cenat",
+      "type": "person",
+      "why": "As a top NYC-based streamer, his influence can drive massive walk-in numbers from Gen Z.",
+      "matchedName": "Kai Cenat",
+      "youthSkew": 0.88,
+      "note": "Qloo: fans skew young (+0.88)"
+    },
+    {
+      "name": "Succession",
+      "type": "tv_show",
+      "why": "The show's iconic branding can be playfully used for dramatic call-to-actions about saving lives.",
+      "matchedName": "Succession",
+      "youthSkew": 0.14,
+      "note": "Qloo: fans are not especially young (+0.14)"
+    },
+    {
+      "name": "Ice Spice",
+      "type": "artist",
+      "why": "This Bronx-born rapper embodies New York youth culture and can make donating blood feel cool and culturally relevant.",
+      "matchedName": "ICE SPICE",
+      "youthSkew": 0.85,
+      "note": "Qloo: fans skew young (+0.85)"
+    },
+    {
+      "name": "New York Knicks",
+      "type": "brand",
+      "why": "Leveraging local sports pride at Madison Square Garden unites young fans around a community cause.",
+      "matchedName": "New York Knicks",
+      "youthSkew": -0.01,
+      "note": "Qloo: fans are not especially young (-0.01)"
+    }
+  ]
+}

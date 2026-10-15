@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { signed, youthBarPct } from "@/lib/client/view";
+import eval_ from "@/data/eval.json";
 import method from "@/data/method.json";
 
 export const metadata = { title: "How FanDrive decides · FanDrive", description: "Why famous isn't the same as young: Qloo's age profile of past blood-drive partners next to their published results, and how FanDrive scores fandoms." };
@@ -20,6 +21,9 @@ const ENDPOINTS: [string, string][] = [
   ["/v2/insights · urn:tag", "What the top fandoms' fans also love (culture tags only)."],
   ["/v2/trending", "Momentum of TV, film, music and podcast picks."],
 ];
+
+const pct = (n: number, d: number) => `${Math.round((100 * n) / Math.max(1, d))}%`;
+const off = eval_.aggregate.plain.notYoung + eval_.aggregate.plain.noData;
 
 export default function MethodPage() {
   return (
@@ -67,6 +71,47 @@ export default function MethodPage() {
             <p className="text-lg font-semibold">For contrast, fandoms FanDrive picked in live Houston runs (13–14 Oct 2026): Roblox <b>+0.93</b>, Kai Cenat <b>+0.88</b>, Fortnite <b>+0.72</b>.</p>
             <p className="text-sm">Qloo data generated {method.generatedAt}. Youth skew is Qloo&rsquo;s 24-and-under age affinity, from −1 (older) to +1 (younger).</p>
           </div>
+        </section>
+
+        <section aria-labelledby="eval-h" className="flex flex-col gap-6">
+          <h2 id="eval-h" className="font-display text-4xl">{eval_.aggregate.cities} cities: plain AI vs FanDrive</h2>
+          <p className="max-w-3xl text-lg font-semibold">In each city, the same model was asked for youth blood-drive partners without Qloo, and every pick was checked against Qloo&rsquo;s age data. FanDrive scored those picks plus its own candidates.</p>
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))]">
+            <div className="brut flex flex-col gap-2 bg-alarm p-6 text-white">
+              <div className="font-display text-6xl">{pct(eval_.aggregate.plain.older, eval_.aggregate.plain.picks)}</div>
+              <p className="font-semibold">of plain-AI picks have fans who skew <b>older</b> than average. {pct(off, eval_.aggregate.plain.picks)} weren&rsquo;t young-skewing or had no Qloo audience data.</p>
+            </div>
+            <div className="brut flex flex-col gap-2 bg-sun p-6">
+              <div className="font-display text-6xl">{signed(eval_.aggregate.fanDrive.meanSkew ?? 0)}</div>
+              <p className="font-semibold">average youth skew of FanDrive&rsquo;s top 3, vs {signed(eval_.aggregate.plain.meanSkew ?? 0)} for plain-AI picks with data.</p>
+            </div>
+            <div className="brut flex flex-col gap-2 bg-sky p-6">
+              <div className="font-display text-6xl">{eval_.aggregate.citiesWithMiss}/{eval_.aggregate.cities}</div>
+              <p className="font-semibold">cities where plain AI never suggested at least one of FanDrive&rsquo;s top 3.</p>
+            </div>
+          </div>
+          <div className="brut overflow-x-auto bg-white">
+            <table className="w-full min-w-[720px] text-left text-sm">
+              <caption className="sr-only">Plain-AI picks and FanDrive&rsquo;s top 3 by city, with Qloo youth skew</caption>
+              <thead className="border-b-[3px] border-black font-display text-base">
+                <tr><th className="p-3">City</th><th className="p-3">Plain AI suggested</th><th className="p-3">FanDrive top 3</th></tr>
+              </thead>
+              <tbody>
+                {eval_.cities.map((c) => (
+                  <tr key={c.city} className="border-t-2 border-black/20 align-top">
+                    <td className="p-3 font-bold">{c.city}<div className="font-normal">data: {c.badge}</div></td>
+                    <td className="p-3">{c.plainAi.map((p) => (
+                      <span key={p.name} className={`mr-1 mb-1 inline-block border-2 border-black px-1.5 ${p.youthSkew === null ? "bg-paper" : p.youthSkew >= eval_.youngThreshold ? "bg-mint" : "bg-bubble"}`}>{p.name} {p.youthSkew === null ? "· no data" : signed(p.youthSkew)}</span>
+                    ))}</td>
+                    <td className="p-3">{c.fanDrive.map((p) => (
+                      <span key={p.name} className={`mr-1 mb-1 inline-block border-2 border-black px-1.5 font-bold ${p.youthSkew >= eval_.youngThreshold ? "bg-mint" : "bg-bubble"}`}>{p.name} {signed(p.youthSkew)}</span>
+                    ))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-sm font-semibold">Green: youth skew ≥ {signed(eval_.youngThreshold)} (ages 16–24). Pink: not young-skewing. FanDrive is scored with the same Qloo data it optimises, so the plain-AI numbers are the informative ones; this is not a turnout measure. With a fixed candidate pool, global youth fandoms (Fortnite, Stranger Things) top most cities; the live agent adds local names. One plain-AI answer per city, recorded {eval_.generatedAt} with {eval_.models.split(",")[0]}. Raw answers and script: <code>docs/eval</code>, <code>scripts/eval.ts</code>.</p>
         </section>
 
         <section aria-labelledby="score-h" className="flex flex-col gap-6">

@@ -76,6 +76,8 @@ Every step streams live as the agent works. The poster, three social posts, a fr
 
 The same model is asked for partners **without Qloo**, then every pick is fact-checked against Qloo's age data.
 
+**[20-city evaluation](docs/eval/README.md):** across 96 plain-AI picks in 15 US and 5 Indian cities, **31% had fans who skew older** than average and **60% were not young-skewing or had no Qloo data**. FanDrive's top 3 averaged youth skew **+0.62** vs **+0.25**, and in **19 of 20 cities** plain AI missed at least one of them. Re-run with `pnpm eval`; caveats are in the write-up.
+
 | City | Plain AI suggested | What Qloo says |
 |---|---|---|
 | **Mumbai** | Karan Aujla, Mumbai Indians, College Romance, MostlySane, Valorant India | 3 skew **older** (−0.20, −0.07, −0.23), 2 have no data. It **missed Minecraft (+0.42)**. |

@@ -1,0 +1,47 @@
+{
+  "city": "Dallas, TX",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Dallas Mavericks",
+      "type": "brand",
+      "why": "A local sports giant with immense appeal among Dallas youth and Gen Z sports fans.",
+      "matchedName": "Dallas Mavericks",
+      "youthSkew": -0.03,
+      "note": "Qloo: fans are not especially young (-0.03)"
+    },
+    {
+      "name": "Erykah Badu",
+      "type": "artist",
+      "why": "An iconic Dallas-born artist who commands deep cultural respect and local pride.",
+      "matchedName": "Erykah Badu",
+      "youthSkew": -0.04,
+      "note": "Qloo: fans are not especially young (-0.04)"
+    },
+    {
+      "name": "Stranger Things",
+      "type": "tv_show",
+      "why": "A massively popular series among teens and young adults that easily pairs with spooky or heroic donation themes.",
+      "matchedName": "Stranger Things",
+      "youthSkew": 0.71,
+      "note": "Qloo: fans skew young (+0.71)"
+    },
+    {
+      "name": "Fortnite",
+      "type": "videogame",
+      "why": "The ultimate gaming platform to reach the 16-24 demographic through in-game awareness or reward perks.",
+      "matchedName": "Fortnite",
+      "youthSkew": 0.72,
+      "note": "Qloo: fans skew young (+0.72)"
+    },
+    {
+      "name": "Dude Perfect",
+      "type": "person",
+      "why": "Massive Dallas-based creators whose high-energy stunts and massive young audience drive strong engagement.",
+      "matchedName": "Dude Harlino",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    }
+  ]
+}

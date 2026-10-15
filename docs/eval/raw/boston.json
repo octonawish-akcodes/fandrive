@@ -1,0 +1,39 @@
+{
+  "city": "Boston, MA",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Boston Celtics",
+      "type": "brand",
+      "why": "A powerhouse local sports team that deeply resonates with young adults in the region.",
+      "matchedName": "Boston Celtics",
+      "youthSkew": -0.04,
+      "note": "Qloo: fans are not especially young (-0.04)"
+    },
+    {
+      "name": "Stranger Things",
+      "type": "tv_show",
+      "why": "A globally popular series that captures the adventurous spirit and nostalgia of Gen Z.",
+      "matchedName": "Stranger Things",
+      "youthSkew": 0.71,
+      "note": "Qloo: fans skew young (+0.71)"
+    },
+    {
+      "name": "Fortnite",
+      "type": "videogame",
+      "why": "An immensely popular game among teenagers and young adults that offers high-impact cross-promotional reach.",
+      "matchedName": "Fortnite",
+      "youthSkew": 0.72,
+      "note": "Qloo: fans skew young (+0.72)"
+    },
+    {
+      "name": "Billie Eilish",
+      "type": "artist",
+      "why": "An influential music icon who champions youth causes and commands a massive Gen Z following.",
+      "matchedName": "Billie Eilish",
+      "youthSkew": 0.46,
+      "note": "Qloo: fans skew young (+0.46)"
+    }
+  ]
+}

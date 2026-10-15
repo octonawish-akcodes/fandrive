@@ -1,0 +1,47 @@
+{
+  "city": "Seattle, WA",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Seattle Kraken",
+      "type": "brand",
+      "why": "Partnering with the city's coolest local NHL team creates exciting, high-energy engagement for young sports fans.",
+      "matchedName": "Seattle Kraken",
+      "youthSkew": 0.55,
+      "note": "Qloo: fans skew young (+0.55)"
+    },
+    {
+      "name": "Macklemore",
+      "type": "artist",
+      "why": "As a beloved Seattle icon, his local cultural influence can powerfully mobilize Gen Z and millennial residents.",
+      "matchedName": "Macklemore",
+      "youthSkew": -0.01,
+      "note": "Qloo: fans are not especially young (-0.01)"
+    },
+    {
+      "name": "The Last of Us",
+      "type": "videogame",
+      "why": "Leveraging post-apocalyptic survival gaming themes makes donating blood feel like a heroic, real-world quest.",
+      "matchedName": "The Last of Us",
+      "youthSkew": -0.04699999999999999,
+      "note": "Qloo: fans are not especially young (-0.05)"
+    },
+    {
+      "name": "Stranger Things",
+      "type": "tv_show",
+      "why": "The show's massive youth appeal and sci-fi aesthetic make dramatic blood and medical themes highly relatable.",
+      "matchedName": "Stranger Things",
+      "youthSkew": 0.71,
+      "note": "Qloo: fans skew young (+0.71)"
+    },
+    {
+      "name": "Ludwig",
+      "type": "person",
+      "why": "A massive streaming creator with strong Pacific Northwest ties who can effortlessly connect with a digital-first audience.",
+      "matchedName": "Ludwig Ahgren",
+      "youthSkew": -0.04,
+      "note": "Qloo: fans are not especially young (-0.04)"
+    }
+  ]
+}

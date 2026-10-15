@@ -1,0 +1,47 @@
+{
+  "city": "Los Angeles, CA",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "100 Thieves",
+      "type": "brand",
+      "why": "This LA-based gaming organization has massive appeal among Gen Z gamers and could easily rally young digital natives.",
+      "matchedName": "100% Pure",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "Euphoria",
+      "type": "tv_show",
+      "why": "The edgy aesthetic and teen-centric LA setting resonate deeply with the 16-24 demographic.",
+      "matchedName": "Euphoria",
+      "youthSkew": 0.62,
+      "note": "Qloo: fans skew young (+0.62)"
+    },
+    {
+      "name": "Tyler, The Creator",
+      "type": "artist",
+      "why": "As a local cultural icon, his endorsement and presence would instantly make blood donation cool for LA youth.",
+      "matchedName": "Tyler, the Creator",
+      "youthSkew": 0.38,
+      "note": "Qloo: fans skew young (+0.38)"
+    },
+    {
+      "name": "Los Angeles FC",
+      "type": "brand",
+      "why": "LAFC has a vibrant, youthful supporter culture that loves community engagement and local pride.",
+      "matchedName": "Los Angeles FC",
+      "youthSkew": 0,
+      "note": "Qloo: fans are not especially young (+0.00)"
+    },
+    {
+      "name": "Emma Chamberlain",
+      "type": "person",
+      "why": "The quintessential Gen Z internet star based in LA who can authentically speak to first-time donors.",
+      "matchedName": "Emma Chamberlain",
+      "youthSkew": 0.88,
+      "note": "Qloo: fans skew young (+0.88)"
+    }
+  ]
+}

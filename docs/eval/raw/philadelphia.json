@@ -1,0 +1,47 @@
+{
+  "city": "Philadelphia, PA",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "The Philadelphia Eagles",
+      "type": "brand",
+      "why": "Partnering with the city's most beloved NFL team instantly drives local youth engagement and civic pride.",
+      "matchedName": "Philadelphia Eagles",
+      "youthSkew": -0.04,
+      "note": "Qloo: fans are not especially young (-0.04)"
+    },
+    {
+      "name": "Abbott Elementary",
+      "type": "tv_show",
+      "why": "This Philly-based hit comedy resonates deeply with Gen Z and young adults through its relatable local humor.",
+      "matchedName": "Abbott Elementary",
+      "youthSkew": 0.07,
+      "note": "Qloo: fans are not especially young (+0.07)"
+    },
+    {
+      "name": "Lil Uzi Vert",
+      "type": "artist",
+      "why": "As a Philadelphia native, this superstar artist has massive cultural sway with the 16-24 demographic.",
+      "matchedName": "LIL UZI VERT",
+      "youthSkew": 0.48,
+      "note": "Qloo: fans skew young (+0.48)"
+    },
+    {
+      "name": "Call of Duty",
+      "type": "videogame",
+      "why": "Integrating popular gaming rewards attracts young gamers who spend significant time in virtual worlds.",
+      "matchedName": "Call of Duty",
+      "youthSkew": 0.39,
+      "note": "Qloo: fans skew young (+0.39)"
+    },
+    {
+      "name": "Quinta Brunson",
+      "type": "person",
+      "why": "The creator and star is a proud Philly icon whose relatable advocacy inspires young adults to give back.",
+      "matchedName": "Quinta Brunson",
+      "youthSkew": 0.13,
+      "note": "Qloo: fans are not especially young (+0.13)"
+    }
+  ]
+}

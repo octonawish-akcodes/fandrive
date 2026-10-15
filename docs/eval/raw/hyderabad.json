@@ -1,0 +1,46 @@
+{
+  "city": "Hyderabad",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "PUBG Mobile India",
+      "type": "videogame",
+      "why": "Massively popular among Gen Z gamers in Hyderabad, making it ideal for mobilizing young first-time donors.",
+      "matchedName": "PUBG MOBILE",
+      "youthSkew": 0.005200000000000007,
+      "note": "Qloo: fans are not especially young (+0.01)"
+    },
+    {
+      "name": "Allu Arjun",
+      "type": "person",
+      "why": "Iconic Tollywood star with massive youth appeal who can inspire fans to roll up their sleeves for a noble cause.",
+      "matchedName": "Allu Arjun",
+      "youthSkew": -0.37,
+      "note": "Qloo: fans skew older (-0.37)"
+    },
+    {
+      "name": "Sunrisers Hyderabad",
+      "type": "brand",
+      "why": "The local IPL franchise commands immense loyalty among young sports fans in the city, driving strong turnout.",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "MTV Hustle",
+      "type": "tv_show",
+      "why": "Captures the vibrant hip-hop culture resonating strongly with urban youth and college students in Hyderabad.",
+      "matchedName": "MTV Hustle",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "Nikhil Vijay",
+      "type": "person",
+      "why": "Popular digital creator and actor whose relatable content connects deeply with the 16-24 age demographic.",
+      "matchedName": "Vijay",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "city": "New Delhi",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "PUBG Mobile India",
+      "type": "videogame",
+      "why": "Massive engagement among Gen Z males in Delhi with high collaborative potential for virtual reward badges.",
+      "matchedName": "PUBG MOBILE",
+      "youthSkew": 0.005200000000000007,
+      "note": "Qloo: fans are not especially young (+0.01)"
+    },
+    {
+      "name": "Prateek Kuhad",
+      "type": "artist",
+      "why": "His indie-folk music resonates deeply with Delhi college students, creating a relaxed, emotional connection to the cause.",
+      "matchedName": "Prateek Kuhad",
+      "youthSkew": -0.21,
+      "note": "Qloo: fans skew older (-0.21)"
+    },
+    {
+      "name": "Kota Factory",
+      "type": "tv_show",
+      "why": "Extremely popular Netflix series among Delhi's massive student and test-prep demographic for its authentic youth struggles.",
+      "matchedName": "Kota Factory",
+      "youthSkew": -0.23,
+      "note": "Qloo: fans skew older (-0.23)"
+    },
+    {
+      "name": "Delhi Capitals",
+      "type": "brand",
+      "why": "The local IPL cricket franchise commands immense loyalty and regional pride among young sports fans in the capital.",
+      "matchedName": "Delhi Daredevils",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "BeerBiceps (Ranveer Allahbadia)",
+      "type": "podcast",
+      "why": "A premier youth-focused podcast host in India who can effectively influence fitness and wellness-minded young adults.",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    }
+  ]
+}

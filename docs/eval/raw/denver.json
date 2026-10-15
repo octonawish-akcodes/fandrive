@@ -1,0 +1,47 @@
+{
+  "city": "Denver, CO",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Denver Nuggets",
+      "type": "brand",
+      "why": "A championship basketball team with massive youth appeal across Denver that can inspire local civic pride.",
+      "matchedName": "Denver Nuggets",
+      "youthSkew": -0.08,
+      "note": "Qloo: fans are not especially young (-0.08)"
+    },
+    {
+      "name": "Stranger Things",
+      "type": "tv_show",
+      "why": "A retro-themed campaign tapping into 80s nostalgia resonates strongly with Gen Z and younger millennials.",
+      "matchedName": "Stranger Things",
+      "youthSkew": 0.71,
+      "note": "Qloo: fans skew young (+0.71)"
+    },
+    {
+      "name": "Fortnite",
+      "type": "videogame",
+      "why": "Offering exclusive in-game cosmetic rewards can directly incentivize the gaming demographic to donate.",
+      "matchedName": "Fortnite",
+      "youthSkew": 0.72,
+      "note": "Qloo: fans skew young (+0.72)"
+    },
+    {
+      "name": "Illenium",
+      "type": "artist",
+      "why": "A Denver-based electronic music producer with a massive local youth fanbase ideal for driving event turnout.",
+      "matchedName": "Illenium",
+      "youthSkew": -0.02,
+      "note": "Qloo: fans are not especially young (-0.02)"
+    },
+    {
+      "name": "Red Rocks Amphitheatre",
+      "type": "brand",
+      "why": "An iconic local venue that embodies the Denver youth lifestyle and makes for an unforgettable donation backdrop.",
+      "matchedName": "Red Bull",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    }
+  ]
+}

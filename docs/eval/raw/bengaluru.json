@@ -1,0 +1,47 @@
+{
+  "city": "Bengaluru",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Royal Challengers Bengaluru",
+      "type": "brand",
+      "why": "Massive youth following in Bengaluru, making it an ideal partner to drive local pride and blood donation.",
+      "matchedName": "Royal Challengers Bangalore",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "The Local Train",
+      "type": "artist",
+      "why": "Popular indie rock band deeply resonant with college students and young adults across the city.",
+      "matchedName": "The Local train",
+      "youthSkew": 0.47000000000000003,
+      "note": "Qloo: fans skew young (+0.47)"
+    },
+    {
+      "name": "PUBG Mobile India",
+      "type": "videogame",
+      "why": "Extremely high engagement among the 16-24 demographic to gamify and incentivize the donation drive.",
+      "matchedName": "PUBG MOBILE",
+      "youthSkew": 0.005200000000000007,
+      "note": "Qloo: fans are not especially young (+0.01)"
+    },
+    {
+      "name": "Dice Media",
+      "type": "tv_show",
+      "why": "Creator of relatable youth-centric web series that can seamlessly integrate social causes into their narrative.",
+      "matchedName": "The Dark Dice",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "Nikhil Kamath",
+      "type": "person",
+      "why": "Bengaluru-based entrepreneur and podcaster who commands immense respect and attention from the city's ambitious youth.",
+      "matchedName": "Nikhil Kamath",
+      "youthSkew": -0.29,
+      "note": "Qloo: fans skew older (-0.29)"
+    }
+  ]
+}

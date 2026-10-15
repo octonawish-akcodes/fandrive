@@ -1,0 +1,47 @@
+{
+  "city": "Atlanta, GA",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Lil Baby",
+      "type": "artist",
+      "why": "As a massive hip-hop icon deeply rooted in Atlanta, his endorsement instantly resonates with local youth and Gen Z.",
+      "matchedName": "Lil Baby",
+      "youthSkew": 0.49,
+      "note": "Qloo: fans skew young (+0.49)"
+    },
+    {
+      "name": "Atlanta Falcons",
+      "type": "brand",
+      "why": "Partnering with the city's beloved NFL team taps into local sports culture and team pride to motivate young fans.",
+      "matchedName": "Atlanta Falcons",
+      "youthSkew": 0.64,
+      "note": "Qloo: fans skew young (+0.64)"
+    },
+    {
+      "name": "Atlanta Dream",
+      "type": "brand",
+      "why": "Supporting the WNBA team connects the blood drive with a fast-growing, inclusive, and youth-oriented sports fanbase.",
+      "matchedName": "Atlanta Dream",
+      "youthSkew": -0.15,
+      "note": "Qloo: fans skew older (-0.15)"
+    },
+    {
+      "name": "Kai Cenat",
+      "type": "person",
+      "why": "This mega-influencer commands massive attention among teenagers and young adults, making him ideal for driving digital awareness.",
+      "matchedName": "Kai Cenat",
+      "youthSkew": 0.88,
+      "note": "Qloo: fans skew young (+0.88)"
+    },
+    {
+      "name": "Stranger Things",
+      "type": "tv_show",
+      "why": "With its production ties to Atlanta and massive cult following among Gen Z, a sci-fi themed drive would create huge excitement.",
+      "matchedName": "Stranger Things",
+      "youthSkew": 0.71,
+      "note": "Qloo: fans skew young (+0.71)"
+    }
+  ]
+}

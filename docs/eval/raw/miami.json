@@ -1,0 +1,47 @@
+{
+  "city": "Miami, FL",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Inter Miami CF",
+      "type": "brand",
+      "why": "Leveraging local soccer passion and superstar appeal to drive youth engagement.",
+      "matchedName": "Inter Miami CF",
+      "youthSkew": null,
+      "note": "Qloo has no audience data for this pick"
+    },
+    {
+      "name": "DJ Khaled",
+      "type": "artist",
+      "why": "An iconic Miami culture figure who resonates deeply with Gen Z and can amplify the call to action.",
+      "matchedName": "DJ Khaled",
+      "youthSkew": 0.01,
+      "note": "Qloo: fans are not especially young (+0.01)"
+    },
+    {
+      "name": "Stranger Things",
+      "type": "tv_show",
+      "why": "A massive nostalgic hit among youth that naturally aligns with themes of sci-fi plasma and blood bags.",
+      "matchedName": "Stranger Things",
+      "youthSkew": 0.71,
+      "note": "Qloo: fans skew young (+0.71)"
+    },
+    {
+      "name": "Fortnite",
+      "type": "videogame",
+      "why": "In-game rewards and virtual activations can directly incentivize Gen Z gamers to donate in real life.",
+      "matchedName": "Fortnite",
+      "youthSkew": 0.72,
+      "note": "Qloo: fans skew young (+0.72)"
+    },
+    {
+      "name": "Rick Ross",
+      "type": "artist",
+      "why": "A staple of Miami hip-hop culture who brings local authenticity and immense civic pride.",
+      "matchedName": "Rick Ross",
+      "youthSkew": -0.14,
+      "note": "Qloo: fans skew older (-0.14)"
+    }
+  ]
+}

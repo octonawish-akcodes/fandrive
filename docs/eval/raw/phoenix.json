@@ -1,0 +1,39 @@
+{
+  "city": "Phoenix, AZ",
+  "recordedAt": "2026-10-14",
+  "prompt": "app's plain-AI check (src/lib/agent/plainAi.ts)",
+  "plainAi": [
+    {
+      "name": "Valorant",
+      "type": "videogame",
+      "why": "Extremely popular tactical shooter among Gen Z that resonates well with competitive young gamers in Phoenix.",
+      "matchedName": "Valorant",
+      "youthSkew": 0.57,
+      "note": "Qloo: fans skew young (+0.57)"
+    },
+    {
+      "name": "Phoenix Suns",
+      "type": "brand",
+      "why": "The local NBA team has massive youth appeal and can drive hometown pride to encourage first-time donors.",
+      "matchedName": "Phoenix Suns",
+      "youthSkew": 0.5700000000000001,
+      "note": "Qloo: fans skew young (+0.57)"
+    },
+    {
+      "name": "SZA",
+      "type": "artist",
+      "why": "Her resonant R&B music is heavily streamed by the 16-24 demographic, making her an ideal thematic partner.",
+      "matchedName": "SZA",
+      "youthSkew": 0.32,
+      "note": "Qloo: fans skew young (+0.32)"
+    },
+    {
+      "name": "Euphoria",
+      "type": "tv_show",
+      "why": "A cultural touchstone for teenagers and young adults that easily captures the attention of the target age group.",
+      "matchedName": "Euphoria",
+      "youthSkew": 0.62,
+      "note": "Qloo: fans skew young (+0.62)"
+    }
+  ]
+}
