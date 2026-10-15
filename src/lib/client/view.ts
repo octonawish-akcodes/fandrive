@@ -17,15 +17,16 @@ export function topTwo(partners: Partner[], picks?: AgentPicks | null): Partner[
 export type Verdict = "young" | "not-young" | "no-data";
 export type PlainAiView = { rows: { name: string; skew: number | null; verdict: Verdict }[]; missed: Partner | null };
 
-/** Plain-AI picks with a verdict each, plus the youngest of FanDrive's top three that plain AI never suggested. */
-export function plainAiVerdicts(checks: PlainAiCheck[] | null, partners: Partner[]): PlainAiView {
+/** Plain-AI picks with a verdict each, plus the youngest lead pick plain AI never suggested (else the youngest of the top three). */
+export function plainAiVerdicts(checks: PlainAiCheck[] | null, partners: Partner[], picks?: AgentPicks | null): PlainAiView {
   if (!checks) return { rows: [], missed: null };
   const rows = checks.map((c) => ({
     name: c.name, skew: c.youthSkew,
     verdict: (c.youthSkew === null ? "no-data" : c.youthSkew >= 0.3 ? "young" : "not-young") as Verdict,
   }));
   const suggested = new Set(checks.flatMap((c) => [c.name, c.matchedName ?? ""]).map((n) => n.trim().toLowerCase()).filter(Boolean));
-  const missed = partners.slice(0, 3).filter((p) => !suggested.has(p.name.toLowerCase())).sort((a, b) => b.youthSkew - a.youthSkew)[0] ?? null;
+  const unsaid = (ps: Partner[]) => ps.filter((p) => !suggested.has(p.name.toLowerCase())).sort((a, b) => b.youthSkew - a.youthSkew)[0];
+  const missed = unsaid(topTwo(partners, picks)) ?? unsaid(partners.slice(0, 3)) ?? null;
   return { rows, missed };
 }
 

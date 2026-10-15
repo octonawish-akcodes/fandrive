@@ -1,9 +1,9 @@
 import type { Partner } from "@/lib/engine/tools";
-import type { PlainAiCheck } from "@/lib/plan/schema";
+import type { AgentPicks, PlainAiCheck } from "@/lib/plan/schema";
 import { plainAiVerdicts, signed } from "@/lib/client/view";
 
-export function PlainAiPanel({ checks, partners }: { checks: PlainAiCheck[] | null; partners: Partner[] }) {
-  const v = plainAiVerdicts(checks, partners);
+export function PlainAiPanel({ checks, partners, picks }: { checks: PlainAiCheck[] | null; partners: Partner[]; picks?: AgentPicks | null }) {
+  const v = plainAiVerdicts(checks, partners, picks);
   const wrong = v.rows.filter((r) => r.verdict === "not-young").length;
   const headline = wrong && v.missed ? `AI without Qloo got ${wrong} wrong and missed ${v.missed.name}.`
     : v.missed ? `AI without Qloo missed ${v.missed.name}.`

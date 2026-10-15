@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { withLocalLead } from "@/lib/engine/local";
+import { countryOf, withLocalLead } from "@/lib/engine/local";
 import { createTools, type Partner } from "@/lib/engine/tools";
 import { fakeApi, id } from "../../helpers/fakeApi";
 
@@ -8,26 +8,37 @@ const P = (name: string, youthSkew: number, local = false): Partner => ({
 });
 
 describe("local taste", () => {
-  it("discovers popular local artists and people for young people in the city, skipping obscure names", async () => {
+  it("discovers local artists in Qloo's order (skipping obscure ones) and local athletes, not actors or influencers", async () => {
     const steps: string[] = [];
+    const athlete = ["Athlete", "Baseball Player"];
     const api = fakeApi({ local: {
       artist: [{ name: "Big Pokey", popularity: 0.8 }, { name: "Billy Cook", popularity: 0.43 }, { name: "Don Toliver", popularity: 0.99 }, { name: "Erica Banks", popularity: 0.81 }, { name: "Yung Bleu", popularity: 0.84 }],
-      person: [{ name: "Jeremy Peña", popularity: 0.4 }, { name: "Storm Reid", popularity: 0.92 }],
+      person: [{ name: "Jeremy Peña", popularity: 0.4, tags: athlete }, { name: "Storm Reid", popularity: 0.92, tags: ["Actor", "Television Actor"] },
+        { name: "Savannah LaBrant", popularity: 0.98, tags: ["Influencer", "Youtuber"] }, { name: "Devon Achane", popularity: 0.27, tags: ["American Football Player"] }],
     } });
     const refs = await createTools(api, (e) => steps.push(e.tool)).discoverLocal("Houston", "16-24");
     expect(refs).toEqual([
       { name: "Big Pokey", type: "artist", entityId: id("Big Pokey"), local: true },
       { name: "Don Toliver", type: "artist", entityId: id("Don Toliver"), local: true },
       { name: "Erica Banks", type: "artist", entityId: id("Erica Banks"), local: true },
-      { name: "Storm Reid", type: "person", entityId: id("Storm Reid"), local: true },
+      { name: "Jeremy Peña", type: "person", entityId: id("Jeremy Peña"), local: true },
     ]);
     expect(steps).toEqual(["local_taste"]);
   });
+  it("treats Indian city data as national: names shared with other Indian cities stay local, names that top US cities don't", async () => {
+    const band = { name: "The Local Train", popularity: 0.85 }, star = { name: "Shawn Mendes", popularity: 1 };
+    const api = fakeApi({
+      local: { artist: [band, star] },
+      localByCity: { "New Delhi": { artist: [band] }, Bengaluru: { artist: [band] }, Chennai: { artist: [band] }, "New York, NY": { artist: [star] }, "Los Angeles, CA": { artist: [star] } },
+    });
+    expect((await createTools(api).discoverLocal("Pune", "16-24", "India")).map((r) => r.name)).toEqual(["The Local Train"]);
+    expect((await createTools(api).discoverLocal("Pune", "16-24")).map((r) => r.name)).toEqual([]); // without the country, every panel city counts
+  });
 
   it("drops names that also top other cities' lists: national youth favourites aren't local", async () => {
-    const storm = { name: "Storm Reid", popularity: 0.92 };
+    const storm = { name: "Storm Reid", popularity: 0.92, tags: ["Athlete"] }; // tagged as an athlete here so only the panel rule can drop it
     const api = fakeApi({
-      local: { person: [storm, { name: "R. J. Hampton", popularity: 0.91 }], artist: [{ name: "HeadKrack", popularity: 0.87 }] },
+      local: { person: [storm, { name: "R. J. Hampton", popularity: 0.91, tags: ["Basketball Player"] }], artist: [{ name: "HeadKrack", popularity: 0.87 }] },
       localByCity: { "Chicago, IL": { person: [storm] }, "Atlanta, GA": { person: [storm] }, "Houston, TX": { artist: [{ name: "HeadKrack", popularity: 0.87 }] } },
     });
     const refs = await createTools(api).discoverLocal("Dallas, TX", "16-24");
@@ -53,6 +64,11 @@ describe("local taste", () => {
     expect(r.ranked.find((p) => p.name === "Fortnite")!.local).toBeUndefined();
   });
 
+  it("reads the country from Qloo's locality disambiguation", () => {
+    expect(countryOf({ disambiguation: "Mumbai, Maharashtra, India" })).toBe("India");
+    expect(countryOf({ disambiguation: "Houston, Harris County, Texas, United States" })).toBe("United States");
+    expect(countryOf({})).toBeUndefined();
+  });
   it("leads with a local pick: moves the best young-leaning local partner into second place", () => {
     const ps = [P("Fortnite", 0.72), P("Stranger Things", 0.71), P("Old Local", -0.2, true), P("Don Toliver", 0.4, true)];
     expect(withLocalLead(ps).map((p) => p.name)).toEqual(["Fortnite", "Don Toliver", "Stranger Things", "Old Local"]);

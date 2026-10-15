@@ -30,7 +30,7 @@ export function ReportView({ state }: { state: RunState }) {
           {running && log}
           {first ? <PickCard partner={first} rank={1} agentPick={isPick(first.entityId)} rationale={isPick(first.entityId) ? picks?.rationale : null} city={city?.name} /> : <SkeletonCard tone="bg-sun" label="Top fandom" />}
           {second ? <PickCard partner={second} rank={2} agentPick={isPick(second.entityId)} city={city?.name} /> : <SkeletonCard tone="bg-bubble" label="Runner-up" />}
-          {plainAi !== undefined ? <PlainAiPanel checks={plainAi} partners={partners ?? []} /> : <SkeletonCard label="Plain AI check" />}
+          {plainAi !== undefined ? <PlainAiPanel checks={plainAi} partners={partners ?? []} picks={picks} /> : <SkeletonCard label="Plain AI check" />}
           {maps && city ? <MapCard city={city} maps={maps} /> : <div className="col-span-full"><SkeletonCard tone="bg-sky" label="Where to host" /></div>}
           {creative ? <PosterCard c={creative} /> : <SkeletonCard tone="bg-alarm" label="Poster" />}
           {!running && log}

@@ -6,7 +6,7 @@ export type Venue = { entityId: string; name: string; lat: number; lon: number; 
 const word = (alts: string) => new RegExp(`(^|_)(${alts})($|_)`);
 const UNSUITABLE = word("shooting_range|gun|gun_shop|firearms?|cigar|tobacco|smoke_shop|vape|vape_shop|hookah|cannabis|dispensary|marijuana|tattoo|piercing|casino|gambling|betting|bookmaker|adult_entertainment|strip_club|pawn|liquor|beer_store|wine_store|funeral|funeral_home|cemetery");
 const PRIVATE = word("hotel|motel|apartment|condominium|residential|trailer_park|mobile_home_park|rv_park");
-const CHILDREN = word("elementary_school|middle_school|primary_school|preschool|kindergarten|day_care_center|daycare|child_care|child_care_agency|nursery_school|nursery"); // too young to donate
+const CHILDREN = word("elementary_school|middle_school|primary_school|preschool|kindergarten|day_care_center|daycare|child_care|child_care_agency|nursery_school|nursery|children's|childrens|children|kids?|playground"); // too young to donate (live: a children's museum ranked as a host)
 const NOT_HOST = word("dog_park");
 const NOT_ALCOHOL = word("(espresso|coffee|juice|smoothie|milkshake|salad|tea|oxygen|nail)_bar");
 const ALCOHOL = word("bar|night_?club|pub|lounge|brewery|brewpub|winery|cocktail|beer_hall|beer_garden|tavern|saloon");

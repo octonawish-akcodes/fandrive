@@ -130,16 +130,17 @@ describe("enrichment", () => {
     expect(await t.trendFor({ entityId: id("Stranger Things"), type: "tv_show" })).toMatchObject({ direction: "rising", window: "Jun–Sep 2025" });
     expect(await t.trendFor({ entityId: id("Fortnite"), type: "videogame" })).toBeNull();
   });
-  it("keeps only culture tags: never religion, identity, endorsements, places or dark themes", async () => {
+  it("keeps only culture tags: never religion, identity, endorsements, places, dark themes or free-text keywords", async () => {
     const raw = [
       { name: "Online Streamer", subtype: "urn:tag:occupation:qloo" }, { name: "Catholicism", subtype: "urn:tag:religion:qloo" },
       { name: "Identifies as Black-owned", subtype: "urn:tag:inclusivity:place" }, { name: "McDonald's", subtype: "urn:tag:endorsement:qloo" },
       { name: "Violence", subtype: "urn:tag:theme:qloo" }, { name: "Shrimp Grits", subtype: "urn:tag:offerings:place" }, { name: "Sports complex", subtype: "urn:tag:genre:place" },
       { name: "Gaming", subtype: "urn:tag:category:qloo" }, { name: "Hip Hop", subtype: "urn:tag:genre:music" }, { name: "anime animation", subtype: "urn:tag:keyword:media" },
       { name: "Multi-Player", subtype: "urn:tag:gameplay_type:qloo" }, { name: "Sandbox", subtype: "urn:tag:genre:qloo" }, { name: "hip hop", subtype: "urn:tag:genre:music" },
+      { name: "teenage girl", subtype: "urn:tag:keyword:media" }, { name: "murder", subtype: "urn:tag:keyword:media" }, // live: Qloo keywords read badly on a blood-drive report
     ];
     const t = createTools(fakeApi({ ...base, rawTags: { [id("Kai Cenat")]: raw } }));
-    expect(await t.fanTags(id("Kai Cenat"))).toEqual(["Gaming", "Hip Hop", "anime animation", "Multi-Player", "Sandbox"]);
+    expect(await t.fanTags(id("Kai Cenat"))).toEqual(["Gaming", "Hip Hop", "Multi-Player", "Sandbox"]);
   });
   it("also drops ethnicity, religion and identity words whatever their subtype, keeping real genres", async () => {
     const raw = [
@@ -148,6 +149,6 @@ describe("enrichment", () => {
       { name: "Afrobeats", subtype: "urn:tag:genre:music" }, { name: "basketball", subtype: "urn:tag:keyword:media" },
     ];
     const t = createTools(fakeApi({ ...base, rawTags: { [id("Atlanta Hawks")]: raw } }));
-    expect(await t.fanTags(id("Atlanta Hawks"))).toEqual(["Latin trap", "Afrobeats", "basketball"]);
+    expect(await t.fanTags(id("Atlanta Hawks"))).toEqual(["Latin trap", "Afrobeats"]);
   });
 });

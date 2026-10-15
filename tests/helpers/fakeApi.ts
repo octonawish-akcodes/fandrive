@@ -8,9 +8,10 @@ export type FakeData = {
   demo?: Record<string, Demographics | "invalid">; cityFit?: Record<string, number>;
   heat?: Record<string, HeatCell[]>; places?: QlooPlace[]; hostPlaces?: QlooPlace[]; badCities?: string[]; authFail?: boolean;
   fanTags?: Record<string, string[]>; rawTags?: Record<string, { name: string; subtype: string }[]>; trend?: Record<string, { date: string; percentile: number }[]>; tagLookups?: string[];
-  local?: Partial<Record<EntityType, { name: string; popularity: number }[]>>; // the planned city (and any city not in the panel)
-  localByCity?: Record<string, Partial<Record<EntityType, { name: string; popularity: number }[]>>>; // reference-panel cities default to empty
+  local?: Partial<Record<EntityType, LocalEntry[]>>; // the planned city (and any city not in the panel)
+  localByCity?: Record<string, Partial<Record<EntityType, LocalEntry[]>>>; // reference-panel cities default to empty
 };
+type LocalEntry = { name: string; popularity: number; tags?: string[] };
 export const id = (name: string) => `id:${name}`;
 export const heat = (pairs: [string, number][]): HeatCell[] =>
   pairs.map(([g, r], i) => ({ geohash: g, lat: 29.70 + i * 0.004, lon: -95.52 + i * 0.004, affinityRank: r, popularity: 0.5 }));
@@ -38,8 +39,8 @@ export function fakeApi(d: FakeData): QlooApi {
     async findTags(query) { d.tagLookups?.push(query); return [{ id: `urn:tag:category:place:${query.replace(/\s+/g, "_")}`, name: query }]; },
     async trending({ id: eid }) { return d.trend?.[eid] ?? []; },
     async localTaste({ city, type }) {
-      const lists = d.localByCity?.[city] ?? ((LOCAL_TASTE.panel as readonly string[]).includes(city) ? {} : d.local);
-      return (lists?.[type] ?? []).map((e) => ({ entityId: id(e.name), name: e.name, type, popularity: e.popularity }));
+      const lists = d.localByCity?.[city] ?? (LOCAL_TASTE.panel.some((p) => p.city === city) ? {} : d.local);
+      return (lists?.[type] ?? []).map((e) => ({ entityId: id(e.name), name: e.name, type, popularity: e.popularity, tags: e.tags ?? [] }));
     },
   };
 }

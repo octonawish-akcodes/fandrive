@@ -16,14 +16,14 @@
     "fanDrive": {
       "picks": 60,
       "young": 60,
-      "meanSkew": 0.83
+      "meanSkew": 0.74
     },
     "citiesWithMiss": 20,
-    "missedPicks": 55,
+    "missedPicks": 51,
     "local": {
       "cities": 20,
-      "distinct": 19,
-      "meanSkew": 0.86
+      "distinct": 18,
+      "meanSkew": 0.82
     }
   },
   "cities": [
@@ -59,9 +59,9 @@
       ],
       "fanDrive": [
         {
-          "name": "Joshua Bassett",
-          "youthSkew": 0.97,
-          "pull": 0.92
+          "name": "Amed Rosario",
+          "youthSkew": 0.93,
+          "pull": 0.91
         },
         {
           "name": "Stranger Things",
@@ -75,8 +75,8 @@
         }
       ],
       "localPick": {
-        "name": "Joshua Bassett",
-        "youthSkew": 0.97
+        "name": "Amed Rosario",
+        "youthSkew": 0.93
       }
     },
     {
@@ -111,24 +111,24 @@
       ],
       "fanDrive": [
         {
-          "name": "Alabama Barker",
-          "youthSkew": 0.94,
-          "pull": 0.93
+          "name": "Ozomatli",
+          "youthSkew": 0.81,
+          "pull": 0.91
         },
         {
-          "name": "Jessica Marie Garcia",
+          "name": "Emma Chamberlain",
           "youthSkew": 0.88,
-          "pull": 0.93
+          "pull": 0.91
         },
         {
-          "name": "Auliʻi Cravalho",
-          "youthSkew": 0.89,
-          "pull": 0.93
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.9
         }
       ],
       "localPick": {
-        "name": "Alabama Barker",
-        "youthSkew": 0.94
+        "name": "Ozomatli",
+        "youthSkew": 0.81
       }
     },
     {
@@ -158,11 +158,6 @@
       ],
       "fanDrive": [
         {
-          "name": "Calboy",
-          "youthSkew": 0.84,
-          "pull": 0.93
-        },
-        {
           "name": "Jorge Soler",
           "youthSkew": 0.81,
           "pull": 0.89
@@ -171,11 +166,16 @@
           "name": "Chance the Rapper",
           "youthSkew": 0.3,
           "pull": 0.87
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.87
         }
       ],
       "localPick": {
-        "name": "Calboy",
-        "youthSkew": 0.84
+        "name": "Jorge Soler",
+        "youthSkew": 0.81
       }
     },
     {
@@ -215,9 +215,9 @@
           "pull": 0.89
         },
         {
-          "name": "Jessica Marie Garcia",
-          "youthSkew": 0.88,
-          "pull": 0.89
+          "name": "Houston Rockets",
+          "youthSkew": 0.3,
+          "pull": 0.85
         }
       ],
       "localPick": {
@@ -252,24 +252,24 @@
       ],
       "fanDrive": [
         {
+          "name": "Jake Lamb",
+          "youthSkew": 0.96,
+          "pull": 0.99
+        },
+        {
           "name": "Nico Mannion",
           "youthSkew": 0.89,
           "pull": 0.96
         },
         {
-          "name": "Savannah LaBrant",
-          "youthSkew": 0.91,
-          "pull": 0.95
-        },
-        {
-          "name": "MyKayla Skinner",
-          "youthSkew": 0.87,
-          "pull": 0.95
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.93
         }
       ],
       "localPick": {
-        "name": "Nico Mannion",
-        "youthSkew": 0.89
+        "name": "Jake Lamb",
+        "youthSkew": 0.96
       }
     },
     {
@@ -304,8 +304,8 @@
       ],
       "fanDrive": [
         {
-          "name": "Popp Hunna",
-          "youthSkew": 0.89,
+          "name": "Carter Hart",
+          "youthSkew": 0.93,
           "pull": 0.93
         },
         {
@@ -314,14 +314,14 @@
           "pull": 0.89
         },
         {
-          "name": "Brooke Hyland",
-          "youthSkew": 0.94,
+          "name": "Shawn Smith",
+          "youthSkew": 0.56,
           "pull": 0.88
         }
       ],
       "localPick": {
-        "name": "Popp Hunna",
-        "youthSkew": 0.89
+        "name": "Carter Hart",
+        "youthSkew": 0.93
       }
     },
     {
@@ -356,24 +356,24 @@
       ],
       "fanDrive": [
         {
-          "name": "Jenna Ortega",
-          "youthSkew": 0.93,
+          "name": "Aron Baynes",
+          "youthSkew": 0.87,
+          "pull": 0.96
+        },
+        {
+          "name": "Chimezie Metu",
+          "youthSkew": 0.91,
           "pull": 0.93
         },
         {
           "name": "Stranger Things",
           "youthSkew": 0.71,
           "pull": 0.91
-        },
-        {
-          "name": "Savannah LaBrant",
-          "youthSkew": 0.91,
-          "pull": 0.91
         }
       ],
       "localPick": {
-        "name": "Jenna Ortega",
-        "youthSkew": 0.93
+        "name": "Aron Baynes",
+        "youthSkew": 0.87
       }
     },
     {
@@ -408,24 +408,24 @@
       ],
       "fanDrive": [
         {
-          "name": "HeadKrack",
-          "youthSkew": 0.87,
-          "pull": 0.96
-        },
-        {
-          "name": "R. J. Hampton",
-          "youthSkew": 0.91,
-          "pull": 0.91
-        },
-        {
           "name": "The Polyphonic Spree",
           "youthSkew": 0.8,
           "pull": 0.91
+        },
+        {
+          "name": "Fortnite",
+          "youthSkew": 0.72,
+          "pull": 0.9
+        },
+        {
+          "name": "Adolis García",
+          "youthSkew": 0.97,
+          "pull": 0.87
         }
       ],
       "localPick": {
-        "name": "HeadKrack",
-        "youthSkew": 0.87
+        "name": "The Polyphonic Spree",
+        "youthSkew": 0.8
       }
     },
     {
@@ -460,11 +460,6 @@
       ],
       "fanDrive": [
         {
-          "name": "HeadKrack",
-          "youthSkew": 0.87,
-          "pull": 0.95
-        },
-        {
           "name": "Atlanta Falcons",
           "youthSkew": 0.64,
           "pull": 0.93
@@ -473,11 +468,16 @@
           "name": "Atlanta Hawks",
           "youthSkew": 0.72,
           "pull": 0.93
+        },
+        {
+          "name": "Atlanta Braves",
+          "youthSkew": 0.45,
+          "pull": 0.88
         }
       ],
       "localPick": {
-        "name": "HeadKrack",
-        "youthSkew": 0.87
+        "name": "Jody Breeze",
+        "youthSkew": 0.76
       }
     },
     {
@@ -512,24 +512,24 @@
       ],
       "fanDrive": [
         {
+          "name": "Paolo Banchero",
+          "youthSkew": 0.99,
+          "pull": 0.92
+        },
+        {
+          "name": "Marco Gonzales",
+          "youthSkew": 0.9,
+          "pull": 0.91
+        },
+        {
           "name": "TeZATalks",
           "youthSkew": 0.96,
           "pull": 0.9
-        },
-        {
-          "name": "Cataldo",
-          "youthSkew": 0.8,
-          "pull": 0.9
-        },
-        {
-          "name": "Auliʻi Cravalho",
-          "youthSkew": 0.89,
-          "pull": 0.89
         }
       ],
       "localPick": {
-        "name": "TeZATalks",
-        "youthSkew": 0.96
+        "name": "Paolo Banchero",
+        "youthSkew": 0.99
       }
     },
     {
@@ -564,24 +564,24 @@
       ],
       "fanDrive": [
         {
-          "name": "Malu Trevejo",
-          "youthSkew": 0.87,
-          "pull": 0.92
-        },
-        {
-          "name": "HeadKrack",
-          "youthSkew": 0.87,
-          "pull": 0.91
-        },
-        {
           "name": "Fortnite",
           "youthSkew": 0.72,
           "pull": 0.91
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.86
+        },
+        {
+          "name": "Ariel Torres",
+          "youthSkew": 0.98,
+          "pull": 0.84
         }
       ],
       "localPick": {
-        "name": "Malu Trevejo",
-        "youthSkew": 0.87
+        "name": "Ariel Torres",
+        "youthSkew": 0.98
       }
     },
     {
@@ -663,23 +663,23 @@
       ],
       "fanDrive": [
         {
-          "name": "Chase Stokes",
+          "name": "Aron Baynes",
           "youthSkew": 0.87,
-          "pull": 0.93
-        },
-        {
-          "name": "Brooke Hyland",
-          "youthSkew": 0.94,
-          "pull": 0.92
+          "pull": 0.94
         },
         {
           "name": "Stranger Things",
           "youthSkew": 0.71,
           "pull": 0.91
+        },
+        {
+          "name": "Matt Turner",
+          "youthSkew": 0.98,
+          "pull": 0.9
         }
       ],
       "localPick": {
-        "name": "Chase Stokes",
+        "name": "Aron Baynes",
         "youthSkew": 0.87
       }
     },
@@ -720,14 +720,14 @@
           "pull": 0.95
         },
         {
+          "name": "Emoni Bates",
+          "youthSkew": 0.98,
+          "pull": 0.92
+        },
+        {
           "name": "42 Dugg",
           "youthSkew": 0.67,
           "pull": 0.9
-        },
-        {
-          "name": "HeadKrack",
-          "youthSkew": 0.87,
-          "pull": 0.89
         }
       ],
       "localPick": {
@@ -767,24 +767,24 @@
       ],
       "fanDrive": [
         {
-          "name": "Maisy Stella",
-          "youthSkew": 0.88,
-          "pull": 0.96
-        },
-        {
-          "name": "Savannah LaBrant",
-          "youthSkew": 0.91,
-          "pull": 0.93
+          "name": "Jeffery Simmons",
+          "youthSkew": 0.84,
+          "pull": 0.95
         },
         {
           "name": "Stranger Things",
           "youthSkew": 0.71,
           "pull": 0.91
+        },
+        {
+          "name": "Lennon Stella",
+          "youthSkew": 0.5,
+          "pull": 0.88
         }
       ],
       "localPick": {
-        "name": "Maisy Stella",
-        "youthSkew": 0.88
+        "name": "Jeffery Simmons",
+        "youthSkew": 0.84
       }
     },
     {
@@ -818,24 +818,24 @@
       ],
       "fanDrive": [
         {
-          "name": "Bhavya Gandhi",
-          "youthSkew": 0.97,
-          "pull": 0.97
-        },
-        {
-          "name": "Nikk",
-          "youthSkew": 0.98,
-          "pull": 0.96
-        },
-        {
-          "name": "Dev Joshi",
-          "youthSkew": 0.97,
+          "name": "Fortnite",
+          "youthSkew": 0.72,
           "pull": 0.95
+        },
+        {
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.89
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.88
         }
       ],
       "localPick": {
-        "name": "Bhavya Gandhi",
-        "youthSkew": 0.97
+        "name": "Indian Ocean",
+        "youthSkew": 0.77
       }
     },
     {
@@ -869,24 +869,24 @@
       ],
       "fanDrive": [
         {
-          "name": "Nikk",
-          "youthSkew": 0.98,
-          "pull": 0.96
-        },
-        {
           "name": "Fortnite",
           "youthSkew": 0.72,
           "pull": 0.95
         },
         {
-          "name": "Bhavya Gandhi",
-          "youthSkew": 0.97,
-          "pull": 0.93
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.9
+        },
+        {
+          "name": "Indian Ocean",
+          "youthSkew": 0.77,
+          "pull": 0.88
         }
       ],
       "localPick": {
-        "name": "Nikk",
-        "youthSkew": 0.98
+        "name": "Indian Ocean",
+        "youthSkew": 0.77
       }
     },
     {
@@ -921,24 +921,24 @@
       ],
       "fanDrive": [
         {
-          "name": "Jannat Zubair Rahmani",
-          "youthSkew": 0.85,
-          "pull": 0.96
-        },
-        {
-          "name": "Aranthangi Nisha",
-          "youthSkew": 0.97,
-          "pull": 0.96
-        },
-        {
           "name": "Fortnite",
           "youthSkew": 0.72,
           "pull": 0.95
+        },
+        {
+          "name": "Minecraft",
+          "youthSkew": 0.42,
+          "pull": 0.9
+        },
+        {
+          "name": "Stranger Things",
+          "youthSkew": 0.71,
+          "pull": 0.89
         }
       ],
       "localPick": {
-        "name": "Jannat Zubair Rahmani",
-        "youthSkew": 0.85
+        "name": "Shanti People",
+        "youthSkew": 0.62
       }
     },
     {
@@ -982,14 +982,14 @@
           "pull": 0.9
         },
         {
-          "name": "Stranger Things",
-          "youthSkew": 0.71,
-          "pull": 0.87
+          "name": "Marshmello",
+          "youthSkew": 0.45,
+          "pull": 0.88
         }
       ],
       "localPick": {
-        "name": "Alan Walker",
-        "youthSkew": 0.32
+        "name": "Marshmello",
+        "youthSkew": 0.45
       }
     },
     {
@@ -1024,24 +1024,24 @@
       ],
       "fanDrive": [
         {
-          "name": "Aranthangi Nisha",
-          "youthSkew": 0.97,
-          "pull": 0.99
-        },
-        {
-          "name": "Santesh",
-          "youthSkew": 0.98,
-          "pull": 0.94
-        },
-        {
           "name": "Fortnite",
           "youthSkew": 0.72,
           "pull": 0.94
+        },
+        {
+          "name": "Mckenna Grace",
+          "youthSkew": 0.95,
+          "pull": 0.93
+        },
+        {
+          "name": "Ayyasamy Dharun",
+          "youthSkew": 0.99,
+          "pull": 0.93
         }
       ],
       "localPick": {
-        "name": "Aranthangi Nisha",
-        "youthSkew": 0.97
+        "name": "Mckenna Grace",
+        "youthSkew": 0.95
       }
     }
   ],

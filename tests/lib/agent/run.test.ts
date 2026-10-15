@@ -30,10 +30,10 @@ describe("runPlan", () => {
     expect(plan?.limits.at(-1)).toContain("crowd-level");
   });
   it("asks organisers to check a public figure's fit when a person leads the plan", async () => {
-    const local = { ...data, demo: { ...data.demo, [id("Don Toliver")]: { age: { "24_and_younger": 0.9 }, gender: {} } }, local: { person: [{ name: "Don Toliver", popularity: 0.99 }] } };
+    const local = { ...data, demo: { ...data.demo, [id("Jalen Green")]: { age: { "24_and_younger": 0.9 }, gender: {} } }, local: { person: [{ name: "Jalen Green", popularity: 0.9, tags: ["Basketball Player"] }] } };
     const { plan } = await run(local);
     expect(plan?.partners.slice(0, 2).some((p) => p.type === "person")).toBe(true);
-    expect(plan?.limits.some((l) => l.includes("Don Toliver") && l.includes("public figure"))).toBe(true);
+    expect(plan?.limits.some((l) => l.includes("Jalen Green") && l.includes("public figure"))).toBe(true);
     const { plan: noPerson } = await run(data);
     expect(noPerson?.limits.some((l) => l.includes("public figure"))).toBe(false);
   });

@@ -8,9 +8,9 @@ import { rankVenues, type Venue } from "./venues";
 import { momentum, TREND_TYPES, TREND_WINDOW, type Momentum } from "./trend";
 import { BADGE, HOST_TAG_QUERIES, LOCAL_TASTE, MATCH_OK, VENUE_RADIUS_M, ZONE } from "./weights";
 
-/** Safe "fans also love" tags: music/film/game genres, media keywords, game styles and Qloo categories.
+/** Safe "fans also love" tags: music/film/game genres, game styles and Qloo categories. Free-text media keywords are out (live: "teenage girl", "murder").
  *  Never religion, identity/inclusivity, endorsements, places, occupations or themes (e.g. "Violence"). */
-const CULTURE_TAG = /^urn:tag:(genre:(?!place)[a-z_]+|keyword:media|gameplay_type:qloo|category:qloo)$/;
+const CULTURE_TAG = /^urn:tag:(genre:(?!place)[a-z_]+|gameplay_type:qloo|category:qloo)$/;
 /** Identity words never shown next to a fandom, whatever Qloo's subtype says. */
 const IDENTITY_WORD = /\b(african|afro-american|black-owned|white|caucasian|asian|hispanic|latin[ao]s?|latinx|jewish|muslim|islam\w*|christian\w*|catholic\w*|hindu\w*|sikh\w*|buddhis\w*|religio\w*|gay|lesbian|lgbt\w*|queer|transgender|ethnic\w*|racial|race)\b/i;
 
@@ -153,7 +153,7 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     return hostTags;
   }
 
-  /** What else this fan base loves: culture tags only (genres, media keywords, game styles, categories). */
+  /** What else this fan base loves: culture tags only (genres, game styles, categories). */
   async function fanTags(entityId: string): Promise<string[]> {
     const seen = new Set<string>();
     return (await api.tasteTags(entityId).catch(() => [] as { name: string; subtype: string }[]))
@@ -209,23 +209,26 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
   type TasteList = Awaited<ReturnType<QlooApi["localTaste"]>>;
   const tasteList = (city: string, type: EntityType, band: AgeBand) =>
     api.localTaste({ city, type, ageSignal: ageSignal(band), take: LOCAL_TASTE.take }).catch(() => [] as TasteList);
-  const panelCounts = new Map<AgeBand, Promise<{ city: string; ids: Set<string> }[]>>();
+  const panelLists = new Map<AgeBand, Promise<{ city: string; country: string; ids: Set<string> }[]>>();
   /** Each reference city's top picks for young people (cached a week, shared by every plan). */
   const panel = (band: AgeBand) => {
-    if (!panelCounts.has(band)) panelCounts.set(band, Promise.all(LOCAL_TASTE.panel.map(async (c) =>
-      ({ city: c, ids: new Set((await Promise.all(LOCAL_TASTE.types.map((t) => tasteList(c, t, band)))).flat().map((e) => e.entityId)) }))));
-    return panelCounts.get(band)!;
+    if (!panelLists.has(band)) panelLists.set(band, Promise.all(LOCAL_TASTE.panel.map(async (c) =>
+      ({ ...c, ids: new Set((await Promise.all(LOCAL_TASTE.kinds.map((k) => tasteList(c.city, k.type, band)))).flat().map((e) => e.entityId)) }))));
+    return panelLists.get(band)!;
   };
   const sameCity = (a: string, b: string) => a.split(",")[0].trim().toLowerCase() === b.split(",")[0].trim().toLowerCase();
 
   /** What young people in this city love that other cities' young people don't (Qloo's own ranking), as ready-resolved candidates. */
-  async function discoverLocal(city: string, band: AgeBand): Promise<NameRef[]> {
+  async function discoverLocal(city: string, band: AgeBand, country?: string): Promise<NameRef[]> {
     emit({ tool: "local_taste", message: `Asking Qloo what young people in ${city} love that other cities don't` });
-    const [lists, ref] = await Promise.all([Promise.all(LOCAL_TASTE.types.map((t) => tasteList(city, t, band))), panel(band)]);
-    const others = ref.filter((r) => !sameCity(r.city, city));
+    const [lists, ref] = await Promise.all([Promise.all(LOCAL_TASTE.kinds.map((k) => tasteList(city, k.type, band))), panel(band)]);
+    const national = !!country && LOCAL_TASTE.nationalData.includes(country);
+    const others = ref.filter((r) => !sameCity(r.city, city) && !(national && r.country === country));
     const local = (id: string) => others.filter((r) => r.ids.has(id)).length <= LOCAL_TASTE.maxOtherCities;
-    return lists.flatMap((l) => l.filter((e) => e.popularity >= LOCAL_TASTE.minPopularity && local(e.entityId)).slice(0, LOCAL_TASTE.perType))
-      .map((e) => ({ name: e.name, type: e.type, entityId: e.entityId, local: true }));
+    return lists.flatMap((l, i) => {
+      const k = LOCAL_TASTE.kinds[i];
+      return l.filter((e) => e.popularity >= k.minPopularity && (!k.onlyIf || k.onlyIf.test(e.tags.join(" | "))) && local(e.entityId)).slice(0, k.max); // Qloo's order is the local signal
+    }).map((e) => ({ name: e.name, type: e.type, entityId: e.entityId, local: true }));
   }
 
   async function typeNames(names: string[]): Promise<{ refs: NameRef[]; unresolved: string[] }> {

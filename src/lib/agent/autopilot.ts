@@ -1,4 +1,4 @@
-import { withLocalLead } from "@/lib/engine/local";
+import { countryOf, withLocalLead } from "@/lib/engine/local";
 import { seedPartners } from "@/lib/engine/seeds";
 import type { Excluded, Partner, Tools } from "@/lib/engine/tools";
 import type { CityInfo, Creative, MapResult, PlanInput, AgentPicks } from "@/lib/plan/schema";
@@ -31,7 +31,7 @@ export async function runAutopilot(a: { input: PlanInput; city: CityInfo; tools:
   let ranked = a.state?.ranked;
   let excluded = a.state?.excluded ?? [];
   if (!ranked) {
-    const [typed, local] = await Promise.all([a.tools.typeNames(a.input.partners), a.tools.discoverLocal(a.input.city, a.input.band)]);
+    const [typed, local] = await Promise.all([a.tools.typeNames(a.input.partners), a.tools.discoverLocal(a.input.city, a.input.band, countryOf(a.city))]);
     const r = await a.tools.scorePartners({ city: a.input.city, band: a.input.band, cityBadge: a.city.badge, refs: [...typed.refs, ...seedPartners(a.city.name), ...local] });
     ranked = r.ranked;
     excluded = [...typed.unresolved.map((q): Excluded => ({ query: q, type: "artist", reason: "Not found in Qloo" })), ...r.excluded];

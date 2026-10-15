@@ -109,6 +109,24 @@ describe("runAgent", () => {
     expect(r.partners[0].name).toBe("Bad Bunny");
     expect(r.partners.findIndex((p) => p.name === "Metallica")).toBe(r.partners.length - 1);
   });
+  it("accepts a partner's exact name when the planner passes names instead of ids", async () => {
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: ["sabrina carpenter", "Olivia Rodrigo"], rationale: "Young fans, strong local love" }]),
+      text(creative("Sabrina Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
+    expect(r.picks).toEqual({ ids: [id("Sabrina Carpenter"), id("Olivia Rodrigo")], rationale: "Young fans, strong local love" });
+  });
+  it("drops the rationale when a picked id is unknown, since it would describe a partner the report doesn't show", async () => {
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: ["not-a-real-id", id("Sabrina Carpenter")], rationale: "Atlanta Hawks lead, then Sabrina Carpenter" }]),
+      text(creative("Sabrina Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
+    expect(r.picks).toEqual({ ids: [id("Sabrina Carpenter")], rationale: null });
+  });
   it("strips internal ids the planner echoes into its rationale", async () => {
     const model = mockModel([
       calls(["score_partners", cands]),

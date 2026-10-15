@@ -25,7 +25,7 @@ You type a city. An AI agent tests a dozen fandoms (artists, teams, shows, games
 - the neighbourhoods where those fans live;
 - venues nearby that can host (schools, colleges, halls), plus poster and social copy ready to use.
 
-For example, in Houston it ranks Kai Cenat's fan base (youth skew +0.88) far above legacy partners whose fans skew older.
+For example, in Detroit it leads with Pistons star Cade Cunningham, whose fans skew young (+0.87) and whom a plain chatbot never suggested. In Houston it leads with Astros star Jeremy Peña and Houston rapper Don Toliver.
 
 **Try it (no sign-up):** https://fandrive-nu.vercel.app
 **A recorded Houston run:** https://fandrive-nu.vercel.app/plan?example=houston

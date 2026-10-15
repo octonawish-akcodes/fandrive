@@ -5,3 +5,6 @@ export function withLocalLead<P extends { local?: boolean; youthSkew: number }>(
   if (i < 0) return ps;
   return [ps[0], ps[i], ...ps.filter((_, j) => j !== 0 && j !== i)];
 }
+
+/** "Mumbai, Maharashtra, India" → "India" (Qloo's locality disambiguation ends with the country). */
+export const countryOf = (c: { disambiguation?: string }): string | undefined => c.disambiguation?.split(",").pop()?.trim() || undefined;

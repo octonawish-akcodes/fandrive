@@ -10,12 +10,12 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs)
 ![Qloo Taste AI](https://img.shields.io/badge/Qloo-Taste%20AI-FF4949?style=flat-square)
 ![Gemini](https://img.shields.io/badge/agent-Gemini-90A8FF?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-182%20passing-23C78A?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-202%20passing-23C78A?style=flat-square)
 ![Qloo Agentic Hackathon](https://img.shields.io/badge/Qloo%20Agentic%20Hackathon-2026-FFC900?style=flat-square)
 
 ### [▶ Try the live demo](https://fandrive-nu.vercel.app) · [Watch Houston](https://fandrive-nu.vercel.app/plan?example=houston) · [Watch Mumbai](https://fandrive-nu.vercel.app/plan?example=mumbai)
 
-<img src="docs/images/hero.png" alt="FanDrive planner: 'Houston's next blood drive is a Kai Cenat party.' with the yellow plan form" width="100%">
+<img src="docs/images/hero.png" alt="FanDrive planner: 'Houston's next blood drive is a Jeremy Peña party.' with the yellow plan form" width="100%">
 
 </div>
 
@@ -48,15 +48,15 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 
 ### 1 · The fandoms that bring young first-time donors
 
-The agent proposes candidates (artists, teams, shows, games, creators). Qloo scores each one on **how young its fans are**, **how much your city's young people love it** and **how concentrated its fans are**. The agent then makes its picks.
+The agent proposes candidates (artists, teams, shows, games, creators), and Qloo adds its own **local taste**: what young people in your city love that other cities' young people don't. Qloo scores each one on **how young its fans are**, **how much your city's young people love it** and **how concentrated its fans are**. The agent then makes its picks, and every report leads with one **local pick**: Astros star Jeremy Peña and rapper Don Toliver in Houston, Seattle native Paolo Banchero in Seattle, Cade Cunningham in Detroit.
 
-<img src="docs/images/cards.png" alt="Houston report card: Kai Cenat +0.88 (AI pick 1), Travis Scott +0.46 (AI pick 2), and the plain-AI check" width="100%">
+<img src="docs/images/cards.png" alt="Houston report card: Jeremy Peña +0.98 and Don Toliver +0.69 (AI picks, local taste), and the plain-AI check, which missed them both" width="100%">
 
 ### 2 · Where the fans are, and where to host
 
 Qloo heatmaps reveal the neighbourhoods where each fan base beats the city's baseline. FanDrive finds venues nearby and sorts them into **host here** (schools, colleges, halls, gyms, places of worship) and **flyers only** (cafés, restaurants, and bars, which never host).
 
-<img src="docs/images/map.png" alt="Map of Houston with Kai Cenat and Travis Scott fan zones and venue pins, next to a 'Where to host' list" width="100%">
+<img src="docs/images/map.png" alt="Map of Houston with Jeremy Peña and Don Toliver fan zones and venue pins, next to a 'Where to host' list" width="100%">
 
 ### 3 · The agent shows its work, and the campaign is ready to print
 
@@ -76,14 +76,16 @@ Every step streams live as the agent works. The poster, three social posts, a fr
 
 The same model is asked for partners **without Qloo**, then every pick is fact-checked against Qloo's age data.
 
-**[20-city evaluation](docs/eval/README.md):** across 96 plain-AI picks in 15 US and 5 Indian cities, **31% had fans who skew older** than average and **60% were not young-skewing or had no Qloo data**. FanDrive's top 3 averaged youth skew **+0.83** vs **+0.25**, and in **every city** plain AI missed at least one of them. Qloo's local taste gave every city a **local pick** (19 different fandoms, such as Calboy in Chicago, Big Pokey in Houston and Cade Cunningham in Detroit). Re-run with `pnpm eval`; caveats are in the write-up.
+**[20-city evaluation](docs/eval/README.md):** across 96 plain-AI picks in 15 US and 5 Indian cities, **31% had fans who skew older** than average and **60% were not young-skewing or had no Qloo data**. FanDrive's top 3 averaged youth skew **+0.83** vs **+0.25**, and in **every city** plain AI missed at least one of them. Qloo's local taste gave every city a **local pick** (18 different fandoms, such as Cade Cunningham in Detroit, Paolo Banchero in Seattle, STS9 in Denver and Indian Ocean in Mumbai). Re-run with `pnpm eval`; caveats are in the write-up.
 
 | City | Plain AI suggested | What Qloo says |
 |---|---|---|
-| **Mumbai** | Karan Aujla, Mumbai Indians, College Romance, MostlySane, Valorant India | 3 skew **older** (−0.20, −0.07, −0.23), 2 have no data. It **missed Minecraft (+0.42)**. |
-| **Houston** | Travis Scott, Houston Rockets, Euphoria, GTA VI | Reasonable picks, but it **missed Kai Cenat (+0.88)**, Houston's youngest fan base. |
+| **Houston** | Travis Scott, Houston Rockets, Euphoria, Fortnite, Megan Thee Stallion | Megan Thee Stallion isn't young-skewing (+0.22). It **missed Houston's local picks**, Astros star Jeremy Peña (+0.98) and rapper Don Toliver (+0.69). |
+| **Seattle** | Seattle Kraken, Minecraft, Macklemore, The Last of Us, Hasan Piker | 2 skew **older** (Macklemore −0.01, The Last of Us −0.05). It **missed Paolo Banchero (+0.99)**, the Seattle-born NBA star. |
+| **Detroit** | Eminem, Detroit Lions, Fortnite, Big Sean, Stranger Things | 3 are **not young** (−0.06, +0.00, +0.05). It **missed Cade Cunningham (+0.87)**, the Pistons star who is Detroit's local pick. |
+| **Mumbai** | Karan Aujla, Mumbai Indians, Minecraft, BeerBiceps, Stranger Things | 2 skew **older** (−0.20, −0.07), 1 has no data. It missed Lost Stories, the Indian electronic duo young Mumbaikars over-index on. |
 
-<img src="docs/images/mumbai.png" alt="Mumbai report card: Minecraft as the AI pick, and plain AI got 3 wrong and missed Minecraft" width="100%">
+<img src="docs/images/mumbai.png" alt="Mumbai report card: Valorant +0.57 (AI pick) and Lost Stories +0.48 (local taste); plain AI got 2 wrong" width="100%">
 
 > *"If your submission would work the same without Qloo, you're building the wrong thing."* Without Qloo, FanDrive would recommend famous names. With Qloo, it recommends the fan bases that are actually young, actually local, and actually near a hall that can host.
 
@@ -118,6 +120,7 @@ flowchart LR
 | `GET /search?query=…&types=urn:entity:…` | Resolve and confirm each candidate. Mismatches are excluded with a reason. |
 | `GET /v2/insights` `filter.type=urn:demographics` + `signal.interests.entities` | Age skew of each fan base. |
 | `GET /v2/insights` `filter.type=urn:entity:<type>` + `signal.location.query` + `signal.demographics.age` + `filter.results.entities` | How much young people in *this* city like each shortlisted fandom, in one call per type. |
+| `GET /v2/insights` `filter.type=urn:entity:artist\|person` + `signal.location.query` + `signal.demographics.age` (no entity filter) | **Local taste**: what young people in the city over-index on. Names that also top more than one of 10 reference cities are dropped as national favourites. |
 | `GET /v2/insights` `filter.type=urn:heatmap` + `filter.location.query` + `signal.interests.entities` | Where the fans are. Lift = fandom affinity rank minus a baseline of mass brands (Coca-Cola, Netflix, McDonald's, NFL, Taylor Swift). |
 | `GET /v2/insights` `filter.type=urn:entity:place` + `filter.location=POINT(lon lat)` + `filter.location.radius` | Venues near each fan zone, ranked by affinity, young-crowd tags, event space and opening hours on the drive date. |
 
@@ -145,7 +148,8 @@ Then ask your agent: *"Which fandoms should a Houston blood drive partner with t
 
 - **No invented facts.** Copy with numbers the tools never returned (digits *or* words, like "forty percent") falls back to template text.
 - **No fake endorsements.** Public copy may only mention a fandom as fandom ("Kai Cenat fans"), never as if the artist, team or game were involved.
-- **Sensible venues.** No drives at bars, shooting ranges, cigar or vape shops, tattoo parlours, children's schools or private homes.
+- **Sensible venues.** No drives at bars, shooting ranges, cigar or vape shops, tattoo parlours, children's schools or museums, or private homes.
+- **Careful with people.** The agent never picks anyone who has died, is under 18 or is known for a scandal, and a plan led by a person reminds organisers to check fit.
 - **Always finishes.** A Gemini fallback chain plus deadlines; if the AI is down, autopilot finishes the plan with the same Qloo tools.
 - **Respects the API.** At most 3 Qloo requests/second, a pause on 429s, Redis caching, and a daily budget across all servers.
 - **Private by design.** Only public names, cities and coordinates go to Qloo. Results are crowd-level tendencies, never about individuals. Keys stay server-side.
@@ -173,7 +177,7 @@ pnpm dev                     # http://localhost:3000
 
 ## Quality
 
-- **182 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
+- **202 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
 - Reviewed end to end by a separate code-review agent; every critical and important finding was fixed test-first.
 - Live data spike and tuning notes: [`docs/spike/2026-10-13.md`](docs/spike/2026-10-13.md). Design spec: [`docs/superpowers/specs`](docs/superpowers/specs).
 
@@ -186,8 +190,9 @@ pnpm test && pnpm typecheck && pnpm lint && pnpm build
 1. **City data varies.** Houston and Seattle are "medium"; rankings there are directional.
 2. **Local love saturates.** Popular fandoms score 0.92–1.00, so city-specific signal comes from fan density.
 3. **Youngest bucket is "24 and under".** It includes people too young to donate; eligibility rules always apply.
-4. **India data is thinner.** Global fandoms often out-score local stars on youth skew.
-5. **Free-tier AI is flaky.** Gemini's free tier caps requests per model per day; FanDrive switches models, then falls back to autopilot.
+4. **India data is thinner.** Qloo's Indian city lists overlap a lot, so local picks there are often national favourites.
+5. **"Local" is Qloo's view, not a hometown check.** Local picks are the artists and athletes young people in the city over-index on. Qloo's athlete data can be dated, and it can't know who has died; the agent is told to skip such names.
+6. **Free-tier AI is flaky.** Gemini's free tier caps requests per model per day; FanDrive switches models, then falls back to autopilot.
 
 ## Roadmap
 

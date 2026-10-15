@@ -35,7 +35,7 @@ describe("classifyVenue genre rules (from live Qloo genres)", () => {
       expect(role(g), g).toBe("skip");
   });
   it("never hosts at venues for young children and skips residential parks", () => {
-    for (const g of ["elementary_school", "middle_school", "primary_school", "preschool", "kindergarten", "day_care_center", "child_care_agency", "nursery_school", "trailer_park", "mobile_home_park", "rv_park"])
+    for (const g of ["elementary_school", "middle_school", "primary_school", "preschool", "kindergarten", "day_care_center", "child_care_agency", "nursery_school", "trailer_park", "mobile_home_park", "rv_park", "children's_museum", "children's_amusement_center", "childrens_theater", "kids_club", "playground"])
       expect(role(g), g).toBe("skip");
     expect(role("dog_park")).not.toBe("host");
     expect(role("high_school")).toBe("host");

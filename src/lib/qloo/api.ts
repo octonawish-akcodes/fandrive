@@ -49,9 +49,9 @@ export function createQlooApi(client: QlooClient) {
       return new Map((b.results?.entities ?? []).map((e: Raw) => [e.entity_id as string, e.query?.affinity as number]));
     },
     /** What young people in a city over-index on, ranked by Qloo (no entity filter). */
-    async localTaste(a: { city: string; type: EntityType; ageSignal: string; take: number }): Promise<{ entityId: string; name: string; type: EntityType; popularity: number }[]> {
+    async localTaste(a: { city: string; type: EntityType; ageSignal: string; take: number }): Promise<{ entityId: string; name: string; type: EntityType; popularity: number; tags: string[] }[]> {
       const b = await client.get<Raw>("/v2/insights", { "filter.type": `urn:entity:${a.type}`, "signal.location.query": a.city, "signal.demographics.age": a.ageSignal, take: a.take });
-      return (b.results?.entities ?? []).filter((e: Raw) => e.entity_id && e.name).map((e: Raw) => ({ entityId: e.entity_id, name: e.name, type: a.type, popularity: e.popularity ?? 0 }));
+      return (b.results?.entities ?? []).filter((e: Raw) => e.entity_id && e.name).map((e: Raw) => ({ entityId: e.entity_id, name: e.name, type: a.type, popularity: e.popularity ?? 0, tags: (e.tags ?? []).map((t: Raw) => t.name).filter(Boolean) }));
     },
     async heatmap(a: { city: string; ids: string[] }): Promise<{ cells: HeatCell[]; locality: Locality | null }> {
       const b = await client.get<Raw>("/v2/insights", { "filter.type": "urn:heatmap", "filter.location.query": a.city, "signal.interests.entities": a.ids.join(",") });

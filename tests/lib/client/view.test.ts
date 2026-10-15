@@ -35,6 +35,8 @@ describe("view helpers", () => {
     expect(v.missed?.name).toBe("Roblox");
     expect(plainAiVerdicts([C("Roblox", 0.93, "Roblox")], ps).missed?.name).toBe("Fortnite");
     expect(plainAiVerdicts(null, ps)).toEqual({ rows: [], missed: null });
+    const lead = [P("Travis Scott", 0.46), P("Fortnite", 0.72), P("Brett Gray", 0.86)];
+    expect(plainAiVerdicts([C("Travis Scott", 0.46)], lead, { ids: ["id:Travis Scott", "id:Fortnite"], rationale: null }).missed?.name).toBe("Fortnite"); // a pick the report shows, not one further down
   });
 
   it("writes the headline around the top pick, or a prompt before any plan", () => {
