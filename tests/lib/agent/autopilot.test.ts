@@ -23,6 +23,13 @@ describe("runAutopilot", () => {
     expect(r.usedTemplate).toBe(true);
     expect(r.creative.theme).toContain(r.partners[0].name);
   });
+  it("adds Qloo's local taste to the candidates and leads with a local pick, mapped", async () => {
+    const local = { ...data, demo: { ...data.demo, [id("Don Toliver")]: { age: { "24_and_younger": 0.4 }, gender: {} } }, local: { artist: [{ name: "Don Toliver", popularity: 0.99 }] } };
+    const r = await runAutopilot({ input, city, tools: createTools(fakeApi(local)) });
+    expect(r.partners[1].name).toBe("Don Toliver");
+    expect(r.partners[1].local).toBe(true);
+    expect(r.maps.map((m) => m.partnerName)).toContain("Don Toliver");
+  });
   it("reuses state from an interrupted agent run without re-scoring", async () => {
     const api = fakeApi(data);
     const spy = vi.spyOn(api, "search");

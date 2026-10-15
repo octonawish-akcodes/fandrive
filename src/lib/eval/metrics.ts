@@ -9,6 +9,8 @@ export type CityEval = {
   plainAi: { name: string; matchedName?: string; youthSkew: number | null }[];
   /** FanDrive's top three after Qloo scoring. */
   fanDrive: { name: string; youthSkew: number; pull: number }[];
+  /** The city-specific fandom the report leads with: Qloo's local taste for young people, scored like every other candidate. */
+  localPick?: { name: string; youthSkew: number } | null;
 };
 type Shares = { picks: number; young: number; notYoung: number; older: number; noData: number; meanSkew: number | null };
 type Top = { picks: number; young: number; meanSkew: number | null };
@@ -36,12 +38,14 @@ export function cityMetrics(c: CityEval) {
 /** Pools every pick across cities (a city with five picks counts more than one with two). */
 export function aggregate(cs: CityEval[]) {
   const misses = cs.map(missed);
+  const locals = cs.flatMap((c) => (c.localPick ? [c.localPick] : []));
   return {
     cities: cs.length,
     plain: plainShares(cs.flatMap((c) => c.plainAi)),
     fanDrive: topShares(cs.flatMap((c) => c.fanDrive)),
     citiesWithMiss: misses.filter((m) => m.length > 0).length,
     missedPicks: misses.reduce((n, m) => n + m.length, 0),
+    local: { cities: locals.length, distinct: new Set(locals.map((l) => l.name)).size, meanSkew: mean(locals.map((l) => l.youthSkew)) },
   };
 }
 
@@ -57,7 +61,8 @@ export function renderMarkdown(cs: CityEval[]): string {
     const plain = c.plainAi.map((p) => `${p.name} (${p.youthSkew === null ? "no data" : signed(p.youthSkew)})`).join(", ");
     const top = c.fanDrive.map((p) => `${p.name} (${signed(p.youthSkew)})`).join(", ");
     const m = missed(c);
-    return `| ${c.city} | ${c.badge} | ${plain} | ${top} | ${m.length ? m.join(", ") : "—"} |`;
+    const local = c.localPick ? `${c.localPick.name} (${signed(c.localPick.youthSkew)})` : "—";
+    return `| ${c.city} | ${c.badge} | ${plain} | ${top} | ${m.length ? m.join(", ") : "—"} | ${local} |`;
   });
-  return ["| City | Qloo data | Plain AI suggested (youth skew) | FanDrive top 3 (youth skew) | Plain AI missed |", "|---|---|---|---|---|", ...rows].join("\n");
+  return ["| City | Qloo data | Plain AI suggested (youth skew) | FanDrive top 3 (youth skew) | Plain AI missed | Local pick |", "|---|---|---|---|---|---|", ...rows].join("\n");
 }

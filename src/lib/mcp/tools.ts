@@ -1,6 +1,7 @@
 import type { LanguageModel } from "ai";
 import { z } from "zod";
 import { runPlan } from "@/lib/agent/run";
+import { withLocalLead } from "@/lib/engine/local";
 import { CityNotFoundError, type ToolEvent, type Tools } from "@/lib/engine/tools";
 import { PlanInputSchema, type Plan } from "@/lib/plan/schema";
 import { QlooError } from "@/lib/qloo/client";
@@ -61,13 +62,13 @@ export async function planBloodDrive(args: z.input<typeof PlanArgsSchema>, d: Pl
 /** The plan as text an agent can read back to a person: picks, where to host, the poster, and a link to the full report. */
 export function summarize(plan: Plan, baseUrl: string): string {
   const picked = new Set(plan.agentPicks?.ids ?? []);
-  const order = [...plan.partners.filter((p) => picked.has(p.entityId)), ...plan.partners.filter((p) => !picked.has(p.entityId))].slice(0, 5);
+  const order = withLocalLead([...plan.partners.filter((p) => picked.has(p.entityId)), ...plan.partners.filter((p) => !picked.has(p.entityId))]).slice(0, 5);
   const lines = [
     `FanDrive plan for ${plan.city.disambiguation ?? plan.city.name} (Qloo data: ${plan.city.badge}; planned by ${plan.engine === "agent" ? "the AI agent" : "autopilot"})`,
     `Ages ${plan.input.band}, drive window ${plan.input.startDate} to ${plan.input.endDate}.`,
     "",
     "Fandom partners (youth skew runs −1 to +1; higher means younger fans):",
-    ...order.map((p, i) => `${i + 1}. ${p.name} (${p.type.replace("_", " ")}): youth skew ${signed(p.youthSkew)}, local love ${p.localLove === null ? "n/a" : p.localLove.toFixed(2)}, Young-Donor Pull ${p.pull.toFixed(2)}${picked.has(p.entityId) ? " [AI pick]" : ""}`),
+    ...order.map((p, i) => `${i + 1}. ${p.name} (${p.type.replace("_", " ")}): youth skew ${signed(p.youthSkew)}, local love ${p.localLove === null ? "n/a" : p.localLove.toFixed(2)}, Young-Donor Pull ${p.pull.toFixed(2)}${picked.has(p.entityId) ? " [AI pick]" : ""}${p.local ? " [local: one of Qloo's top picks for young people in this city]" : ""}`),
   ];
   if (plan.agentPicks?.rationale) lines.push(`Why: ${plan.agentPicks.rationale}`);
   lines.push("", "Where the fans are, and where to host:");

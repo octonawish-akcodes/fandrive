@@ -24,6 +24,8 @@ describe("view helpers", () => {
     expect(topTwo(ps, { ids: ["id:Roblox"], rationale: null }).map((p) => p.name)).toEqual(["Roblox", "Fortnite"]);
     expect(topTwo(ps).map((p) => p.name)).toEqual(["Fortnite", "Roblox"]);
     expect(topTwo([])).toEqual([]);
+    const local = { ...P("Don Toliver", 0.4), local: true as const };
+    expect(topTwo([...ps, local], { ids: ["id:Roblox", "id:Fortnite"], rationale: null }).map((p) => p.name)).toEqual(["Roblox", "Don Toliver"]);
   });
 
   it("marks plain-AI picks young or not, and finds the young fandom it missed", () => {

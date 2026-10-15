@@ -6,7 +6,7 @@ import { byYoungDonorFit, confidenceLevel, pullScores, youthSkew } from "./scori
 import { clusterZones, haversineKm, liftCells, type LiftCell, type Zone } from "./zones";
 import { rankVenues, type Venue } from "./venues";
 import { momentum, TREND_TYPES, TREND_WINDOW, type Momentum } from "./trend";
-import { BADGE, HOST_TAG_QUERIES, MATCH_OK, VENUE_RADIUS_M, ZONE } from "./weights";
+import { BADGE, HOST_TAG_QUERIES, LOCAL_TASTE, MATCH_OK, VENUE_RADIUS_M, ZONE } from "./weights";
 
 /** Safe "fans also love" tags: music/film/game genres, media keywords, game styles and Qloo categories.
  *  Never religion, identity/inclusivity, endorsements, places, occupations or themes (e.g. "Violence"). */
@@ -14,13 +14,14 @@ const CULTURE_TAG = /^urn:tag:(genre:(?!place)[a-z_]+|keyword:media|gameplay_typ
 /** Identity words never shown next to a fandom, whatever Qloo's subtype says. */
 const IDENTITY_WORD = /\b(african|afro-american|black-owned|white|caucasian|asian|hispanic|latin[ao]s?|latinx|jewish|muslim|islam\w*|christian\w*|catholic\w*|hindu\w*|sikh\w*|buddhis\w*|religio\w*|gay|lesbian|lgbt\w*|queer|transgender|ethnic\w*|racial|race)\b/i;
 
-export type NameRef = { name: string; type: EntityType };
+export type NameRef = { name: string; type: EntityType; entityId?: string; local?: boolean }; // entityId: already resolved (local taste), no search needed
 export type Resolved = NameRef & { status: "ok" | "mismatch" | "not_found"; entityId?: string; matchedName?: string; match: number };
 export type Evidence = { label: string; source: string; value: string };
 export type Partner = {
   entityId: string; name: string; type: EntityType; query: string; match: number; youthSkew: number;
   localLove: number | null; density: number; pull: number; confidence: "high" | "medium" | "low"; evidence: Evidence[];
   fanTags?: string[]; momentum?: Momentum | null; // filled for the top picks only
+  local?: true; // Qloo's top picks for young people in this city
 };
 export type Excluded = { query: string; type: EntityType; reason: string };
 export type CityBadge = "strong" | "medium" | "thin";
@@ -48,6 +49,7 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
   const baselineCells = new Map<string, Promise<HeatCell[][]>>();
 
   async function resolveOne(r: NameRef): Promise<Resolved> {
+    if (r.entityId) return { ...r, status: "ok", matchedName: r.name, match: 1 };
     const hits = await api.search(r.name, r.type, 5).catch(orSoft([]));
     if (!hits.length) return { ...r, status: "not_found", match: 0 };
     const best = hits.map((h) => ({ h, m: matchConfidence(r.name, h.name) })).sort((a, b) => b.m - a.m || b.h.popularity - a.h.popularity)[0];
@@ -108,7 +110,9 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     const resolved = await findAndConfirm(a.refs);
     const excluded: Excluded[] = resolved.filter((r) => r.status !== "ok").map((r) => ({ query: r.name, type: r.type,
       reason: r.status === "not_found" ? "Not found in Qloo" : `Qloo matched "${r.matchedName}" — not the same, skipped` }));
-    const ok = [...new Map(resolved.filter((r) => r.status === "ok").map((r) => [r.entityId!, r])).values()];
+    const byId = new Map<string, Resolved>();
+    for (const r of resolved.filter((x) => x.status === "ok")) byId.set(r.entityId!, { ...r, local: r.local || byId.get(r.entityId!)?.local });
+    const ok = [...byId.values()];
     const ages = await fanAge(ok.map((r) => r.entityId!));
     const usable = ok.filter((r) => {
       const d = ages.get(r.entityId!);
@@ -128,12 +132,13 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
       return {
         entityId: row.id, name: r.matchedName!, type: r.type, query: r.name, match: r.match, youthSkew: row.youth,
         localLove: row.local, density: row.density, pull: pull.get(row.id)!,
-        confidence: confidenceLevel({ match: r.match, hasLocal: row.local !== null, cityBadge: a.cityBadge }),
+        confidence: confidenceLevel({ match: r.match, hasLocal: row.local !== null, cityBadge: a.cityBadge }), ...(r.local ? { local: true as const } : {}),
         evidence: [
           { label: `Fan-base age skew (${a.band})`, source: "Qloo insights · filter.type=urn:demographics", value: signed(row.youth) },
           { label: `Young-audience affinity in ${a.city}`, source: "Qloo insights · signal.location.query + signal.demographics.age + filter.results.entities",
             value: row.local === null ? "below Qloo threshold" : row.local.toFixed(2) },
           { label: "Fan concentration (top-30 heatmap lift)", source: "Qloo insights · filter.type=urn:heatmap vs city baseline", value: row.density.toFixed(2) },
+          ...(r.local ? [{ label: `Local taste in ${a.city}`, source: "Qloo insights · signal.location.query + signal.demographics.age, no entity filter", value: "among the city's top picks for young people" }] : []),
         ],
       };
     }).sort(byYoungDonorFit);
@@ -201,6 +206,28 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     return mapped;
   }
 
+  type TasteList = Awaited<ReturnType<QlooApi["localTaste"]>>;
+  const tasteList = (city: string, type: EntityType, band: AgeBand) =>
+    api.localTaste({ city, type, ageSignal: ageSignal(band), take: LOCAL_TASTE.take }).catch(() => [] as TasteList);
+  const panelCounts = new Map<AgeBand, Promise<{ city: string; ids: Set<string> }[]>>();
+  /** Each reference city's top picks for young people (cached a week, shared by every plan). */
+  const panel = (band: AgeBand) => {
+    if (!panelCounts.has(band)) panelCounts.set(band, Promise.all(LOCAL_TASTE.panel.map(async (c) =>
+      ({ city: c, ids: new Set((await Promise.all(LOCAL_TASTE.types.map((t) => tasteList(c, t, band)))).flat().map((e) => e.entityId)) }))));
+    return panelCounts.get(band)!;
+  };
+  const sameCity = (a: string, b: string) => a.split(",")[0].trim().toLowerCase() === b.split(",")[0].trim().toLowerCase();
+
+  /** What young people in this city love that other cities' young people don't (Qloo's own ranking), as ready-resolved candidates. */
+  async function discoverLocal(city: string, band: AgeBand): Promise<NameRef[]> {
+    emit({ tool: "local_taste", message: `Asking Qloo what young people in ${city} love that other cities don't` });
+    const [lists, ref] = await Promise.all([Promise.all(LOCAL_TASTE.types.map((t) => tasteList(city, t, band))), panel(band)]);
+    const others = ref.filter((r) => !sameCity(r.city, city));
+    const local = (id: string) => others.filter((r) => r.ids.has(id)).length <= LOCAL_TASTE.maxOtherCities;
+    return lists.flatMap((l) => l.filter((e) => e.popularity >= LOCAL_TASTE.minPopularity && local(e.entityId)).slice(0, LOCAL_TASTE.perType))
+      .map((e) => ({ name: e.name, type: e.type, entityId: e.entityId, local: true }));
+  }
+
   async function typeNames(names: string[]): Promise<{ refs: NameRef[]; unresolved: string[] }> {
     if (!names.length) return { refs: [], unresolved: [] };
     emit({ tool: "find_and_confirm", message: `Identifying ${names.length} partner names you entered` });
@@ -213,6 +240,6 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     return { refs: typed.filter((x): x is NameRef => x !== null), unresolved: names.filter((_, i) => typed[i] === null) };
   }
 
-  return { findAndConfirm, typeNames, fanAge, cityFit, cityStrength, fanZones, scorePartners, mapPartner, fanTags, trendFor, profileFans };
+  return { findAndConfirm, typeNames, discoverLocal, fanAge, cityFit, cityStrength, fanZones, scorePartners, mapPartner, fanTags, trendFor, profileFans };
 }
 export type Tools = ReturnType<typeof createTools>;

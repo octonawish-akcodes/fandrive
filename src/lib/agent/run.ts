@@ -1,5 +1,6 @@
 import type { LanguageModel } from "ai";
 import { nanoid } from "nanoid";
+import { topTwo } from "@/lib/client/view";
 import { CityNotFoundError, type ToolEvent, type Tools } from "@/lib/engine/tools";
 import type { CityInfo, PlainAiCheck, Plan, PlanInput, RunEvent, Step } from "@/lib/plan/schema";
 import { QlooError } from "@/lib/qloo/client";
@@ -72,6 +73,7 @@ async function planWithin(input: PlanInput, deps: RunDeps, emit: (e: RunEvent) =
       ...(core.excluded.length ? [skippedNote(core.excluded.length)] : []),
       ...(engine === "autopilot" ? ["Planned by autopilot: same Qloo data, fixed steps, template copy."] : []),
       ...(core.usedTemplate && engine === "agent" ? ["Campaign copy uses templates (AI writer unavailable)."] : []),
+      ...topTwo(core.partners, core.picks).filter((p) => p.type === "person").map((p) => `${p.name} is a public figure: check they fit your organisation before using their name, and never imply they endorse the drive.`),
       "Scores describe crowd-level tendencies, not individuals. Eligibility rules vary; follow your blood service's guidance.",
     ];
     const plan: Plan = {

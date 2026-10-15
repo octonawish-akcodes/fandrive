@@ -28,8 +28,8 @@ export function ReportView({ state }: { state: RunState }) {
       {status === "error" ? (steps.length > 0 && log) : <>
         <div className="grid gap-x-6 gap-y-8 [grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))]">
           {running && log}
-          {first ? <PickCard partner={first} rank={1} agentPick={isPick(first.entityId)} rationale={isPick(first.entityId) ? picks?.rationale : null} /> : <SkeletonCard tone="bg-sun" label="Top fandom" />}
-          {second ? <PickCard partner={second} rank={2} agentPick={isPick(second.entityId)} /> : <SkeletonCard tone="bg-bubble" label="Runner-up" />}
+          {first ? <PickCard partner={first} rank={1} agentPick={isPick(first.entityId)} rationale={isPick(first.entityId) ? picks?.rationale : null} city={city?.name} /> : <SkeletonCard tone="bg-sun" label="Top fandom" />}
+          {second ? <PickCard partner={second} rank={2} agentPick={isPick(second.entityId)} city={city?.name} /> : <SkeletonCard tone="bg-bubble" label="Runner-up" />}
           {plainAi !== undefined ? <PlainAiPanel checks={plainAi} partners={partners ?? []} /> : <SkeletonCard label="Plain AI check" />}
           {maps && city ? <MapCard city={city} maps={maps} /> : <div className="col-span-full"><SkeletonCard tone="bg-sky" label="Where to host" /></div>}
           {creative ? <PosterCard c={creative} /> : <SkeletonCard tone="bg-alarm" label="Poster" />}

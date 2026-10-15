@@ -1,3 +1,4 @@
+import { withLocalLead } from "@/lib/engine/local";
 import type { Partner } from "@/lib/engine/tools";
 import type { AgentPicks, PlainAiCheck, Step } from "@/lib/plan/schema";
 
@@ -7,10 +8,10 @@ export const signed = (x: number) => (x < 0 ? `−${Math.abs(x).toFixed(2)}` : `
 /** Youth skew (−1…+1) as a 0–100 bar width. */
 export const youthBarPct = (skew: number) => Math.round(Math.min(1, Math.max(0, (skew + 1) / 2)) * 100);
 
-/** The two partners the report leads with: the agent's picks first, else the top of the ranking. */
+/** The two partners the report leads with: the agent's picks first, else the top of the ranking; one of them local when possible. */
 export function topTwo(partners: Partner[], picks?: AgentPicks | null): Partner[] {
   const picked = (picks?.ids ?? []).map((id) => partners.find((p) => p.entityId === id)).filter((p): p is Partner => !!p);
-  return [...picked, ...partners.filter((p) => !picked.includes(p))].slice(0, 2);
+  return withLocalLead([...picked, ...partners.filter((p) => !picked.includes(p))]).slice(0, 2);
 }
 
 export type Verdict = "young" | "not-young" | "no-data";

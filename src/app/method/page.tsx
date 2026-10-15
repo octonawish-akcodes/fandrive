@@ -15,6 +15,7 @@ const ENDPOINTS: [string, string][] = [
   ["/search", "Resolve and confirm every name (mismatches are skipped with a reason)."],
   ["/v2/insights · urn:demographics", "Age skew of each fan base."],
   ["/v2/insights · urn:entity:<type> + location + age", "Local love among young people in the city."],
+  ["/v2/insights · urn:entity:artist|person + location + age (no entity filter)", "Local taste: what young people in the city over-index on, minus names that also top other reference cities."],
   ["/v2/insights · urn:heatmap", "Fan zones: cells where the fandom beats the baseline."],
   ["/v2/insights · urn:entity:place (+ filter.tags)", "Venues near each fan zone, including campuses, halls and centres by Qloo place tag."],
   ["/v2/tags", "Resolve those place tags (university, community centre, event venue…)."],
@@ -89,12 +90,16 @@ export default function MethodPage() {
               <div className="font-display text-6xl">{eval_.aggregate.citiesWithMiss}/{eval_.aggregate.cities}</div>
               <p className="font-semibold">cities where plain AI never suggested at least one of FanDrive&rsquo;s top 3.</p>
             </div>
+            <div className="brut flex flex-col gap-2 bg-mint p-6">
+              <div className="font-display text-6xl">{eval_.aggregate.local.distinct}</div>
+              <p className="font-semibold">different local picks across {eval_.aggregate.local.cities} cities, from Qloo&rsquo;s local taste (e.g. Calboy in Chicago, Big Pokey in Houston).</p>
+            </div>
           </div>
           <div className="brut overflow-x-auto bg-white">
-            <table className="w-full min-w-[720px] text-left text-sm">
+            <table className="w-full min-w-[860px] text-left text-sm">
               <caption className="sr-only">Plain-AI picks and FanDrive&rsquo;s top 3 by city, with Qloo youth skew</caption>
               <thead className="border-b-[3px] border-black font-display text-base">
-                <tr><th className="p-3">City</th><th className="p-3">Plain AI suggested</th><th className="p-3">FanDrive top 3</th></tr>
+                <tr><th className="p-3">City</th><th className="p-3">Plain AI suggested</th><th className="p-3">FanDrive top 3</th><th className="p-3">Local pick</th></tr>
               </thead>
               <tbody>
                 {eval_.cities.map((c) => (
@@ -106,12 +111,13 @@ export default function MethodPage() {
                     <td className="p-3">{c.fanDrive.map((p) => (
                       <span key={p.name} className={`mr-1 mb-1 inline-block border-2 border-black px-1.5 font-bold ${p.youthSkew >= eval_.youngThreshold ? "bg-mint" : "bg-bubble"}`}>{p.name} {signed(p.youthSkew)}</span>
                     ))}</td>
+                    <td className="p-3">{c.localPick ? <span className="inline-block border-2 border-black bg-sky px-1.5 font-bold">{c.localPick.name} {signed(c.localPick.youthSkew)}</span> : "—"}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <p className="text-sm font-semibold">Green: youth skew ≥ {signed(eval_.youngThreshold)} (ages 16–24). Pink: not young-skewing. FanDrive is scored with the same Qloo data it optimises, so the plain-AI numbers are the informative ones; this is not a turnout measure. With a fixed candidate pool, global youth fandoms (Fortnite, Stranger Things) top most cities; the live agent adds local names. One plain-AI answer per city, recorded {eval_.generatedAt} with {eval_.models.split(",")[0]}. Raw answers and script: <code>docs/eval</code>, <code>scripts/eval.ts</code>.</p>
+          <p className="text-sm font-semibold">Green: youth skew ≥ {signed(eval_.youngThreshold)} (ages 16–24). Pink: not young-skewing. FanDrive is scored with the same Qloo data it optimises, so the plain-AI numbers are the informative ones; this is not a turnout measure. Local picks are what young people in the city over-index on compared with 10 reference cities (Qloo&rsquo;s view, not a hometown check). One plain-AI answer per city, recorded {eval_.generatedAt} with {eval_.models.split(",")[0]}. Raw answers and script: <code>docs/eval</code>, <code>scripts/eval.ts</code>.</p>
         </section>
 
         <section aria-labelledby="score-h" className="flex flex-col gap-6">

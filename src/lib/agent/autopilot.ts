@@ -1,3 +1,4 @@
+import { withLocalLead } from "@/lib/engine/local";
 import { seedPartners } from "@/lib/engine/seeds";
 import type { Excluded, Partner, Tools } from "@/lib/engine/tools";
 import type { CityInfo, Creative, MapResult, PlanInput, AgentPicks } from "@/lib/plan/schema";
@@ -30,13 +31,13 @@ export async function runAutopilot(a: { input: PlanInput; city: CityInfo; tools:
   let ranked = a.state?.ranked;
   let excluded = a.state?.excluded ?? [];
   if (!ranked) {
-    const typed = await a.tools.typeNames(a.input.partners);
-    const r = await a.tools.scorePartners({ city: a.input.city, band: a.input.band, cityBadge: a.city.badge, refs: [...typed.refs, ...seedPartners(a.city.name)] });
+    const [typed, local] = await Promise.all([a.tools.typeNames(a.input.partners), a.tools.discoverLocal(a.input.city, a.input.band)]);
+    const r = await a.tools.scorePartners({ city: a.input.city, band: a.input.band, cityBadge: a.city.badge, refs: [...typed.refs, ...seedPartners(a.city.name), ...local] });
     ranked = r.ranked;
     excluded = [...typed.unresolved.map((q): Excluded => ({ query: q, type: "artist", reason: "Not found in Qloo" })), ...r.excluded];
   }
   if (ranked.length < 3) throw new TooFewPartnersError(ranked.length);
-  ranked = await enrichTop(a.tools, ranked);
+  ranked = await enrichTop(a.tools, withLocalLead(ranked));
   const maps = await mapTop(a.tools, a.input, a.city, ranked, a.state?.maps);
   return { partners: ranked, excluded, maps, creative: templateCreative(ctxFrom(a.input, a.city, ranked[0], maps[0])), usedTemplate: true };
 }

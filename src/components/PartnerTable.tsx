@@ -15,7 +15,7 @@ export function PartnerTable({ partners, excluded, picks }: { partners: Partner[
           <li key={p.entityId} className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t-[3px] border-black pt-3">
             <span className="w-7 font-display text-xl">{i + 1}</span>
             <div className="min-w-0 flex-[1_1_180px]">
-              <div className="font-bold">{p.name}{picked.has(p.entityId) && <span className="ml-2 inline-block -rotate-2 border-2 border-black bg-alarm px-1.5 text-xs font-bold">AI PICK</span>}</div>
+              <div className="font-bold">{p.name}{picked.has(p.entityId) && <span className="ml-2 inline-block -rotate-2 border-2 border-black bg-alarm px-1.5 text-xs font-bold">AI PICK</span>}{p.local && <span className="ml-2 inline-block rotate-2 border-2 border-black bg-mint px-1.5 text-xs font-bold">LOCAL</span>}</div>
               <div className="text-sm">{p.type.replace("_", " ")} · local love {p.localLove === null ? "below threshold" : p.localLove.toFixed(2)} · {p.confidence} confidence</div>
             </div>
             <div className="h-6 flex-[2_1_200px] border-[3px] border-black bg-white" role="img" aria-label={`Youth skew ${signed(p.youthSkew)}`}>

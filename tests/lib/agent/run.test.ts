@@ -29,6 +29,14 @@ describe("runPlan", () => {
     expect(types.at(-1)).toBe("done");
     expect(plan?.limits.at(-1)).toContain("crowd-level");
   });
+  it("asks organisers to check a public figure's fit when a person leads the plan", async () => {
+    const local = { ...data, demo: { ...data.demo, [id("Don Toliver")]: { age: { "24_and_younger": 0.9 }, gender: {} } }, local: { person: [{ name: "Don Toliver", popularity: 0.99 }] } };
+    const { plan } = await run(local);
+    expect(plan?.partners.slice(0, 2).some((p) => p.type === "person")).toBe(true);
+    expect(plan?.limits.some((l) => l.includes("Don Toliver") && l.includes("public figure"))).toBe(true);
+    const { plan: noPerson } = await run(data);
+    expect(noPerson?.limits.some((l) => l.includes("public figure"))).toBe(false);
+  });
   it("falls back to autopilot when the model fails", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const { plan, events } = await run(data, failingModel());

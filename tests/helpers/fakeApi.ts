@@ -1,3 +1,4 @@
+import { LOCAL_TASTE } from "@/lib/engine/weights";
 import { QlooError } from "@/lib/qloo/client";
 import type { QlooApi } from "@/lib/qloo/api";
 import type { Demographics, EntityType, HeatCell, QlooPlace } from "@/lib/qloo/types";
@@ -7,6 +8,8 @@ export type FakeData = {
   demo?: Record<string, Demographics | "invalid">; cityFit?: Record<string, number>;
   heat?: Record<string, HeatCell[]>; places?: QlooPlace[]; hostPlaces?: QlooPlace[]; badCities?: string[]; authFail?: boolean;
   fanTags?: Record<string, string[]>; rawTags?: Record<string, { name: string; subtype: string }[]>; trend?: Record<string, { date: string; percentile: number }[]>; tagLookups?: string[];
+  local?: Partial<Record<EntityType, { name: string; popularity: number }[]>>; // the planned city (and any city not in the panel)
+  localByCity?: Record<string, Partial<Record<EntityType, { name: string; popularity: number }[]>>>; // reference-panel cities default to empty
 };
 export const id = (name: string) => `id:${name}`;
 export const heat = (pairs: [string, number][]): HeatCell[] =>
@@ -34,5 +37,9 @@ export function fakeApi(d: FakeData): QlooApi {
     async tasteTags(entityId) { return d.rawTags?.[entityId] ?? (d.fanTags?.[entityId] ?? []).map((name) => ({ name, subtype: "urn:tag:genre:music" })); },
     async findTags(query) { d.tagLookups?.push(query); return [{ id: `urn:tag:category:place:${query.replace(/\s+/g, "_")}`, name: query }]; },
     async trending({ id: eid }) { return d.trend?.[eid] ?? []; },
+    async localTaste({ city, type }) {
+      const lists = d.localByCity?.[city] ?? ((LOCAL_TASTE.panel as readonly string[]).includes(city) ? {} : d.local);
+      return (lists?.[type] ?? []).map((e) => ({ entityId: id(e.name), name: e.name, type, popularity: e.popularity }));
+    },
   };
 }

@@ -27,6 +27,12 @@ describe("MCP tools", () => {
     expect(r.text).toContain(`https://fandrive.test/plan?id=${saved[0].id}`);
     expect(r.isError).toBe(false);
   });
+  it("plan_blood_drive names the local pick and says why it is local", async () => {
+    const local = { ...data, demo: { ...data.demo, [id("Don Toliver")]: { age: { "24_and_younger": 0.4 }, gender: {} } }, local: { artist: [{ name: "Don Toliver", popularity: 0.99 }] } };
+    const { d } = deps({ makeTools: (on) => createTools(fakeApi(local), on) });
+    const r = await planBloodDrive({ city: "Houston" }, d);
+    expect(r.text).toMatch(/2\. Don Toliver .*\[local: one of Qloo's top picks for young people in this city\]/);
+  });
   it("plan_blood_drive refuses politely when the rate limit or daily budget says no", async () => {
     const { saved, d } = deps({ allowPlan: async () => "Today's live-planning budget is used up." });
     const r = await planBloodDrive({ city: "Houston, TX" }, d);

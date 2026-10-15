@@ -36,6 +36,21 @@ describe("runAgent", () => {
     expect(r.usedTemplate).toBe(false);
     expect(model.doGenerateCalls.length).toBeLessThanOrEqual(5);
   });
+  it("shows the planner Qloo's local taste, and leads with a local pick even if it chose none", async () => {
+    const local = { ...data, demo: { ...data.demo, [id("Don Toliver")]: { age: { "24_and_younger": 0.4 }, gender: {} } }, local: { artist: [{ name: "Don Toliver", popularity: 0.99 }] } };
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: [id("Sabrina Carpenter"), id("Olivia Rodrigo")], rationale: "Young fans" }]),
+      text(creative("Sabrina Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi(local)), model });
+    const seen = JSON.stringify(model.doGenerateCalls[1].prompt);
+    expect(seen).toContain("Don Toliver");
+    expect(seen).toMatch(/\\?"local\\?":true/);
+    expect(r.partners.slice(0, 2).map((p) => p.name)).toEqual(["Sabrina Carpenter", "Don Toliver"]);
+    expect(r.picks?.ids).toEqual([id("Sabrina Carpenter"), id("Olivia Rodrigo")]);
+    expect(r.maps.map((m) => m.partnerName)).toContain("Don Toliver");
+  });
   it("maps the agent's chosen partners when it finishes straight after scoring", async () => {
     const model = mockModel([
       calls(["score_partners", cands]),
