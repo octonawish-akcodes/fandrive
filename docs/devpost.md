@@ -17,7 +17,7 @@ Copy each section into the matching Devpost field. Numbers are from the live app
 
 ## Inspiration
 
-In August 2026 the American Red Cross declared its second-ever national blood supply crisis, and donors under 30 have fallen sharply for a decade. Fandoms already fill blood drives: the Red Cross × NFL partnership brought in 150,000+ first-time donors. But partners are chosen by gut feel, and famous isn't the same as young. Metallica's drives recruited only 16% first-timers, and on Qloo its fans skew 45–54.
+In August 2026 the American Red Cross declared its second-ever national blood supply crisis, and donors under 30 are down about 39% since 2015 (Blood Centers of America). Fandoms already fill blood drives: the Red Cross × NFL partnership brought in 150,000+ first-time donors. But partners are chosen by gut feel, and famous isn't the same as young. Metallica's drives recruited only 16% first-timers, and on Qloo its fans skew 45–54.
 
 We asked: what if a blood bank could see which fan bases in *its* city are young, where they live and which hall nearby can host, before it picks a partner?
 

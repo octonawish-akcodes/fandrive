@@ -4,7 +4,7 @@ Optional (the rules don't require a video), but judges skim, and a short video c
 
 | Time | Screen | Say |
 |---|---|---|
-| 0:00–0:12 | Home page hero | "The Red Cross is in its second-ever national blood crisis, and donors under 30 have dropped for a decade. Blood banks already team up with fandoms, but they pick partners by gut feel." |
+| 0:00–0:12 | Home page hero | "The Red Cross is in its second-ever national blood crisis, and donors under 30 are down about 39% since 2015. Blood banks already team up with fandoms, but they pick partners by gut feel." |
 | 0:12–0:22 | `/method`, Metallica card | "Metallica's drives recruited just 16% first-timers. On Qloo, its fans skew 45 to 54. Famous isn't the same as young." |
 | 0:22–0:40 | Click **Watch Houston**; the agent steps stream in | "FanDrive is an AI agent. It proposes fandoms, and Qloo adds what young Houstonians love that other cities don't. Then it scores each one: how young the fans are, how loved locally, how concentrated." |
 | 0:40–0:55 | Report card: Jeremy Peña +0.98, Don Toliver, LOCAL TASTE chip | "It picks Astros star Jeremy Peña and Houston rapper Don Toliver, both local, both young-skewing." |

@@ -36,7 +36,7 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 ## The problem
 
 - 🩸 The American Red Cross declared its **second-ever national blood supply crisis** in August 2026.
-- 📉 **Donors under 30 fell 47% in ten years** (Blood Centers of America). Only about **3% of eligible Americans** donate (AABB, 2026).
+- 📉 **Donors under 30 are down about 39% since 2015**, and high-school and college donors are down nearly half since the pandemic (Blood Centers of America, 2026). Only about **3% of eligible Americans** donate (AABB, 2026).
 - 🎸 **Fandoms already fill blood drives:** the Red Cross × NFL partnership brought **150,000+ first-time donors**, and the Peanuts Snoopy shirt sent Red Cross search interest up **600%**.
 - 🎯 **But partners are picked by gut feel.** Metallica's drives recruited only **16% first-timers**, and on Qloo their fans skew 45–54.
 

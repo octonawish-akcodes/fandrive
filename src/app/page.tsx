@@ -28,7 +28,7 @@ export default function Home() {
             <h1 className="font-display text-5xl leading-[0.95] sm:text-7xl">
               Every fandom is a <span className="inline-block -rotate-2 border-[3px] border-black bg-alarm px-3 shadow-[6px_6px_0_#000]">blood drive</span> waiting to happen.
             </h1>
-            <p className="max-w-2xl text-xl">Donors under 30 fell 47% in ten years. FanDrive&rsquo;s AI agent finds which fandoms skew young in your city, where those fans live and which venues nearby can host. Then it writes the posters.</p>
+            <p className="max-w-2xl text-xl">Donors under 30 are down about 39% since 2015. FanDrive&rsquo;s AI agent finds which fandoms skew young in your city, where those fans live and which venues nearby can host. Then it writes the posters.</p>
             <div className="flex flex-wrap gap-4">
               <Link href="/plan" className="press border-[3px] border-black bg-black px-6 py-3 font-display text-xl text-white shadow-[4px_4px_0_#FF4949]">Plan a drive →</Link>
               <Link href="/plan?example=houston" className="press brut-sm bg-white px-6 py-3 font-display text-xl">Watch Houston</Link>
