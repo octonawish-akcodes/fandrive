@@ -48,6 +48,14 @@ describe("local taste", () => {
     const api = fakeApi({ localByCity: { "Chicago, IL": { artist: [{ name: "Polo G", popularity: 0.9 }] }, "Houston, TX": { artist: [{ name: "Polo G", popularity: 0.9 }] } } });
     expect((await createTools(api).discoverLocal("Chicago, IL", "16-24")).map((r) => r.name)).toEqual(["Polo G"]);
   });
+  it("never puts a name with profanity or a slur on a blood-drive report, wherever it came from", async () => {
+    const young = { age: { "24_and_younger": 0.6 }, gender: {} };
+    const api = fakeApi({ demo: { [id("Mannequin Pussy")]: young, [id("Nothing")]: young, [id("Fortnite")]: young } });
+    const r = await createTools(api).scorePartners({ city: "Philadelphia", band: "16-24", cityBadge: "medium",
+      refs: [{ name: "Fortnite", type: "videogame" }, { name: "Mannequin Pussy", type: "artist", entityId: id("Mannequin Pussy"), local: true }, { name: "Nothing", type: "artist", entityId: id("Nothing"), local: true }] });
+    expect(r.ranked.map((p) => p.name).sort()).toEqual(["Fortnite", "Nothing"]);
+    expect(r.excluded).toContainEqual({ query: "Mannequin Pussy", type: "artist", reason: "Name not suitable for a blood-drive campaign" });
+  });
   it("scores discovered names without searching for them again, and marks them local with evidence", async () => {
     const young = { age: { "24_and_younger": 0.6 }, gender: {} };
     const searched: string[] = [];

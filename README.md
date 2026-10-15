@@ -10,7 +10,7 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs)
 ![Qloo Taste AI](https://img.shields.io/badge/Qloo-Taste%20AI-FF4949?style=flat-square)
 ![Gemini](https://img.shields.io/badge/agent-Gemini-90A8FF?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-202%20passing-23C78A?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-203%20passing-23C78A?style=flat-square)
 ![Qloo Agentic Hackathon](https://img.shields.io/badge/Qloo%20Agentic%20Hackathon-2026-FFC900?style=flat-square)
 
 ### [▶ Try the live demo](https://fandrive-nu.vercel.app) · [Watch Houston](https://fandrive-nu.vercel.app/plan?example=houston) · [Watch Mumbai](https://fandrive-nu.vercel.app/plan?example=mumbai)
@@ -177,7 +177,7 @@ pnpm dev                     # http://localhost:3000
 
 ## Quality
 
-- **202 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
+- **203 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
 - Reviewed end to end by a separate code-review agent; every critical and important finding was fixed test-first.
 - Live data spike and tuning notes: [`docs/spike/2026-10-13.md`](docs/spike/2026-10-13.md). Design spec: [`docs/superpowers/specs`](docs/superpowers/specs).
 

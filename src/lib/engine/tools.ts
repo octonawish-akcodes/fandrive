@@ -12,6 +12,8 @@ import { BADGE, HOST_TAG_QUERIES, LOCAL_TASTE, MATCH_OK, VENUE_RADIUS_M, ZONE } 
  *  Never religion, identity/inclusivity, endorsements, places, occupations or themes (e.g. "Violence"). */
 const CULTURE_TAG = /^urn:tag:(genre:(?!place)[a-z_]+|gameplay_type:qloo|category:qloo)$/;
 /** Identity words never shown next to a fandom, whatever Qloo's subtype says. */
+/** Names that must never appear on a public blood-drive report (live: a local band and an artist in Qloo's US list). */
+const UNSAFE_NAME = /\b(f+u+c+k\w*|motherf\w*|shit(ty|s)?|bitch(es)?|pussy|pussies|cunts?|nigg(a|as|az|er|ers)|whores?|sluts?|fag(s|got|gots)?|porn(o|ography)?)\b/i; // whole words only: "Dick Clark", "Cocktail" and "Pussycat Dolls" are fine
 const IDENTITY_WORD = /\b(african|afro-american|black-owned|white|caucasian|asian|hispanic|latin[ao]s?|latinx|jewish|muslim|islam\w*|christian\w*|catholic\w*|hindu\w*|sikh\w*|buddhis\w*|religio\w*|gay|lesbian|lgbt\w*|queer|transgender|ethnic\w*|racial|race)\b/i;
 
 export type NameRef = { name: string; type: EntityType; entityId?: string; local?: boolean }; // entityId: already resolved (local taste), no search needed
@@ -111,7 +113,10 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     const excluded: Excluded[] = resolved.filter((r) => r.status !== "ok").map((r) => ({ query: r.name, type: r.type,
       reason: r.status === "not_found" ? "Not found in Qloo" : `Qloo matched "${r.matchedName}" — not the same, skipped` }));
     const byId = new Map<string, Resolved>();
-    for (const r of resolved.filter((x) => x.status === "ok")) byId.set(r.entityId!, { ...r, local: r.local || byId.get(r.entityId!)?.local });
+    for (const r of resolved.filter((x) => x.status === "ok")) {
+      if (UNSAFE_NAME.test(r.name) || UNSAFE_NAME.test(r.matchedName ?? "")) { excluded.push({ query: r.name, type: r.type, reason: "Name not suitable for a blood-drive campaign" }); continue; }
+      byId.set(r.entityId!, { ...r, local: r.local || byId.get(r.entityId!)?.local });
+    }
     const ok = [...byId.values()];
     const ages = await fanAge(ok.map((r) => r.entityId!));
     const usable = ok.filter((r) => {
