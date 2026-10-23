@@ -1,0 +1,34 @@
+{
+  "city": "Phoenix, AZ",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Jake Lamb",
+        "youthSkew": 0.96,
+        "pull": 0.99
+      },
+      {
+        "name": "UPSAHL",
+        "youthSkew": 0.82,
+        "pull": 0.85
+      },
+      {
+        "name": "Fortnite",
+        "youthSkew": 0.72,
+        "pull": 0.92
+      }
+    ],
+    "localPick": {
+      "name": "Jake Lamb",
+      "youthSkew": 0.96
+    },
+    "picks": [
+      "Jake Lamb",
+      "UPSAHL",
+      "Fortnite"
+    ],
+    "rationale": "Jake Lamb and UPSAHL offer high local engagement in Phoenix with a strong skew toward the 16-24 demographic, making them excellent choices for driving local participation. Fortnite provides an additional layer of national youth appeal to reach the target donor volume."
+  }
+}

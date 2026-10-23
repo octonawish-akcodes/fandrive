@@ -1,0 +1,34 @@
+{
+  "city": "Dallas, TX",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Adolis García",
+        "youthSkew": 0.97,
+        "pull": 0.85
+      },
+      {
+        "name": "Flatland Cavalry",
+        "youthSkew": 0.75,
+        "pull": 0.78
+      },
+      {
+        "name": "The Polyphonic Spree",
+        "youthSkew": 0.8,
+        "pull": 0.91
+      }
+    ],
+    "localPick": {
+      "name": "Adolis García",
+      "youthSkew": 0.97
+    },
+    "picks": [
+      "Adolis García",
+      "Flatland Cavalry",
+      "The Polyphonic Spree"
+    ],
+    "rationale": "I recommend Adolis García, Flatland Cavalry, and The Polyphonic Spree for the Dallas blood drive. Adolis García shows exceptionally high youth skew and strong local love, making him the ideal local star to drive participation."
+  }
+}

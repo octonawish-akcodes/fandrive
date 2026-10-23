@@ -1,0 +1,32 @@
+{
+  "city": "Nashville, TN",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Lennon Stella",
+        "youthSkew": 0.5,
+        "pull": 0.88
+      },
+      {
+        "name": "Amie Miriello",
+        "youthSkew": 0.84,
+        "pull": 0.87
+      },
+      {
+        "name": "Mason Ramsey",
+        "youthSkew": 0.69,
+        "pull": 0.83
+      }
+    ],
+    "localPick": {
+      "name": "Lennon Stella",
+      "youthSkew": 0.5
+    },
+    "picks": [
+      "Lennon Stella"
+    ],
+    "rationale": null
+  }
+}

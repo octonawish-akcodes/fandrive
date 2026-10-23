@@ -1,0 +1,33 @@
+{
+  "city": "Philadelphia, PA",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "LIL UZI VERT",
+        "youthSkew": 0.48,
+        "pull": 0.8
+      },
+      {
+        "name": "Nothing",
+        "youthSkew": 0.7,
+        "pull": 0.86
+      },
+      {
+        "name": "Philadelphia 76ers",
+        "youthSkew": 0.13,
+        "pull": 0.83
+      }
+    ],
+    "localPick": {
+      "name": "Nothing",
+      "youthSkew": 0.7
+    },
+    "picks": [
+      "LIL UZI VERT",
+      "Philadelphia 76ers"
+    ],
+    "rationale": "Lil Uzi Vert is a hometown Philadelphia artist with a strong pull and significant youth-skewing appeal, making him a perfect local ambassador for recruiting young donors. The Philadelphia 76ers, while having a broader demographic, maintain high local love and high visibility, ensuring the campaign feels integrated into the city's sports culture."
+  }
+}

@@ -10,7 +10,7 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs)
 ![Qloo Taste AI](https://img.shields.io/badge/Qloo-Taste%20AI-FF4949?style=flat-square)
 ![Gemini](https://img.shields.io/badge/agent-Gemini-90A8FF?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-203%20passing-23C78A?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-208%20passing-23C78A?style=flat-square)
 ![Qloo Agentic Hackathon](https://img.shields.io/badge/Qloo%20Agentic%20Hackathon-2026-FFC900?style=flat-square)
 
 ### [▶ Try the live demo](https://fandrive-nu.vercel.app) · [For judges](https://fandrive-nu.vercel.app/judges) · [Watch Houston](https://fandrive-nu.vercel.app/plan?example=houston) · [Watch Mumbai](https://fandrive-nu.vercel.app/plan?example=mumbai)
@@ -82,7 +82,7 @@ FanDrive stands on one signal: how young a fan base is. We checked Qloo against 
 
 The same model is asked for partners **without Qloo**, then every pick is fact-checked against Qloo's age data.
 
-**[20-city evaluation](docs/eval/README.md):** across 96 plain-AI picks in 15 US and 5 Indian cities, **31% had fans who skew older** than average and **60% were not young-skewing or had no Qloo data**. FanDrive's top 3 averaged youth skew **+0.74** vs **+0.25**, and in **every city** plain AI missed at least one of them. Qloo's local taste gave every city a **local pick** (18 different fandoms, such as Cade Cunningham in Detroit, Paolo Banchero in Seattle, STS9 in Denver and Indian Ocean in Mumbai). Re-run with `pnpm eval`; caveats are in the write-up.
+**[20-city evaluation](docs/eval/README.md):** across 96 plain-AI picks in 15 US and 5 Indian cities, **31% had fans who skew older** than average and **60% were not young-skewing or had no Qloo data**. FanDrive's top 3 averaged youth skew **+0.75** vs **+0.25**, and in **every city** plain AI missed at least one of them. Qloo's local taste gave every city a **local pick** (20 different fandoms, such as Paolo Banchero in Seattle, Jeremy Peña in Houston, Nico Hoerner in Chicago and Indian Ocean in Mumbai). Re-run with `pnpm eval`; caveats are in the write-up.
 
 | City | Plain AI suggested | What Qloo says |
 |---|---|---|
@@ -155,7 +155,7 @@ Then ask your agent: *"Which fandoms should a Houston blood drive partner with t
 - **No invented facts.** Copy with numbers the tools never returned (digits *or* words, like "forty percent") falls back to template text.
 - **No fake endorsements.** Public copy may only mention a fandom as fandom ("Kai Cenat fans"), never as if the artist, team or game were involved.
 - **Sensible venues.** No drives at bars, shooting ranges, cigar or vape shops, tattoo parlours, children's schools or museums, or private homes.
-- **Careful with people.** The agent never picks anyone who has died, is under 18 or is known for a scandal, and a plan led by a person reminds organisers to check fit.
+- **Careful with people.** Qloo's birth dates rule out anyone under 18. A separate AI fit check holds back anyone the plan would lead with who may have died or has a reported legal case or controversy, and shows a neutral "check fit" label instead of guessing. Plans led by a person still remind organisers to check fit.
 - **Always finishes.** A Gemini fallback chain plus deadlines; if the AI is down, autopilot finishes the plan with the same Qloo tools.
 - **Respects the API.** At most 3 Qloo requests/second, a pause on 429s, Redis caching, and a daily budget across all servers.
 - **Private by design.** Only public names, cities and coordinates go to Qloo. Results are crowd-level tendencies, never about individuals. Keys stay server-side.
@@ -183,7 +183,7 @@ pnpm dev                     # http://localhost:3000
 
 ## Quality
 
-- **203 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
+- **208 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
 - Reviewed end to end by a separate code-review agent; every critical and important finding was fixed test-first.
 - Live data spike and tuning notes: [`docs/spike/2026-10-13.md`](docs/spike/2026-10-13.md). Design spec: [`docs/superpowers/specs`](docs/superpowers/specs).
 

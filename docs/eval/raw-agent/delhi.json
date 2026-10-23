@@ -1,0 +1,33 @@
+{
+  "city": "New Delhi",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Valorant",
+        "youthSkew": 0.57,
+        "pull": 0.91
+      },
+      {
+        "name": "The Local Train",
+        "youthSkew": 0.47,
+        "pull": 0.85
+      },
+      {
+        "name": "Cigarettes After Sex",
+        "youthSkew": 0.58,
+        "pull": 0.75
+      }
+    ],
+    "localPick": {
+      "name": "The Local Train",
+      "youthSkew": 0.47
+    },
+    "picks": [
+      "Valorant",
+      "The Local Train"
+    ],
+    "rationale": null
+  }
+}

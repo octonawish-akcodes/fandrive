@@ -1,0 +1,33 @@
+{
+  "city": "New York, NY",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Stranger Things",
+        "youthSkew": 0.71,
+        "pull": 0.91
+      },
+      {
+        "name": "Amed Rosario",
+        "youthSkew": 0.93,
+        "pull": 0.91
+      },
+      {
+        "name": "Fortnite",
+        "youthSkew": 0.72,
+        "pull": 0.9
+      }
+    ],
+    "localPick": {
+      "name": "Amed Rosario",
+      "youthSkew": 0.93
+    },
+    "picks": [
+      "Stranger Things",
+      "Fortnite"
+    ],
+    "rationale": null
+  }
+}

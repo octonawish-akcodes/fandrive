@@ -68,7 +68,7 @@ export default function JudgesPage() {
         <section className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))]">
           <div className="brut flex flex-col gap-2 bg-bubble p-6">
             <h2 className="font-display text-2xl">Built to be trusted</h2>
-            <p className="font-semibold">28 automated tests guard safety: no invented numbers, no implied endorsements, no bars or children&rsquo;s venues as hosts, no identity or religion tags, no one under 18, no names with profanity, and older-skewing fan bases can never outrank young ones. Only public names and places go to Qloo.</p>
+            <p className="font-semibold">28 automated tests guard safety: no invented numbers, no implied endorsements, no bars or children&rsquo;s venues as hosts, no identity or religion tags, no one under 18, an AI fit check on every person a plan leads with, no names with profanity, and older-skewing fan bases can never outrank young ones. Only public names and places go to Qloo.</p>
           </div>
           <div className="brut flex flex-col gap-2 bg-mint p-6">
             <h2 className="font-display text-2xl">Use it from your own agent</h2>
@@ -83,7 +83,7 @@ export default function JudgesPage() {
             <li>FanDrive has not yet run a real drive, so it shows which fandoms skew young and local, not how many donors they bring. The method page sets past partners&rsquo; published results beside their Qloo data.</li>
             <li>Qloo data is strong in large cities and thinner elsewhere; every plan shows a data badge.</li>
             <li>&ldquo;Local&rdquo; is Qloo&rsquo;s view of what young people there over-index on, not a hometown check (a &ldquo;Born here&rdquo; badge shows when Qloo&rsquo;s birthplace matches).</li>
-            <li>Qloo can&rsquo;t tell who has died or is in the news; the agent is told to skip such names, and plans led by a person remind organisers to check fit.</li>
+            <li>Qloo can&rsquo;t tell who has died or is in the news, so a separate AI fit check holds back anyone who may have died, be under 18, or have a reported legal case or controversy (in testing it caught all four such names among ten). It can miss things, so plans led by a person still remind organisers to check fit.</li>
           </ul>
         </section>
       </main>

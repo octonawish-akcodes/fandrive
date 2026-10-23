@@ -1,0 +1,33 @@
+{
+  "city": "Detroit, MI",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Emoni Bates",
+        "youthSkew": 0.98,
+        "pull": 0.8
+      },
+      {
+        "name": "Griz",
+        "youthSkew": 0.57,
+        "pull": 0.75
+      },
+      {
+        "name": "Cade Cunningham",
+        "youthSkew": 0.87,
+        "pull": 0.92
+      }
+    ],
+    "localPick": {
+      "name": "Emoni Bates",
+      "youthSkew": 0.98
+    },
+    "picks": [
+      "Emoni Bates",
+      "Griz"
+    ],
+    "rationale": null
+  }
+}

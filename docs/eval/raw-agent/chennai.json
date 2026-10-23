@@ -1,0 +1,32 @@
+{
+  "city": "Chennai",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Ayyasamy Dharun",
+        "youthSkew": 0.99,
+        "pull": 0.93
+      },
+      {
+        "name": "Mckenna Grace",
+        "youthSkew": 0.95,
+        "pull": 0.93
+      },
+      {
+        "name": "md",
+        "youthSkew": 0.62,
+        "pull": 0.9
+      }
+    ],
+    "localPick": {
+      "name": "Ayyasamy Dharun",
+      "youthSkew": 0.99
+    },
+    "picks": [
+      "Ayyasamy Dharun"
+    ],
+    "rationale": null
+  }
+}

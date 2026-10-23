@@ -1,0 +1,34 @@
+{
+  "city": "Atlanta, GA",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Atlanta Hawks",
+        "youthSkew": 0.72,
+        "pull": 0.93
+      },
+      {
+        "name": "Vaughn Hebron",
+        "youthSkew": 0.96,
+        "pull": 0.83
+      },
+      {
+        "name": "Lil Gotit",
+        "youthSkew": 0.78,
+        "pull": 0.84
+      }
+    ],
+    "localPick": {
+      "name": "Vaughn Hebron",
+      "youthSkew": 0.96
+    },
+    "picks": [
+      "Atlanta Hawks",
+      "Vaughn Hebron",
+      "Lil Gotit"
+    ],
+    "rationale": "The Atlanta Hawks have a strong youth skew and local pull, making them an ideal partner for a large-scale drive. To capture the 16-24 demographic effectively, I've paired them with actor Vaughn Hebron, who holds exceptionally high local youth appeal, and rapper Lil Gotit, an artist whose fan base is deeply rooted in Atlanta and highly concentrated within the target age range."
+  }
+}

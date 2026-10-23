@@ -1,0 +1,34 @@
+{
+  "city": "Chicago, IL",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Nico Hoerner",
+        "youthSkew": 0.85,
+        "pull": 0.77
+      },
+      {
+        "name": "Twin Peaks",
+        "youthSkew": 0.75,
+        "pull": 0.8
+      },
+      {
+        "name": "Valorant",
+        "youthSkew": 0.57,
+        "pull": 0.78
+      }
+    ],
+    "localPick": {
+      "name": "Nico Hoerner",
+      "youthSkew": 0.85
+    },
+    "picks": [
+      "Nico Hoerner",
+      "Twin Peaks",
+      "Valorant"
+    ],
+    "rationale": "Nico Hoerner (Chicago Cubs infielder) offers the strongest combination of local love (0.99) and youth skew (0.85) for the target demographic. Twin Peaks (the Chicago-based rock band) provides a strong local indie connection with high youth resonance (0.75). Valorant offers a digital-native angle with solid youth engagement (0.57) to help diversify the outreach beyond traditional sports and music."
+  }
+}

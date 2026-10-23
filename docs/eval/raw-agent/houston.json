@@ -1,0 +1,34 @@
+{
+  "city": "Houston, TX",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Jeremy Peña",
+        "youthSkew": 0.98,
+        "pull": 0.83
+      },
+      {
+        "name": "H-e-b",
+        "youthSkew": 0.69,
+        "pull": 0.9
+      },
+      {
+        "name": "Don Toliver",
+        "youthSkew": 0.69,
+        "pull": 0.79
+      }
+    ],
+    "localPick": {
+      "name": "Jeremy Peña",
+      "youthSkew": 0.98
+    },
+    "picks": [
+      "Jeremy Peña",
+      "H-e-b",
+      "Don Toliver"
+    ],
+    "rationale": "I have selected Jeremy Peña (Houston Astros athlete) due to his exceptional youth skew (0.98) and strong local connection, making him a high-impact choice for recruitment. H-E-B is included for its massive local pull and high youth affinity (0.69), which helps operationalize the drive through local stores."
+  }
+}

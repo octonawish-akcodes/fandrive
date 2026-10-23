@@ -25,6 +25,7 @@ export type Partner = {
   fanTags?: string[]; momentum?: Momentum | null; // filled for the top picks only
   local?: true; // Qloo's top picks for young people in this city
   hometown?: string; // Qloo's place of birth matches the city
+  flag?: string; // the AI fit check's concern (died, under 18, legal, scandal): never leads a plan
 };
 export type Excluded = { query: string; type: EntityType; reason: string };
 export type CityBadge = "strong" | "medium" | "thin";

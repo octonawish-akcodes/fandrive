@@ -1,0 +1,33 @@
+{
+  "city": "Miami, FL",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Fortnite",
+        "youthSkew": 0.72,
+        "pull": 0.9
+      },
+      {
+        "name": "Kate McGill",
+        "youthSkew": 0.7,
+        "pull": 0.83
+      },
+      {
+        "name": "Stranger Things",
+        "youthSkew": 0.71,
+        "pull": 0.85
+      }
+    ],
+    "localPick": {
+      "name": "Kate McGill",
+      "youthSkew": 0.7
+    },
+    "picks": [
+      "Fortnite",
+      "Kate McGill"
+    ],
+    "rationale": null
+  }
+}

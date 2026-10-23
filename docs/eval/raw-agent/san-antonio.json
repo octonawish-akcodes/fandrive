@@ -1,0 +1,34 @@
+{
+  "city": "San Antonio, TX",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "H-e-b",
+        "youthSkew": 0.69,
+        "pull": 0.94
+      },
+      {
+        "name": "Chimezie Metu",
+        "youthSkew": 0.91,
+        "pull": 0.88
+      },
+      {
+        "name": "Fortnite",
+        "youthSkew": 0.72,
+        "pull": 0.86
+      }
+    ],
+    "localPick": {
+      "name": "Chimezie Metu",
+      "youthSkew": 0.91
+    },
+    "picks": [
+      "H-e-b",
+      "Chimezie Metu",
+      "Fortnite"
+    ],
+    "rationale": "H-E-B is an iconic San Antonio brand with massive, broad-based local reach. Chimezie Metu provides a strong local-youth connection through the city's sports culture with high youth-skew scores. Fortnite rounds out the list as a highly engaging, pop-culture phenomenon that resonates strongly with the 16-24 demographic in San Antonio."
+  }
+}

@@ -119,7 +119,7 @@ export default function MethodPage() {
             </div>
             <div className="brut flex flex-col gap-2 bg-mint p-6">
               <div className="font-display text-6xl">{eval_.aggregate.local.distinct}</div>
-              <p className="font-semibold">different local picks across {eval_.aggregate.local.cities} cities, from Qloo&rsquo;s local taste (e.g. Cade Cunningham in Detroit, STS9 in Denver).</p>
+              <p className="font-semibold">different local picks across {eval_.aggregate.local.cities} cities, from Qloo&rsquo;s local taste (e.g. Nico Hoerner in Chicago, STS9 in Denver).</p>
             </div>
           </div>
           <div className="brut overflow-x-auto bg-white">

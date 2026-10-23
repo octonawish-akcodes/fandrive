@@ -1,0 +1,33 @@
+{
+  "city": "Bengaluru",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Valorant",
+        "youthSkew": 0.57,
+        "pull": 0.91
+      },
+      {
+        "name": "Rini",
+        "youthSkew": 0.65,
+        "pull": 0.85
+      },
+      {
+        "name": "Shanti People",
+        "youthSkew": 0.62,
+        "pull": 0.87
+      }
+    ],
+    "localPick": {
+      "name": "Rini",
+      "youthSkew": 0.65
+    },
+    "picks": [
+      "Valorant",
+      "Rini"
+    ],
+    "rationale": null
+  }
+}

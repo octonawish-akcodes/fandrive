@@ -1,0 +1,33 @@
+{
+  "city": "Boston, MA",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Matt Turner",
+        "youthSkew": 0.98,
+        "pull": 0.9
+      },
+      {
+        "name": "Chappell Roan",
+        "youthSkew": 0.68,
+        "pull": 0.83
+      },
+      {
+        "name": "Aron Baynes",
+        "youthSkew": 0.87,
+        "pull": 0.94
+      }
+    ],
+    "localPick": {
+      "name": "Matt Turner",
+      "youthSkew": 0.98
+    },
+    "picks": [
+      "Matt Turner",
+      "Chappell Roan"
+    ],
+    "rationale": null
+  }
+}

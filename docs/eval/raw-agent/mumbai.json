@@ -1,0 +1,34 @@
+{
+  "city": "Mumbai",
+  "recordedAt": "2026-10-23",
+  "engine": "agent",
+  "answer": {
+    "fanDrive": [
+      {
+        "name": "Indian Ocean",
+        "youthSkew": 0.77,
+        "pull": 0.87
+      },
+      {
+        "name": "Lost Stories",
+        "youthSkew": 0.48,
+        "pull": 0.86
+      },
+      {
+        "name": "The Local Train",
+        "youthSkew": 0.47,
+        "pull": 0.85
+      }
+    ],
+    "localPick": {
+      "name": "Indian Ocean",
+      "youthSkew": 0.77
+    },
+    "picks": [
+      "Indian Ocean",
+      "Lost Stories",
+      "The Local Train"
+    ],
+    "rationale": "Indian Ocean, Lost Stories, and The Local Train stand out in Mumbai with exceptional local love and strong youth skews (0.47-0.77 youth skew), making them ideal partners to drive youth engagement for the blood drive."
+  }
+}

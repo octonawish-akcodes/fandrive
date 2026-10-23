@@ -34,7 +34,7 @@ describe("runAgent", () => {
     expect(r.maps.map((m) => m.partnerName)).toEqual(expect.arrayContaining(["Sabrina Carpenter"]));
     expect(r.creative.theme).toBe("Sabrina Fan Day");
     expect(r.usedTemplate).toBe(false);
-    expect(model.doGenerateCalls.length).toBeLessThanOrEqual(5);
+    expect(model.doGenerateCalls.length).toBeLessThanOrEqual(6); // + the fit check
   });
   it("shows the planner Qloo's local taste, and leads with a local pick even if it chose none", async () => {
     const local = { ...data, demo: { ...data.demo, [id("Don Toliver")]: { age: { "24_and_younger": 0.4 }, gender: {} } }, local: { artist: [{ name: "Don Toliver", popularity: 0.99 }] } };
@@ -60,7 +60,7 @@ describe("runAgent", () => {
     const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
     expect(r.partners[0].name).toBe("Bad Bunny");
     expect(r.maps[0].partnerName).toBe("Bad Bunny");
-    expect(model.doGenerateCalls).toHaveLength(3);
+    expect(model.doGenerateCalls).toHaveLength(4); // finish, creative, then the fit check
   });
   it("queries Qloo with the user's full city string, not the short locality name", async () => {
     const calls: string[] = [];
@@ -108,6 +108,22 @@ describe("runAgent", () => {
     expect(r.picks).toEqual({ ids: [id("Bad Bunny")], rationale: null });
     expect(r.partners[0].name).toBe("Bad Bunny");
     expect(r.partners.findIndex((p) => p.name === "Metallica")).toBe(r.partners.length - 1);
+  });
+  it("runs a fit check on the people it would lead with, demoting anyone flagged and saying why", async () => {
+    const model = mockModel([
+      calls(["score_partners", cands]),
+      calls(["finish", { ids: [id("Sabrina Carpenter"), id("Olivia Rodrigo")], rationale: "Young fans" }]),
+      text(creative("Sabrina Fan Day")),
+      text(JSON.stringify({ flags: [{ name: "Sabrina Carpenter", concern: "legal", note: "stood trial in 2025" }] })),
+      text(creative("Olivia Fan Day")),
+    ]);
+    const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
+    const sabrina = r.partners.find((p) => p.name === "Sabrina Carpenter")!;
+    expect(sabrina.flag).toBe("reported legal case"); // a neutral label, never the model's own words about a real person
+    expect(r.partners.slice(0, 2).map((p) => p.name)).not.toContain("Sabrina Carpenter");
+    expect(r.picks).toEqual({ ids: [id("Olivia Rodrigo")], rationale: null });
+    expect(r.maps.map((m) => m.partnerName)).toContain(r.partners[0].name);
+    expect(r.creative.theme).toBe("Olivia Fan Day");
   });
   it("accepts a partner's exact name when the planner passes names instead of ids", async () => {
     const model = mockModel([
@@ -158,7 +174,7 @@ describe("runAgent", () => {
   it("stops the tool loop at 4 steps even if the model never finishes", async () => {
     const model = mockModel([calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), text(creative("T"))]);
     const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
-    expect(model.doGenerateCalls.length).toBe(5);
+    expect(model.doGenerateCalls.length).toBe(6); // 4 loop steps, creative, fit check
     expect(r.maps).toHaveLength(2);
   });
   it("replaces creative fields that contain invented numbers", async () => {

@@ -101,6 +101,16 @@ describe("runPlan", () => {
     const last = events.filter((e) => e.type === "partners").at(-1);
     expect(last && last.type === "partners" && last.picks?.ids).toEqual([id("Olivia Rodrigo")]);
   });
+  it("tells organisers which names the AI fit check held back, and why", async () => {
+    const cands = { candidates: [{ name: "Sabrina Carpenter", type: "artist" }, { name: "Olivia Rodrigo", type: "artist" }, { name: "Bad Bunny", type: "artist" }] };
+    const copy = JSON.stringify({ theme: "Fan Day", posterHeadline: "Olivia Rodrigo fans, give blood", posterBody: "Give blood with fellow fans on the day.", socialPosts: ["Olivia Rodrigo fans, give blood", "Olivia Rodrigo fans, bring a friend", "Olivia Rodrigo fans, see you there"], invite: "Come give blood with me, check eligibility.", pitchEmail: { subject: "Partnership idea", body: "Hello, we would love to partner on a fan blood drive." } });
+    const model = mockModel([
+      calls(["score_partners", cands]), calls(["finish", { ids: [id("Olivia Rodrigo")], rationale: "Youngest" }]), text(copy),
+      text(JSON.stringify({ flags: [{ name: "Sabrina Carpenter", concern: "scandal", note: "a made-up test concern" }] })), text(copy),
+    ]);
+    const { plan } = await run(data, model);
+    expect(plan?.limits).toContain("Held back by the AI fit check: Sabrina Carpenter (reported controversy). Check before using any name.");
+  });
   it("reports an internal error instead of throwing when the tools can't be built", async () => {
     const events: RunEvent[] = [];
     const plan = await runPlan(input, { makeTools: () => { throw new Error("Missing QLOO_API_KEY"); }, model: null }, (e) => events.push(e));

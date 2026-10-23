@@ -68,7 +68,7 @@ export function summarize(plan: Plan, baseUrl: string): string {
     `Ages ${plan.input.band}, drive window ${plan.input.startDate} to ${plan.input.endDate}.`,
     "",
     "Fandom partners (youth skew runs −1 to +1; higher means younger fans):",
-    ...order.map((p, i) => `${i + 1}. ${p.name} (${p.type.replace("_", " ")}): youth skew ${signed(p.youthSkew)}, local love ${p.localLove === null ? "n/a" : p.localLove.toFixed(2)}, Young-Donor Pull ${p.pull.toFixed(2)}${picked.has(p.entityId) ? " [AI pick]" : ""}${p.local ? " [local: one of Qloo's top picks for young people in this city]" : ""}${p.hometown ? ` [born in ${p.hometown}]` : ""}`),
+    ...order.map((p, i) => `${i + 1}. ${p.name} (${p.type.replace("_", " ")}): youth skew ${signed(p.youthSkew)}, local love ${p.localLove === null ? "n/a" : p.localLove.toFixed(2)}, Young-Donor Pull ${p.pull.toFixed(2)}${picked.has(p.entityId) ? " [AI pick]" : ""}${p.local ? " [local: one of Qloo's top picks for young people in this city]" : ""}${p.hometown ? ` [born in ${p.hometown}]` : ""}${p.flag ? ` [held back by the fit check: ${p.flag}]` : ""}`),
   ];
   if (plan.agentPicks?.rationale) lines.push(`Why: ${plan.agentPicks.rationale}`);
   lines.push("", "Where the fans are, and where to host:");

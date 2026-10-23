@@ -54,7 +54,7 @@ Every Qloo request is listed as a receipt you can re-run with curl. FanDrive is 
 ## Accomplishments that we're proud of
 
 - **Qloo's age signal checked against the real world.** Across 8 leagues, Qloo's young-vs-old lean matches Nielsen's ages of TV viewers with a rank correlation of **−0.71**. Golf, NASCAR and baseball, the three oldest audiences, are the only three Qloo scores as older-leaning.
-- **A 20-city evaluation.** Of 96 partners a plain LLM suggested, **31% have fans who skew older** than average and **60% were not young-skewing or had no Qloo data**. FanDrive's top 3 averaged youth skew **+0.74 vs +0.25**, and every city got a local pick (18 different fandoms).
+- **A 20-city evaluation.** Of 96 partners a plain LLM suggested, **31% have fans who skew older** than average and **60% were not young-skewing or had no Qloo data**. FanDrive's top 3 averaged youth skew **+0.75 vs +0.25**, and every city got a local pick (20 different fandoms).
 - **Every plan shows its work:** the agent's steps, the evidence for each score and every Qloo request.
 - **Private by design.** Only public names, cities and coordinates go to Qloo, and results describe crowds, never individuals.
 
