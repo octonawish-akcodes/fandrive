@@ -13,7 +13,7 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 ![Tests](https://img.shields.io/badge/tests-203%20passing-23C78A?style=flat-square)
 ![Qloo Agentic Hackathon](https://img.shields.io/badge/Qloo%20Agentic%20Hackathon-2026-FFC900?style=flat-square)
 
-### [▶ Try the live demo](https://fandrive-nu.vercel.app) · [Watch Houston](https://fandrive-nu.vercel.app/plan?example=houston) · [Watch Mumbai](https://fandrive-nu.vercel.app/plan?example=mumbai)
+### [▶ Try the live demo](https://fandrive-nu.vercel.app) · [For judges](https://fandrive-nu.vercel.app/judges) · [Watch Houston](https://fandrive-nu.vercel.app/plan?example=houston) · [Watch Mumbai](https://fandrive-nu.vercel.app/plan?example=mumbai)
 
 <img src="docs/images/hero.png" alt="FanDrive planner: 'Houston's next blood drive is a Jeremy Peña party.' with the yellow plan form" width="100%">
 
@@ -35,10 +35,10 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 
 ## The problem
 
-- 🩸 The American Red Cross declared its **second-ever national blood supply crisis** in August 2026.
-- 📉 **Donors under 30 are down about 39% since 2015**, and high-school and college donors are down nearly half since the pandemic (Blood Centers of America, 2026). Only about **3% of eligible Americans** donate (AABB, 2026).
-- 🎸 **Fandoms already fill blood drives:** the Red Cross × NFL partnership brought **150,000+ first-time donors**, and the Peanuts Snoopy shirt sent Red Cross search interest up **600%**.
-- 🎯 **But partners are picked by gut feel.** Metallica's drives recruited only **16% first-timers**, and on Qloo their fans skew 45–54.
+- 🩸 On 27 July 2026 the American Red Cross declared its **second-ever national blood supply crisis** ([Red Cross](https://www.redcross.org/about-us/news-and-events/press-release/2026/red-cross-declares-national-blood-supply-crisis-urges-immediate-.html)).
+- 📉 **Donors under 30 are down about 39% since 2015**, while donors over 60 grew ([Blood Centers of America data, Aug 2026](https://www.strac.org/wp-content/uploads/2026/08/Block_NBS-2026.pdf)).
+- 🎸 **Fandoms already fill blood drives:** the Red Cross × NFL partnership brought **150,000+ first-time donors** ([Red Cross](https://www.redcross.org/about-us/news-and-events/press-release/2026/-red-cross-teeters-on-blood-shortage--give-to-win-super-bowl-tri.html)), and the Peanuts Snoopy shirt sent Red Cross search interest up **600%** ([NBC News](https://www.nbcnews.com/pop-culture/pop-culture-news/red-cross-snoopy-shirt-drives-blood-donations-tiktok-rcna78749)).
+- 🎯 **But partners are picked by gut feel.** Metallica's drives recruited only **16% first-timers** ([Red Cross](https://www.redcross.org/about-us/news-and-events/press-release/2026/more-than-25-000-blood-donations-made-in-metallica-partnership.html)), and on Qloo their fans skew 45–54.
 
 **FanDrive replaces the gut feel with taste data**, and tells you exactly where to set up.
 
@@ -71,6 +71,12 @@ Every step streams live as the agent works. The poster, three social posts, a fr
 <img src="docs/images/ranking.png" alt="Ranking of every fandom tested, with youth-skew bars and Qloo evidence" width="100%">
 
 ---
+
+## ✅ Does Qloo's age data match the real world?
+
+FanDrive stands on one signal: how young a fan base is. We checked Qloo against an independent source it never sees, **Nielsen's ages of live TV viewers** for eight leagues (Magna Global for SportsBusiness Journal, 2016; reported by [ESPN](https://www.espn.com/jayski/cup/2017/story/_/id/19570505/sports-tv-viewers-getting-older) and [Awful Announcing](https://awfulannouncing.com/soccer/mls-youngest-tv-audience-sports-pga-tour-oldest.html)).
+
+**Rank correlation: −0.71** (−1 would be a perfect match). The three oldest audiences, golf (64), NASCAR (58) and baseball (57), are the only three Qloo scores as older-leaning. The one big miss is WWE, whose young fans watch online rather than on TV. Qloo's narrower 24-and-under value tracks less tightly for whole leagues (−0.20). Re-run it with `pnpm validate-age`; details are on the [method page](https://fandrive-nu.vercel.app/method).
 
 ## 🧪 FanDrive vs plain AI
 

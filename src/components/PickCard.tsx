@@ -10,6 +10,7 @@ export function PickCard({ partner, rank, agentPick, rationale, city }: { partne
       <div className="font-display text-4xl leading-none break-words sm:text-5xl">{partner.name}</div>
       <div className="font-display text-6xl leading-[0.9] sm:text-7xl">{signed(partner.youthSkew)}</div>
       <div className="font-semibold">youth skew · local love {partner.localLove === null ? "below threshold" : partner.localLove.toFixed(2)}</div>
+      {partner.hometown && <div className="text-sm font-bold"><span className="mr-1.5 border-2 border-black bg-sun px-1.5">HOMETOWN</span>Born in {partner.hometown}, per Qloo.</div>}
       {partner.local && <div className="text-sm font-bold"><span className="mr-1.5 border-2 border-black bg-mint px-1.5">LOCAL TASTE</span>One of Qloo&rsquo;s top picks for young people{city ? ` in ${city}` : " in this city"}.</div>}
       {partner.momentum && (
         <div className="text-sm font-bold">

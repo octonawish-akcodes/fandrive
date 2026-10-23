@@ -10,6 +10,7 @@ export function SiteHeader() {
           <Link href="/plan" className="underline-offset-4 hover:underline">Plan a drive</Link>
           <Link href="/#examples" className="underline-offset-4 hover:underline">Example cities</Link>
           <Link href="/method" className="underline-offset-4 hover:underline">How it works</Link>
+          <Link href="/judges" className="underline-offset-4 hover:underline">For judges</Link>
         </nav>
         <div className="ml-auto flex flex-wrap items-center gap-3"><StatusBadges /><Link href="/plan" className="press border-[3px] border-black bg-black px-4 py-2 font-bold text-white">For blood banks</Link></div>
       </div>

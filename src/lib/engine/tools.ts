@@ -16,7 +16,7 @@ const CULTURE_TAG = /^urn:tag:(genre:(?!place)[a-z_]+|gameplay_type:qloo|categor
 const UNSAFE_NAME = /\b(f+u+c+k\w*|motherf\w*|shit(ty|s)?|bitch(es)?|pussy|pussies|cunts?|nigg(a|as|az|er|ers)|whores?|sluts?|fag(s|got|gots)?|porn(o|ography)?)\b/i; // whole words only: "Dick Clark", "Cocktail" and "Pussycat Dolls" are fine
 const IDENTITY_WORD = /\b(african|afro-american|black-owned|white|caucasian|asian|hispanic|latin[ao]s?|latinx|jewish|muslim|islam\w*|christian\w*|catholic\w*|hindu\w*|sikh\w*|buddhis\w*|religio\w*|gay|lesbian|lgbt\w*|queer|transgender|ethnic\w*|racial|race)\b/i;
 
-export type NameRef = { name: string; type: EntityType; entityId?: string; local?: boolean }; // entityId: already resolved (local taste), no search needed
+export type NameRef = { name: string; type: EntityType; entityId?: string; local?: boolean; hometown?: string }; // entityId: already resolved (local taste), no search needed
 export type Resolved = NameRef & { status: "ok" | "mismatch" | "not_found"; entityId?: string; matchedName?: string; match: number };
 export type Evidence = { label: string; source: string; value: string };
 export type Partner = {
@@ -24,6 +24,7 @@ export type Partner = {
   localLove: number | null; density: number; pull: number; confidence: "high" | "medium" | "low"; evidence: Evidence[];
   fanTags?: string[]; momentum?: Momentum | null; // filled for the top picks only
   local?: true; // Qloo's top picks for young people in this city
+  hometown?: string; // Qloo's place of birth matches the city
 };
 export type Excluded = { query: string; type: EntityType; reason: string };
 export type CityBadge = "strong" | "medium" | "thin";
@@ -115,7 +116,8 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     const byId = new Map<string, Resolved>();
     for (const r of resolved.filter((x) => x.status === "ok")) {
       if (UNSAFE_NAME.test(r.name) || UNSAFE_NAME.test(r.matchedName ?? "")) { excluded.push({ query: r.name, type: r.type, reason: "Name not suitable for a blood-drive campaign" }); continue; }
-      byId.set(r.entityId!, { ...r, local: r.local || byId.get(r.entityId!)?.local });
+      const prev = byId.get(r.entityId!);
+      byId.set(r.entityId!, { ...r, local: r.local || prev?.local, hometown: r.hometown ?? prev?.hometown });
     }
     const ok = [...byId.values()];
     const ages = await fanAge(ok.map((r) => r.entityId!));
@@ -137,12 +139,13 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
       return {
         entityId: row.id, name: r.matchedName!, type: r.type, query: r.name, match: r.match, youthSkew: row.youth,
         localLove: row.local, density: row.density, pull: pull.get(row.id)!,
-        confidence: confidenceLevel({ match: r.match, hasLocal: row.local !== null, cityBadge: a.cityBadge }), ...(r.local ? { local: true as const } : {}),
+        confidence: confidenceLevel({ match: r.match, hasLocal: row.local !== null, cityBadge: a.cityBadge }), ...(r.local ? { local: true as const } : {}), ...(r.hometown ? { hometown: r.hometown } : {}),
         evidence: [
           { label: `Fan-base age skew (${a.band})`, source: "Qloo insights · filter.type=urn:demographics", value: signed(row.youth) },
           { label: `Young-audience affinity in ${a.city}`, source: "Qloo insights · signal.location.query + signal.demographics.age + filter.results.entities",
             value: row.local === null ? "below Qloo threshold" : row.local.toFixed(2) },
           { label: "Fan concentration (top-30 heatmap lift)", source: "Qloo insights · filter.type=urn:heatmap vs city baseline", value: row.density.toFixed(2) },
+          ...(r.hometown ? [{ label: "Hometown", source: "Qloo entity profile · place of birth", value: `born in ${r.hometown}` }] : []),
           ...(r.local ? [{ label: `Local taste in ${a.city}`, source: "Qloo insights · signal.location.query + signal.demographics.age, no entity filter", value: "among the city's top picks for young people" }] : []),
         ],
       };
@@ -230,10 +233,12 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
     const national = !!country && LOCAL_TASTE.nationalData.includes(country);
     const others = ref.filter((r) => !sameCity(r.city, city) && !(national && r.country === country));
     const local = (id: string) => others.filter((r) => r.ids.has(id)).length <= LOCAL_TASTE.maxOtherCities;
+    const adult = (born?: string) => { const t = born ? Date.parse(born) : NaN; return Number.isNaN(t) || Date.now() - t >= 18 * 365.25 * 86_400_000; };
     return lists.flatMap((l, i) => {
       const k = LOCAL_TASTE.kinds[i];
-      return l.filter((e) => e.popularity >= k.minPopularity && (!k.onlyIf || k.onlyIf.test(e.tags.join(" | "))) && local(e.entityId)).slice(0, k.max); // Qloo's order is the local signal
-    }).map((e) => ({ name: e.name, type: e.type, entityId: e.entityId, local: true }));
+      return l.filter((e) => e.popularity >= k.minPopularity && (!k.onlyIf || k.onlyIf.test(e.tags.join(" | "))) && adult(e.birthDate) && local(e.entityId)).slice(0, k.max); // Qloo's order is the local signal
+    }).map((e) => ({ name: e.name, type: e.type, entityId: e.entityId, local: true,
+      ...(e.birthPlace && sameCity(e.birthPlace, city) ? { hometown: e.birthPlace.split(",")[0].trim() } : {}) }));
   }
 
   async function typeNames(names: string[]): Promise<{ refs: NameRef[]; unresolved: string[] }> {

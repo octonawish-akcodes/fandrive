@@ -25,6 +25,16 @@ describe("local taste", () => {
     ]);
     expect(steps).toEqual(["local_taste"]);
   });
+  it("marks hometown heroes and never suggests anyone under 18", async () => {
+    const api = fakeApi({ local: { artist: [
+      { name: "Lil Keed", popularity: 0.9, birthPlace: "Atlanta, Fulton County, Georgia, U", birthDate: "1998-03-16" },
+      { name: "Teen Star", popularity: 0.95, birthDate: "2012-01-01" },
+      { name: "Summer Walker", popularity: 0.98, birthPlace: "Atlanta, Georgia" },
+      { name: "Elsewhere", popularity: 0.9, birthPlace: "Chicago, Illinois" },
+    ] } });
+    const refs = await createTools(api).discoverLocal("Atlanta", "16-24");
+    expect(refs.map((r) => [r.name, r.hometown])).toEqual([["Lil Keed", "Atlanta"], ["Summer Walker", "Atlanta"], ["Elsewhere", undefined]]);
+  });
   it("treats Indian city data as national: names shared with other Indian cities stay local, names that top US cities don't", async () => {
     const band = { name: "The Local Train", popularity: 0.85 }, star = { name: "Shawn Mendes", popularity: 1 };
     const api = fakeApi({
@@ -69,6 +79,10 @@ describe("local taste", () => {
     const don = r.ranked.find((p) => p.name === "Don Toliver")!;
     expect(don.local).toBe(true);
     expect(don.evidence.some((e) => e.label.startsWith("Local taste"))).toBe(true);
+    const r2 = await createTools(fakeApi({ demo: { [id("Don Toliver")]: young } })).scorePartners({ city: "Houston, TX", band: "16-24", cityBadge: "medium",
+      refs: [{ name: "Don Toliver", type: "artist", entityId: id("Don Toliver"), local: true, hometown: "Houston" }] });
+    expect(r2.ranked[0].hometown).toBe("Houston");
+    expect(r2.ranked[0].evidence).toContainEqual({ label: "Hometown", source: "Qloo entity profile · place of birth", value: "born in Houston" });
     expect(r.ranked.find((p) => p.name === "Fortnite")!.local).toBeUndefined();
   });
 

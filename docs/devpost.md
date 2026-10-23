@@ -8,6 +8,7 @@ Copy each section into the matching Devpost field. Numbers are from the live app
 
 **Links**
 - Live demo: https://fandrive-nu.vercel.app
+- For judges (2-minute tour): https://fandrive-nu.vercel.app/judges
 - Recorded runs: https://fandrive-nu.vercel.app/plan?example=houston · https://fandrive-nu.vercel.app/plan?example=mumbai
 - Method and evaluation: https://fandrive-nu.vercel.app/method
 - Code (MIT): https://github.com/octonawish-akcodes/fandrive
@@ -17,7 +18,7 @@ Copy each section into the matching Devpost field. Numbers are from the live app
 
 ## Inspiration
 
-In August 2026 the American Red Cross declared its second-ever national blood supply crisis, and donors under 30 are down about 39% since 2015 (Blood Centers of America). Fandoms already fill blood drives: the Red Cross × NFL partnership brought in 150,000+ first-time donors. But partners are chosen by gut feel, and famous isn't the same as young. Metallica's drives recruited only 16% first-timers, and on Qloo its fans skew 45–54.
+On 27 July 2026 the American Red Cross declared its second-ever national blood supply crisis, and donors under 30 are down about 39% since 2015 (Blood Centers of America). Fandoms already fill blood drives: the Red Cross × NFL partnership brought in 150,000+ first-time donors. But partners are chosen by gut feel, and famous isn't the same as young. Metallica's drives recruited only 16% first-timers, and on Qloo its fans skew 45–54.
 
 We asked: what if a blood bank could see which fan bases in *its* city are young, where they live and which hall nearby can host, before it picks a partner?
 
@@ -52,6 +53,7 @@ Every Qloo request is listed as a receipt you can re-run with curl. FanDrive is 
 
 ## Accomplishments that we're proud of
 
+- **Qloo's age signal checked against the real world.** Across 8 leagues, Qloo's young-vs-old lean matches Nielsen's ages of TV viewers with a rank correlation of **−0.71**. Golf, NASCAR and baseball, the three oldest audiences, are the only three Qloo scores as older-leaning.
 - **A 20-city evaluation.** Of 96 partners a plain LLM suggested, **31% have fans who skew older** than average and **60% were not young-skewing or had no Qloo data**. FanDrive's top 3 averaged youth skew **+0.74 vs +0.25**, and every city got a local pick (18 different fandoms).
 - **Every plan shows its work:** the agent's steps, the evidence for each score and every Qloo request.
 - **Private by design.** Only public names, cities and coordinates go to Qloo, and results describe crowds, never individuals.

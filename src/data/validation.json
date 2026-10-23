@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-10-23",
+  "benchmark": "Median/average age of live TV viewers, 2016 (Nielsen data, Magna Global for SportsBusiness Journal)",
+  "sources": [
+    {
+      "name": "ESPN: Sports TV viewers getting older (2017, on the Magna Global / SportsBusiness Journal study)",
+      "url": "https://www.espn.com/jayski/cup/2017/story/_/id/19570505/sports-tv-viewers-getting-older"
+    },
+    {
+      "name": "Awful Announcing: MLS has the youngest TV audience, PGA Tour the oldest",
+      "url": "https://awfulannouncing.com/soccer/mls-youngest-tv-audience-sports-pga-tour-oldest.html"
+    },
+    {
+      "name": "24/7 Wall St.: Sports viewers are going grayer, says Magna Global study",
+      "url": "https://247wallst.com/media/2017/06/07/sports-viewers-are-going-grayer-says-magna-global-study/"
+    }
+  ],
+  "rows": [
+    {
+      "label": "PGA Tour (golf)",
+      "qlooName": "Pga Tour",
+      "tvAge": 64,
+      "qlooLean": -0.44,
+      "qloo24": -0.03
+    },
+    {
+      "label": "NASCAR",
+      "qlooName": "Nascar",
+      "tvAge": 58,
+      "qlooLean": -0.61,
+      "qloo24": -0.06
+    },
+    {
+      "label": "MLB",
+      "qlooName": "Major League Baseball",
+      "tvAge": 57,
+      "qlooLean": -0.44,
+      "qloo24": -0.03
+    },
+    {
+      "label": "WWE (pro wrestling)",
+      "qlooName": "WWE",
+      "tvAge": 54,
+      "qlooLean": 0.74,
+      "qloo24": -0.01
+    },
+    {
+      "label": "NFL",
+      "qlooName": "National Football League",
+      "tvAge": 50,
+      "qlooLean": 0.67,
+      "qloo24": 0.04
+    },
+    {
+      "label": "Premier League",
+      "qlooName": "Premier League",
+      "tvAge": 43,
+      "qlooLean": 0.75,
+      "qloo24": -0.03
+    },
+    {
+      "label": "NBA",
+      "qlooName": "National Basketball Association",
+      "tvAge": 42,
+      "qlooLean": 0.74,
+      "qloo24": 0.11
+    },
+    {
+      "label": "MLS",
+      "qlooName": "Major League Soccer",
+      "tvAge": 40,
+      "qlooLean": 0.73,
+      "qloo24": -0.06
+    }
+  ],
+  "spearman": -0.71,
+  "spearman24": -0.2
+}

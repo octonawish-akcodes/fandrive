@@ -35,9 +35,9 @@ describe("qloo api", () => {
     expect(c.calls[0][1]).toMatchObject({ "filter.type": "urn:entity:artist", "signal.location.query": "Miami", "signal.demographics.age": "24_and_younger", "filter.results.entities": "A,B", take: 2 });
   });
   it("localTaste asks what young people in a city over-index on, without an entity filter", async () => {
-    const c = fakeClient(() => ({ results: { entities: [{ entity_id: "D", name: "Don Toliver", popularity: 0.99, query: { affinity: 1 }, tags: [{ name: "Rapper", type: "urn:tag:category:qloo" }] }] } }));
+    const c = fakeClient(() => ({ results: { entities: [{ entity_id: "D", name: "Don Toliver", popularity: 0.99, query: { affinity: 1 }, tags: [{ name: "Rapper", type: "urn:tag:category:qloo" }], properties: { place_of_birth: "Houston, Harris County, Texas, U", date_of_birth: "1994-01-12" } }] } }));
     const r = await createQlooApi(c).localTaste({ city: "Houston, TX", type: "artist", ageSignal: "24_and_younger", take: 15 });
-    expect(r).toEqual([{ entityId: "D", name: "Don Toliver", type: "artist", popularity: 0.99, tags: ["Rapper"] }]);
+    expect(r).toEqual([{ entityId: "D", name: "Don Toliver", type: "artist", popularity: 0.99, tags: ["Rapper"], birthPlace: "Houston, Harris County, Texas, U", birthDate: "1994-01-12" }]);
     expect(c.calls[0][1]).toEqual({ "filter.type": "urn:entity:artist", "signal.location.query": "Houston, TX", "signal.demographics.age": "24_and_younger", take: 15 });
   });
   it("heatmap parses cells and the resolved locality", async () => {

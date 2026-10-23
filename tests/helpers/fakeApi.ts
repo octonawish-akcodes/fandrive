@@ -11,7 +11,7 @@ export type FakeData = {
   local?: Partial<Record<EntityType, LocalEntry[]>>; // the planned city (and any city not in the panel)
   localByCity?: Record<string, Partial<Record<EntityType, LocalEntry[]>>>; // reference-panel cities default to empty
 };
-type LocalEntry = { name: string; popularity: number; tags?: string[] };
+type LocalEntry = { name: string; popularity: number; tags?: string[]; birthPlace?: string; birthDate?: string };
 export const id = (name: string) => `id:${name}`;
 export const heat = (pairs: [string, number][]): HeatCell[] =>
   pairs.map(([g, r], i) => ({ geohash: g, lat: 29.70 + i * 0.004, lon: -95.52 + i * 0.004, affinityRank: r, popularity: 0.5 }));
@@ -40,7 +40,7 @@ export function fakeApi(d: FakeData): QlooApi {
     async trending({ id: eid }) { return d.trend?.[eid] ?? []; },
     async localTaste({ city, type }) {
       const lists = d.localByCity?.[city] ?? (LOCAL_TASTE.panel.some((p) => p.city === city) ? {} : d.local);
-      return (lists?.[type] ?? []).map((e) => ({ entityId: id(e.name), name: e.name, type, popularity: e.popularity, tags: e.tags ?? [] }));
+      return (lists?.[type] ?? []).map((e) => ({ entityId: id(e.name), name: e.name, type, popularity: e.popularity, tags: e.tags ?? [], birthPlace: e.birthPlace, birthDate: e.birthDate }));
     },
   };
 }

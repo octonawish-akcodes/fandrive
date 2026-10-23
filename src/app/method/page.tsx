@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { signed, youthBarPct } from "@/lib/client/view";
 import eval_ from "@/data/eval.json";
+import validation from "@/data/validation.json";
 import method from "@/data/method.json";
 
 export const metadata = { title: "How FanDrive decides · FanDrive", description: "Why famous isn't the same as young: Qloo's age profile of past blood-drive partners next to their published results, and how FanDrive scores fandoms." };
@@ -72,6 +73,32 @@ export default function MethodPage() {
             <p className="text-lg font-semibold">For contrast, fandoms FanDrive picked in live Houston runs (13–14 Oct 2026): Roblox <b>+0.93</b>, Kai Cenat <b>+0.88</b>, Fortnite <b>+0.72</b>.</p>
             <p className="text-sm">Qloo data generated {method.generatedAt}. Youth skew is Qloo&rsquo;s 24-and-under age affinity, from −1 (older) to +1 (younger).</p>
           </div>
+        </section>
+
+        <section aria-labelledby="val-h" className="flex flex-col gap-6">
+          <h2 id="val-h" className="font-display text-4xl">Does Qloo&rsquo;s age data match the real world?</h2>
+          <p className="max-w-3xl text-lg font-semibold">FanDrive stands on one signal: how young a fan base is. So we checked it against an independent source, Nielsen&rsquo;s ages of live TV viewers for eight leagues, which Qloo never sees.</p>
+          <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))]">
+            <div className="brut flex flex-col gap-2 bg-mint p-6">
+              <div className="font-display text-6xl">{validation.spearman.toFixed(2).replace("-", "−")}</div>
+              <p className="font-semibold">rank correlation between Nielsen&rsquo;s viewer age and Qloo&rsquo;s young-vs-old lean (−1 would be a perfect match). The three oldest audiences, golf, NASCAR and baseball, are the only three Qloo scores as older-leaning.</p>
+            </div>
+            <div className="brut overflow-x-auto bg-white">
+              <table className="w-full text-left text-sm">
+                <caption className="sr-only">Nielsen TV viewer age and Qloo young lean by league</caption>
+                <thead className="border-b-[3px] border-black font-display text-base"><tr><th className="p-3">League</th><th className="p-3">TV viewer age</th><th className="p-3">Qloo young lean</th></tr></thead>
+                <tbody>
+                  {validation.rows.map((r) => (
+                    <tr key={r.label} className="border-t-2 border-black/20"><td className="p-3 font-bold">{r.label}</td><td className="p-3">{r.tvAge}</td><td className={`p-3 font-bold ${r.qlooLean < 0 ? "text-alarm" : ""}`}>{signed(r.qlooLean)}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p className="text-sm font-semibold">
+            Young lean = Qloo&rsquo;s average affinity for ages under 35 minus 45 and over. Honest limits: the benchmark is TV viewers in 2016, not all fans today (WWE&rsquo;s young fans watch online, so it&rsquo;s the one big miss), and Qloo&rsquo;s narrower 24-and-under value, which FanDrive scores on, tracks less tightly for whole leagues ({validation.spearman24.toFixed(2).replace("-", "−")}). Sources:{" "}
+            {validation.sources.map((s, i) => <span key={s.url}>{i ? " · " : ""}<a href={s.url} className="underline underline-offset-4" target="_blank" rel="noreferrer">{s.name.split(":")[0]}</a></span>)}. Re-run with <code>pnpm validate-age</code>.
+          </p>
         </section>
 
         <section aria-labelledby="eval-h" className="flex flex-col gap-6">
