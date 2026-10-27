@@ -47,4 +47,9 @@ describe("byYoungDonorFit", () => {
     const ps = [{ name: "Old but local", youthSkew: -0.22, pull: 0.86 }, { name: "Young", youthSkew: 0.71, pull: 0.8 }, { name: "Neutral-old", youthSkew: -0.04, pull: 0.9 }, { name: "Younger", youthSkew: 0.4, pull: 0.85 }];
     expect([...ps].sort(byYoungDonorFit).map((p) => p.name)).toEqual(["Younger", "Young", "Neutral-old", "Old but local"]);
   });
+  it("never leads with a fan base the report itself calls not young (under +0.30)", () => {
+    // Live Houston run where the planner never called finish: Megan Thee Stallion (+0.22, highest pull) led the report
+    const ps = [{ name: "Megan Thee Stallion", youthSkew: 0.22, pull: 0.85 }, { name: "Jeremy Peña", youthSkew: 0.98, pull: 0.7 }, { name: "Erica Banks", youthSkew: 0.55, pull: 0.8 }, { name: "Texans", youthSkew: 0.05, pull: 0.9 }];
+    expect([...ps].sort(byYoungDonorFit).map((p) => p.name)).toEqual(["Erica Banks", "Jeremy Peña", "Texans", "Megan Thee Stallion"]);
+  });
 });

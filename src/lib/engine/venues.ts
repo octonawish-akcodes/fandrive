@@ -8,6 +8,9 @@ const UNSUITABLE = word("shooting_range|gun|gun_shop|firearms?|cigar|tobacco|smo
 const PRIVATE = word("hotel|motel|apartment|condominium|residential|trailer_park|mobile_home_park|rv_park");
 const CHILDREN = word("elementary_school|middle_school|primary_school|preschool|kindergarten|day_care_center|daycare|child_care|child_care_agency|nursery_school|nursery|children's|childrens|children|kids?|playground"); // too young to donate (live: a children's museum ranked as a host)
 const NOT_HOST = word("dog_park");
+const PERSONAL_CARE = word("spa|day_spa|med_spa|nail_salon|massage|skin_care|waxing"); // appointment-only; barbershops stay, they're where people talk
+const IN_HOTEL = /\b(hotel|resort|motel)\b/i; // by name: Qloo can leave a hotel spa with no genre (live Houston run)
+const SPA_TAG = /^(spa|nail salon|massage|skincare treatments)$/i;
 const NOT_ALCOHOL = word("(espresso|coffee|juice|smoothie|milkshake|salad|tea|oxygen|nail)_bar");
 const ALCOHOL = word("bar|night_?club|pub|lounge|brewery|brewpub|winery|cocktail|beer_hall|beer_garden|tavern|saloon");
 const HOST = word("community|university|college|campus|school|educational|gym|fitness|sport|sports|recreation|stadium|arena|mall|library|place_of_worship|church|temple|mosque|gurdwara|synagogue|performing_arts|theater|theatre|event_venue|convention|museum|park|banquet|banquet_hall|cultural");
@@ -20,6 +23,8 @@ export function classifyVenue(p: QlooPlace, date?: string): { role: "host" | "pr
   if (UNSUITABLE.test(genre)) return { role: "skip", reasons: ["Not suitable for a youth health campaign"] };
   if (PRIVATE.test(genre)) return { role: "skip", reasons: ["Not a public hangout"] };
   if (CHILDREN.test(genre)) return { role: "skip", reasons: ["Venue for young children"] };
+  if (IN_HOTEL.test(p.name)) return { role: "skip", reasons: ["Inside a hotel or resort"] };
+  if (PERSONAL_CARE.test(genre) || (!HOST.test(genre) && p.tags.some((t) => SPA_TAG.test(t.trim())))) return { role: "skip", reasons: ["Appointment-only personal care"] };
   const reasons: string[] = [];
   if (p.tags.some((t) => /18\s*24/.test(t))) reasons.push("Young crowd (18–24)");
   if (ALCOHOL.test(genre) && !NOT_ALCOHOL.test(genre)) return { role: "promote", reasons: ["Promote here, don't host here (alcohol venue)", ...reasons] };

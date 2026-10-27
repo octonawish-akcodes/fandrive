@@ -29,7 +29,11 @@ export function confidenceLevel(a: { match: number; hasLocal: boolean; cityBadge
   return a.hasLocal && a.cityBadge === "strong" ? "high" : "medium";
 }
 
-/** "Best partners for young donors": every young-skewing fan base (skew ≥ 0) ranks above older-skewing ones, then by pull. */
+/** Fans "skew young" at +0.30 or more: the same line the report's plain-AI check and the eval draw. */
+export const YOUNG = 0.3;
+const tier = (y: number) => (y >= YOUNG ? 0 : y >= 0 ? 1 : 2);
+
+/** "Best partners for young donors": young-skewing fan bases (≥ +0.30) first, then neutral, then older-skewing; each by pull. */
 export function byYoungDonorFit(a: { youthSkew: number; pull: number }, b: { youthSkew: number; pull: number }): number {
-  return Number(a.youthSkew < 0) - Number(b.youthSkew < 0) || b.pull - a.pull;
+  return tier(a.youthSkew) - tier(b.youthSkew) || b.pull - a.pull;
 }

@@ -1,5 +1,16 @@
 import type { Partner } from "@/lib/engine/tools";
-import { signed } from "@/lib/client/view";
+import { signed, whoToAsk } from "@/lib/client/view";
+
+function WhoToAsk({ partner }: { partner: Partner }) {
+  const { ask, note } = whoToAsk(partner);
+  return (
+    <div className="border-[3px] border-black bg-white p-2.5 text-sm">
+      <div className="font-bold">Who to ask</div>
+      <div className="font-semibold">{ask[0]}, or {ask[1]}.</div>
+      <div className="mt-1">{note}</div>
+    </div>
+  );
+}
 
 export function PickCard({ partner, rank, agentPick, rationale, city }: { partner: Partner; rank: 1 | 2; agentPick: boolean; rationale?: string | null; city?: string }) {
   const tag = agentPick ? `AI PICK #${rank}` : partner.local ? "LOCAL PICK" : rank === 1 ? "TOP PICK" : "RUNNER-UP";
@@ -23,6 +34,7 @@ export function PickCard({ partner, rank, agentPick, rationale, city }: { partne
           {partner.fanTags.slice(0, 5).map((t) => <span key={t} className="border-2 border-black bg-white px-1.5 font-semibold">{t}</span>)}
         </div>
       )}
+      <WhoToAsk partner={partner} />
       {rationale && <p className="mt-2 border-t-[3px] border-black pt-2 font-semibold">&ldquo;{rationale}&rdquo;</p>}
     </div>
   );

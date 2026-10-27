@@ -17,6 +17,18 @@ describe("classifyVenue", () => {
     expect(v.reasons).toEqual(expect.arrayContaining(["Young crowd (18–24)", "Has event space", "Open Saturday"]));
   });
   it("skips closed venues", () => expect(classifyVenue(P({ genre: "gym", isClosed: true })).role).toBe("skip"));
+  it("skips places inside hotels and resorts even when Qloo gives no genre", () => {
+    // Live Houston run: "The Spa & Fitness Center at Four Seasons Hotel Houston" had no primary genre and was listed for flyers
+    const v = classifyVenue(P({ name: "The Spa & Fitness Center at Four Seasons Hotel Houston", tags: ["Elegant", "Wellness", "Spa"] }));
+    expect(v).toEqual({ role: "skip", reasons: ["Inside a hotel or resort"] });
+    expect(classifyVenue(P({ name: "Hotel ZaZa Pool Bar", genre: "bar" })).role).toBe("skip");
+    expect(classifyVenue(P({ name: "Hotelling Hall", genre: "community_center" })).role).toBe("host"); // whole word only
+  });
+  it("skips appointment-only spas and salons, which young donors don't hang out in", () => {
+    expect(classifyVenue(P({ name: "Glow Day Spa", tags: ["Spa", "Appointments recommended"] }))).toEqual({ role: "skip", reasons: ["Appointment-only personal care"] });
+    expect(classifyVenue(P({ name: "Polished", genre: "nail_salon" })).role).toBe("skip");
+    expect(classifyVenue(P({ name: "Downtown YMCA", genre: "gym", tags: ["Spa", "Pool"] })).role).toBe("host"); // a gym with a spa still hosts
+  });
   it("flags a venue that is closed on the drive day", () => {
     const v = classifyVenue(P({ genre: "gym", hours: { saturday: [{ opens: null, closes: null, closed: true }] } }), "2026-11-14");
     expect(v.reasons).toContain("Closed Saturday");

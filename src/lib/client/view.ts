@@ -30,10 +30,26 @@ export function plainAiVerdicts(checks: PlainAiCheck[] | null, partners: Partner
   return { rows, missed };
 }
 
-/** Hero headline: "Houston’s next blood drive is a [Roblox] party." */
+/** Hero headline: "Houston’s next blood drive is a [Roblox] fan day." The fans are the audience, not the star. */
 export function headlineParts(city: string | undefined, top: Partner | undefined): { before: string; sticker: string; after: string } {
   if (!city || !top) return { before: "Every fandom is a", sticker: "blood drive", after: "waiting to happen." };
-  return { before: `${city}’s next blood drive is a`, sticker: top.name, after: "party." };
+  return { before: `${city}’s next blood drive is a`, sticker: top.name, after: "fan day." };
+}
+
+const SPORT = /athlete|baseball|basketball|football|soccer|hockey|cricket|sports?\b|nba|nfl|mlb|nhl|mls/i;
+
+/** Who a blood centre can actually reach for this kind of fandom. Generic channels only: never a named contact. */
+export function whoToAsk(p: Partner): { ask: [string, string]; note: string } {
+  const note = `You don’t need ${p.name}. The fans come for the theme.`;
+  const sport = (p.type === "person" || p.type === "brand") && (p.fanTags ?? []).some((t) => SPORT.test(t));
+  const online = `${p.name} fan communities on Reddit and Discord`;
+  const ask: [string, string] = sport ? ["the team’s community relations office", "supporters’ clubs and campus sports clubs"]
+    : p.type === "artist" ? ["local fan clubs and street teams", "campus music and radio societies"]
+    : p.type === "videogame" ? ["campus esports and gaming societies", "local gaming cafés and game stores"]
+    : p.type === "brand" ? ["the brand’s local store or community team", "campus clubs whose members wear or use it"]
+    : p.type === "person" || p.type === "podcast" ? [online, "campus clubs that share the interest"]
+    : [online, p.type === "book" ? "campus book and writing societies" : "campus film and TV societies"];
+  return { ask, note };
 }
 
 /** "Done in 84 seconds." from the last step's time. */

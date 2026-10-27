@@ -1,7 +1,7 @@
+import { YOUNG } from "@/lib/engine/scoring";
 import type { CityBadge } from "@/lib/engine/tools";
 
-/** Same line the report's plain-AI check draws: fans "skew young" at +0.30 or more. */
-export const YOUNG = 0.3;
+export { YOUNG }; // the line the report's plain-AI check draws
 
 export type CityEval = {
   city: string; badge: CityBadge;

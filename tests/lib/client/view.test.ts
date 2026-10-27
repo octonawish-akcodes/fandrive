@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { doneLabel, headlineParts, plainAiVerdicts, signed, topTwo, youthBarPct } from "@/lib/client/view";
+import { doneLabel, headlineParts, plainAiVerdicts, signed, topTwo, whoToAsk, youthBarPct } from "@/lib/client/view";
 import type { Partner } from "@/lib/engine/tools";
 import type { PlainAiCheck } from "@/lib/plan/schema";
 
@@ -40,8 +40,18 @@ describe("view helpers", () => {
   });
 
   it("writes the headline around the top pick, or a prompt before any plan", () => {
-    expect(headlineParts("Houston", P("Roblox", 0.93))).toEqual({ before: "Houston’s next blood drive is a", sticker: "Roblox", after: "party." });
+    expect(headlineParts("Houston", P("Roblox", 0.93))).toEqual({ before: "Houston’s next blood drive is a", sticker: "Roblox", after: "fan day." });
     expect(headlineParts(undefined, undefined)).toEqual({ before: "Every fandom is a", sticker: "blood drive", after: "waiting to happen." });
+  });
+
+  it("says who a blood centre can actually ask, by kind of fandom, without needing the star", () => {
+    const athlete = { ...P("Jeremy Peña", 0.98), type: "person" as const, fanTags: ["Athlete", "Baseball"] };
+    expect(whoToAsk(athlete)).toEqual({ ask: ["the team’s community relations office", "supporters’ clubs and campus sports clubs"], note: "You don’t need Jeremy Peña. The fans come for the theme." });
+    expect(whoToAsk({ ...P("Don Toliver", 0.69), type: "artist" }).ask).toEqual(["local fan clubs and street teams", "campus music and radio societies"]);
+    expect(whoToAsk({ ...P("Euphoria", 0.62), type: "tv_show" }).ask).toEqual(["Euphoria fan communities on Reddit and Discord", "campus film and TV societies"]);
+    expect(whoToAsk(P("Fortnite", 0.72)).ask).toEqual(["campus esports and gaming societies", "local gaming cafés and game stores"]);
+    expect(whoToAsk({ ...P("Glossier", 0.5), type: "brand" }).ask).toEqual(["the brand’s local store or community team", "campus clubs whose members wear or use it"]);
+    expect(whoToAsk({ ...P("Some Creator", 0.8), type: "person" }).ask).toEqual(["Some Creator fan communities on Reddit and Discord", "campus clubs that share the interest"]);
   });
 
   it("labels how long the plan took", () => {
