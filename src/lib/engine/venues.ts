@@ -7,6 +7,9 @@ const word = (alts: string) => new RegExp(`(^|_)(${alts})($|_)`);
 const UNSUITABLE = word("shooting_range|gun|gun_shop|firearms?|cigar|tobacco|smoke_shop|vape|vape_shop|hookah|cannabis|dispensary|marijuana|tattoo|piercing|casino|gambling|betting|bookmaker|adult_entertainment|strip_club|pawn|liquor|beer_store|wine_store|funeral|funeral_home|cemetery");
 const PRIVATE = word("hotel|motel|apartment|condominium|residential|trailer_park|mobile_home_park|rv_park");
 const CHILDREN = word("elementary_school|middle_school|primary_school|preschool|kindergarten|day_care_center|daycare|child_care|child_care_agency|nursery_school|nursery|children's|childrens|children|kids?|playground"); // too young to donate (live: a children's museum ranked as a host)
+const KIDS_TAG = /^(child(ren)?'?s (amusement center|museum|play ?area|theat(er|re))|(indoor )?playground)$/i; // Qloo files Chuck E. Cheese under "pizza" (live Houston run)
+const MEDICAL = word("hospital|clinic|medical_center|medical_clinic|urgent_care|emergency_room"); // patients, not a fan crowd (live: an orthopedic hospital listed for flyers)
+const BY_APPOINTMENT = /\bby appointment only\b/i; // by name (live: "Honey Art Cafe [By Appointment Only - Book Online]")
 const NOT_HOST = word("dog_park");
 const PERSONAL_CARE = word("spa|day_spa|med_spa|nail_salon|massage|skin_care|waxing"); // appointment-only; barbershops stay, they're where people talk
 const IN_HOTEL = /\b(hotel|resort|motel)\b/i; // by name: Qloo can leave a hotel spa with no genre (live Houston run)
@@ -22,8 +25,10 @@ export function classifyVenue(p: QlooPlace, date?: string): { role: "host" | "pr
   const genre = (p.genre ?? "").toLowerCase();
   if (UNSUITABLE.test(genre)) return { role: "skip", reasons: ["Not suitable for a youth health campaign"] };
   if (PRIVATE.test(genre)) return { role: "skip", reasons: ["Not a public hangout"] };
-  if (CHILDREN.test(genre)) return { role: "skip", reasons: ["Venue for young children"] };
+  if (CHILDREN.test(genre) || p.tags.some((t) => KIDS_TAG.test(t.trim()))) return { role: "skip", reasons: ["Venue for young children"] };
+  if (MEDICAL.test(genre)) return { role: "skip", reasons: ["Hospital or clinic"] };
   if (IN_HOTEL.test(p.name)) return { role: "skip", reasons: ["Inside a hotel or resort"] };
+  if (BY_APPOINTMENT.test(p.name)) return { role: "skip", reasons: ["Appointment only"] };
   if (PERSONAL_CARE.test(genre) || (!HOST.test(genre) && p.tags.some((t) => SPA_TAG.test(t.trim())))) return { role: "skip", reasons: ["Appointment-only personal care"] };
   const reasons: string[] = [];
   if (p.tags.some((t) => /18\s*24/.test(t))) reasons.push("Young crowd (18–24)");

@@ -56,6 +56,12 @@ describe("runPlan", () => {
     expect(plan?.engine).toBe("autopilot");
     expect(plan?.plainAi?.[0].name).toBe("Sabrina Carpenter");
   });
+  it("re-checks a plain-AI pick the model gave the wrong type", async () => {
+    // Live Houston run: plain AI typed the Astros as a videogame, matched "Astro's Ace XR" and reported no Qloo data
+    const model = new MockLanguageModelV4({ doGenerate: async () => text(JSON.stringify({ picks: [{ name: "Houston Astros", type: "videogame", why: "Local pride" }] })) as never });
+    const { plan } = await run({ ...data, types: { "Houston Astros": "brand" }, wrongTypeHit: { "Houston Astros": "Astro's Ace XR" } }, model);
+    expect(plan?.plainAi?.[0]).toMatchObject({ name: "Houston Astros", matchedName: "Houston Astros", youthSkew: 0.8 });
+  });
   it("words the skipped-names limit for one and for many", () => {
     expect(skippedNote(1)).toBe("1 name was skipped (not found, wrong match, or no audience data yet).");
     expect(skippedNote(3)).toBe("3 names were skipped (not found, wrong match, or no audience data yet).");

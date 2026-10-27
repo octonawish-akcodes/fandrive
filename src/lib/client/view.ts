@@ -46,7 +46,7 @@ export function whoToAsk(p: Partner): { ask: [string, string]; note: string } {
   const ask: [string, string] = sport ? ["the team’s community relations office", "supporters’ clubs and campus sports clubs"]
     : p.type === "artist" ? ["local fan clubs and street teams", "campus music and radio societies"]
     : p.type === "videogame" ? ["campus esports and gaming societies", "local gaming cafés and game stores"]
-    : p.type === "brand" ? ["the brand’s local store or community team", "campus clubs whose members wear or use it"]
+    : p.type === "brand" ? ["its local community or partnerships team", "supporters’ clubs and campus clubs that follow it"] // Qloo files teams as brands too
     : p.type === "person" || p.type === "podcast" ? [online, "campus clubs that share the interest"]
     : [online, p.type === "book" ? "campus book and writing societies" : "campus film and TV societies"];
   return { ask, note };

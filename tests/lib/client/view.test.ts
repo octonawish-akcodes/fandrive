@@ -50,7 +50,9 @@ describe("view helpers", () => {
     expect(whoToAsk({ ...P("Don Toliver", 0.69), type: "artist" }).ask).toEqual(["local fan clubs and street teams", "campus music and radio societies"]);
     expect(whoToAsk({ ...P("Euphoria", 0.62), type: "tv_show" }).ask).toEqual(["Euphoria fan communities on Reddit and Discord", "campus film and TV societies"]);
     expect(whoToAsk(P("Fortnite", 0.72)).ask).toEqual(["campus esports and gaming societies", "local gaming cafés and game stores"]);
-    expect(whoToAsk({ ...P("Glossier", 0.5), type: "brand" }).ask).toEqual(["the brand’s local store or community team", "campus clubs whose members wear or use it"]);
+    expect(whoToAsk({ ...P("Glossier", 0.5), type: "brand" }).ask).toEqual(["its local community or partnerships team", "supporters’ clubs and campus clubs that follow it"]);
+    // Live Houston run: Qloo files the Rockets as a brand whose fans also love hip hop, so the ask must still fit a team
+    expect(whoToAsk({ ...P("Houston Rockets", 0.3), type: "brand", fanTags: ["Hip Hop", "rap"] }).ask).not.toContain("the brand’s local store or community team");
     expect(whoToAsk({ ...P("Some Creator", 0.8), type: "person" }).ask).toEqual(["Some Creator fan communities on Reddit and Discord", "campus clubs that share the interest"]);
   });
 

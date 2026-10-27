@@ -10,7 +10,7 @@ const pct = (n: number, d: number) => `${Math.round((100 * n) / Math.max(1, d))}
 const minus = (x: number) => x.toFixed(2).replace("-", "−");
 
 const STEPS: [string, string, string][] = [
-  ["Watch a recorded run", "The agent's real work replays in about 8 seconds: Houston leads with Astros star Jeremy Peña and rapper Don Toliver.", "/plan?example=houston"],
+  ["Watch a recorded run", "The agent's real work replays in about 8 seconds: Houston leads with Astros star Jeremy Peña, and the fit check holds back Travis Scott.", "/plan?example=houston"],
   ["Plan any city live", "Type a city and press Plan my drives. The agent tests about 20 fandoms against Qloo in 30–90 seconds.", "/plan"],
   ["Check the evidence", "Every partner has a Qloo evidence drop-down, and the receipts drawer lists every Qloo request as a curl you can re-run.", "/plan?example=seattle"],
 ];

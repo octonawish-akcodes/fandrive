@@ -15,7 +15,7 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 
 ### [▶ Try the live demo](https://fandrive-nu.vercel.app) · [For judges](https://fandrive-nu.vercel.app/judges) · [Watch Houston](https://fandrive-nu.vercel.app/plan?example=houston) · [Watch Mumbai](https://fandrive-nu.vercel.app/plan?example=mumbai)
 
-<img src="docs/images/hero.png" alt="FanDrive planner: 'Houston's next blood drive is a Jeremy Peña party.' with the yellow plan form" width="100%">
+<img src="docs/images/hero.png" alt="FanDrive planner: 'Houston's next blood drive is a Jeremy Peña fan day.' with the yellow plan form" width="100%">
 
 </div>
 
@@ -48,15 +48,15 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 
 ### 1 · The fandoms that bring young first-time donors
 
-The agent proposes candidates (artists, teams, shows, games, creators), and Qloo adds its own **local taste**: what young people in your city love that other cities' young people don't. Qloo scores each one on **how young its fans are**, **how much your city's young people love it** and **how concentrated its fans are**. The agent then makes its picks, and every report leads with one **local pick**: Astros star Jeremy Peña and rapper Don Toliver in Houston, Seattle native Paolo Banchero in Seattle, Cade Cunningham in Detroit.
+The agent proposes candidates (artists, teams, shows, games, creators), and Qloo adds its own **local taste**: what young people in your city love that other cities' young people don't. Qloo scores each one on **how young its fans are**, **how much your city's young people love it** and **how concentrated its fans are**. The agent then makes its picks, and every report leads with one **local pick**: Astros star Jeremy Peña in Houston, Seattle native Paolo Banchero in Seattle, Cade Cunningham in Detroit.
 
-<img src="docs/images/cards.png" alt="Houston report card: Jeremy Peña +0.98 and Don Toliver +0.69 (AI picks, local taste), and the plain-AI check, which missed them both" width="100%">
+<img src="docs/images/cards.png" alt="Houston report card: Jeremy Peña +0.98 (AI pick, local taste) and the Houston Rockets +0.30, each with who to ask, and the plain-AI check, which missed Peña" width="100%">
 
 ### 2 · Where the fans are, and where to host
 
 Qloo heatmaps reveal the neighbourhoods where each fan base beats the city's baseline. FanDrive finds venues nearby and sorts them into **host here** (schools, colleges, halls, gyms, places of worship) and **flyers only** (cafés, restaurants, and bars, which never host).
 
-<img src="docs/images/map.png" alt="Map of Houston with Jeremy Peña and Don Toliver fan zones and venue pins, next to a 'Where to host' list" width="100%">
+<img src="docs/images/map.png" alt="Map of Houston with Jeremy Peña and Houston Rockets fan zones and venue pins, next to a 'Where to host' list" width="100%">
 
 ### 3 · The agent shows its work, and the campaign is ready to print
 
@@ -86,7 +86,7 @@ The same model is asked for partners **without Qloo**, then every pick is fact-c
 
 | City | Plain AI suggested | What Qloo says |
 |---|---|---|
-| **Houston** | Travis Scott, Houston Rockets, Euphoria, Fortnite, Megan Thee Stallion | Megan Thee Stallion isn't young-skewing (+0.22). It **missed Houston's local picks**, Astros star Jeremy Peña (+0.98) and rapper Don Toliver (+0.69). |
+| **Houston** | Travis Scott, Houston Astros, Euphoria, Valorant, The Joe Rogan Experience | 2 are **not young** (Houston Astros −0.01, The Joe Rogan Experience +0.19). It **missed Houston's local pick**, Astros star Jeremy Peña (+0.98). FanDrive's AI fit check also held back Travis Scott (reported controversy). |
 | **Seattle** | Seattle Kraken, Minecraft, Macklemore, The Last of Us, Hasan Piker | 2 skew **older** (Macklemore −0.01, The Last of Us −0.05). It **missed Paolo Banchero (+0.99)**, the Seattle-born NBA star. |
 | **Detroit** | Eminem, Detroit Lions, Fortnite, Big Sean, Stranger Things | 3 are **not young** (−0.06, +0.00, +0.05). It **missed Cade Cunningham (+0.87)**, the Pistons star who is Detroit's local pick. |
 | **Mumbai** | Karan Aujla, Mumbai Indians, Minecraft, BeerBiceps, Stranger Things | 2 skew **older** (−0.20, −0.07), 1 has no data. It missed Lost Stories, the Indian electronic duo young Mumbaikars over-index on. |

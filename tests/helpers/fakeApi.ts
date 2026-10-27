@@ -5,6 +5,7 @@ import type { Demographics, EntityType, HeatCell, QlooPlace } from "@/lib/qloo/t
 
 export type FakeData = {
   alias?: Record<string, string>; notFound?: string[]; types?: Record<string, EntityType>;
+  wrongTypeHit?: Record<string, string>; // what a search with the wrong type finds (live: "Houston Astros" as a videogame matched "Astro's Ace XR")
   demo?: Record<string, Demographics | "invalid">; cityFit?: Record<string, number>;
   heat?: Record<string, HeatCell[]>; places?: QlooPlace[]; hostPlaces?: QlooPlace[]; badCities?: string[]; authFail?: boolean;
   fanTags?: Record<string, string[]>; rawTags?: Record<string, { name: string; subtype: string }[]>; trend?: Record<string, { date: string; percentile: number }[]>; tagLookups?: string[];
@@ -22,6 +23,8 @@ export function fakeApi(d: FakeData): QlooApi {
     async search(query, type) {
       if (d.authFail) throw new QlooError("auth", 401, "bad key");
       if (d.notFound?.includes(query)) return [];
+      const hit = d.wrongTypeHit?.[query];
+      if (hit && type && type !== d.types?.[query]) return [{ entityId: id(hit), name: hit, type, popularity: 0.2 }];
       return [{ entityId: id(query), name: d.alias?.[query] ?? query, type: type ?? d.types?.[query] ?? "artist", popularity: 0.9 }];
     },
     async demographics(entityId) {

@@ -28,6 +28,19 @@ describe("classifyVenue", () => {
     expect(classifyVenue(P({ name: "Glow Day Spa", tags: ["Spa", "Appointments recommended"] }))).toEqual({ role: "skip", reasons: ["Appointment-only personal care"] });
     expect(classifyVenue(P({ name: "Polished", genre: "nail_salon" })).role).toBe("skip");
     expect(classifyVenue(P({ name: "Downtown YMCA", genre: "gym", tags: ["Spa", "Pool"] })).role).toBe("host"); // a gym with a spa still hosts
+    // Live Houston run: an art cafe named "[By Appointment Only - Book Online]" was listed for flyers
+    expect(classifyVenue(P({ name: "Honey Art Cafe [By Appointment Only - Book Online]", genre: "art_cafe", tags: ["18 24"] }))).toEqual({ role: "skip", reasons: ["Appointment only"] });
+  });
+  it("skips kids' venues Qloo files under another genre", () => {
+    // Live Houston run: Chuck E. Cheese has genre "pizza" and only a tag says it is for children
+    const v = classifyVenue(P({ name: "Chuck E. Cheese", genre: "pizza", tags: ["Family entertainment", "Childrens amusement center", "18 24"] }));
+    expect(v).toEqual({ role: "skip", reasons: ["Venue for young children"] });
+    expect(classifyVenue(P({ name: "Joe's Pizza", genre: "pizza", tags: ["Good for kids"] })).role).toBe("promote"); // family-friendly is fine
+  });
+  it("skips hospitals and clinics: patients, not a fan crowd", () => {
+    // Live Houston run: Texas Orthopedic Hospital (genre orthopedic_clinic) was listed for flyers
+    for (const g of ["orthopedic_clinic", "hospital", "general_hospital", "medical_center", "urgent_care_center", "dental_clinic"])
+      expect(classifyVenue(P({ genre: g })), g).toEqual({ role: "skip", reasons: ["Hospital or clinic"] });
   });
   it("flags a venue that is closed on the drive day", () => {
     const v = classifyVenue(P({ genre: "gym", hours: { saturday: [{ opens: null, closes: null, closed: true }] } }), "2026-11-14");

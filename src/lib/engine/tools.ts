@@ -71,7 +71,7 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
   }
 
   async function findAndConfirm(refs: NameRef[]): Promise<Resolved[]> {
-    emit({ tool: "find_and_confirm", message: `Looking up ${refs.length} names in Qloo and confirming each match` });
+    emit({ tool: "find_and_confirm", message: `Looking up ${refs.length === 1 ? "1 name" : `${refs.length} names`} in Qloo and confirming each match` });
     return Promise.all(refs.map(resolveOne));
   }
 
@@ -242,9 +242,9 @@ export function createTools(api: QlooApi, emit: (e: ToolEvent) => void = () => {
       ...(e.birthPlace && sameCity(e.birthPlace, city) ? { hometown: e.birthPlace.split(",")[0].trim() } : {}) }));
   }
 
-  async function typeNames(names: string[]): Promise<{ refs: NameRef[]; unresolved: string[] }> {
+  async function typeNames(names: string[], message = `Identifying ${names.length} partner names you entered`): Promise<{ refs: NameRef[]; unresolved: string[] }> {
     if (!names.length) return { refs: [], unresolved: [] };
-    emit({ tool: "find_and_confirm", message: `Identifying ${names.length} partner names you entered` });
+    emit({ tool: "find_and_confirm", message });
     const typed = await Promise.all(names.map(async (n) => {
       const hits = (await api.search(n, undefined, 8).catch(orSoft([]))).filter((h) => PRIORITY.includes(h.type));
       const best = hits.map((h) => ({ h, m: matchConfidence(n, h.name) })).filter((x) => x.m >= MATCH_OK)

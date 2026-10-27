@@ -28,7 +28,7 @@ You type a city. An AI agent then:
 
 1. **Finds candidates.** It proposes artists, teams, shows, games and creators. Qloo adds its own **local taste**: the artists and athletes young people in that city over-index on compared with 10 reference cities.
 2. **Scores each one with Qloo.** It measures how young the fans are, how much the city's young people love it, and how concentrated its fans are (heatmap lift over a baseline of mass brands).
-3. **Picks the partners.** Older-skewing fan bases can't outrank young ones, and every report leads with one local pick. In Houston it chose Astros star Jeremy Peña (+0.98) and rapper Don Toliver; in Seattle, Seattle-born Paolo Banchero (+0.99); in Detroit, Cade Cunningham (+0.87).
+3. **Picks the partners.** Older-skewing fan bases can't outrank young ones, and every report leads with one local pick. In Houston it chose Astros star Jeremy Peña (+0.98); in Seattle, Seattle-born Paolo Banchero (+0.99); in Detroit, Cade Cunningham (+0.87).
 4. **Maps the fans and finds venues.** It shows the neighbourhoods where those fans live and venues nearby that can host (schools, colleges, halls, gyms, places of worship). Bars only get flyers.
 5. **Writes the campaign.** A poster, three social posts, a friend invite and a partnership pitch email, all guarded against invented numbers and fake endorsements.
 6. **Checks itself.** The same model is asked *without* Qloo, and every one of its picks is fact-checked against Qloo's age data.
