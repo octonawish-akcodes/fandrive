@@ -13,7 +13,8 @@
     "record": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/record-run.ts",
     "method-data": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/method-data.ts",
     "eval": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/eval.ts",
-    "validate-age": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/validate-age.ts"
+    "validate-age": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/validate-age.ts",
+    "safety": "QLOO_CACHE_DIR=.cache/qloo tsx --env-file=.env.local scripts/safety.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.94",

@@ -13,8 +13,8 @@ const SRC = {
 };
 const PROOF: [string, string, string, string][] = [
   ["150,000+", "first-time donors from the Red Cross × NFL partnership over seven years", "American Red Cross, 2026", "https://www.redcross.org/about-us/news-and-events/press-release/2026/-red-cross-teeters-on-blood-shortage--give-to-win-super-bowl-tri.html"],
-  ["+600%", "search interest for Red Cross after the Peanuts Snoopy shirt went viral", "NBC News, 2023", "https://www.nbcnews.com/pop-culture/pop-culture-news/red-cross-snoopy-shirt-drives-blood-donations-tiktok-rcna78749"],
-  ["16%", "first-timers at Metallica drives. Qloo says their fans skew 45–54", "American Red Cross, 2026", "https://www.redcross.org/about-us/news-and-events/press-release/2026/more-than-25-000-blood-donations-made-in-metallica-partnership.html"],
+  ["61%", "first-time donors at the Metallica fan donation experience in Las Vegas, against 26–31% at a typical Red Cross drive", "FOX5 Las Vegas, Oct 2026", "https://www.fox5vegas.com/2026/10/14/red-cross-metallica-blood-drive-collects-640-donations-first-two-weeks/"],
+  ["16%", "first-timers across Metallica's whole partnership: below a typical drive. Qloo says their fans skew 45–54", "American Red Cross, 2026", "https://www.redcross.org/about-us/news-and-events/press-release/2026/more-than-25-000-blood-donations-made-in-metallica-partnership.html"],
 ];
 const ext = "underline underline-offset-4";
 
@@ -74,7 +74,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <p className="text-lg font-semibold">The partner is still picked by gut feel. FanDrive picks it with data, and tells you where to set up. <Link href="/method" className="underline underline-offset-4">See the method →</Link></p>
+          <p className="text-lg font-semibold">A fan-themed drive doubles first-timers, but only if the fans are young. Partners are still picked by gut feel. FanDrive picks them with data, and tells you where to set up. <Link href="/method" className="underline underline-offset-4">See the method →</Link></p>
         </section>
 
         <footer className="border-t-[3px] border-black pt-4 text-sm font-semibold">

@@ -42,6 +42,15 @@ describe("classifyVenue", () => {
     for (const g of ["orthopedic_clinic", "hospital", "general_hospital", "medical_center", "urgent_care_center", "dental_clinic"])
       expect(classifyVenue(P({ genre: g })), g).toEqual({ role: "skip", reasons: ["Hospital or clinic"] });
   });
+  it("judges a venue by its name too, since Qloo files some bars and kids' venues as event spaces (safety report)", () => {
+    for (const name of ["The Reserve at Fat Bottom Brewing", "Zinc Bistro & Bar Events Space", "Sky Terrace Rooftop Lounge", "Lips Drag Queen Show Palace, Restaurant & Bar"])
+      expect(classifyVenue(P({ name, genre: "event_venue", eventSpaces: true })).role, name).toBe("promote");
+    expect(classifyVenue(P({ name: "Seattle Children's Theatre", genre: "theater" }))).toEqual({ role: "skip", reasons: ["Venue for young children"] });
+    expect(classifyVenue(P({ name: "Belle Isle Casino", genre: "event_venue" })).role).toBe("skip");
+    for (const name of ["The Lounge Party Hall", "Barnes & Noble", "Barclays Center", "Espresso Bar Collective", "Pubali Community Hall", "Seattle Theatre Group"])
+      expect(classifyVenue(P({ name, genre: name.includes("Barnes") ? "book_store" : "event_venue" })).role, name).not.toBe("skip");
+    expect(classifyVenue(P({ name: "The Lounge Party Hall", genre: "banquet_hall" })).role).toBe("host");
+  });
   it("flags a venue that is closed on the drive day", () => {
     const v = classifyVenue(P({ genre: "gym", hours: { saturday: [{ opens: null, closes: null, closed: true }] } }), "2026-11-14");
     expect(v.reasons).toContain("Closed Saturday");

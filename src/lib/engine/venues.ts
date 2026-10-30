@@ -11,6 +11,11 @@ const KIDS_TAG = /^(child(ren)?'?s (amusement center|museum|play ?area|theat(er|
 const MEDICAL = word("hospital|clinic|medical_center|medical_clinic|urgent_care|emergency_room"); // patients, not a fan crowd (live: an orthopedic hospital listed for flyers)
 const BY_APPOINTMENT = /\bby appointment only\b/i; // by name (live: "Honey Art Cafe [By Appointment Only - Book Online]")
 const NOT_HOST = word("dog_park");
+// By name: Qloo files some bars and kids' venues under "event_venue" or "theater" (safety report: "The Reserve at Fat Bottom Brewing", "Seattle Children's Theatre")
+const ALCOHOL_NAME = /\b(bar|pub|brewery|brewing|brewhouse|taproom|tavern|saloon|lounge|night ?club|winery|cocktails?)\b/i;
+const NOT_ALCOHOL_NAME = /\b(espresso|coffee|juice|smoothie|salad|tea|oxygen|nail|snack|candy|chocolate|protein|poke|taco|sushi|dessert|milkshake|salsa) bar\b|\b(hall|centre|center)\b/i; // "The Lounge Party Hall" is a hall
+const KIDS_NAME = /\b(children'?s (theat(er|re)|museum|play\w*)|kids'? (club|zone|gym|play\w*|theat(er|re)|museum)|chuck e\.? cheese|playground)\b/i;
+const UNSUITABLE_NAME = /\b(casino|hookah|vape|smoke shop|liquor|cannabis|dispensary|strip club|gun (shop|range)|shooting range)\b/i;
 const PERSONAL_CARE = word("spa|day_spa|med_spa|nail_salon|massage|skin_care|waxing"); // appointment-only; barbershops stay, they're where people talk
 const IN_HOTEL = /\b(hotel|resort|motel)\b/i; // by name: Qloo can leave a hotel spa with no genre (live Houston run)
 const SPA_TAG = /^(spa|nail salon|massage|skincare treatments)$/i;
@@ -23,16 +28,16 @@ const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 export function classifyVenue(p: QlooPlace, date?: string): { role: "host" | "promote" | "skip"; reasons: string[] } {
   if (p.isClosed) return { role: "skip", reasons: ["Permanently closed"] };
   const genre = (p.genre ?? "").toLowerCase();
-  if (UNSUITABLE.test(genre)) return { role: "skip", reasons: ["Not suitable for a youth health campaign"] };
+  if (UNSUITABLE.test(genre) || UNSUITABLE_NAME.test(p.name)) return { role: "skip", reasons: ["Not suitable for a youth health campaign"] };
   if (PRIVATE.test(genre)) return { role: "skip", reasons: ["Not a public hangout"] };
-  if (CHILDREN.test(genre) || p.tags.some((t) => KIDS_TAG.test(t.trim()))) return { role: "skip", reasons: ["Venue for young children"] };
+  if (CHILDREN.test(genre) || KIDS_NAME.test(p.name) || p.tags.some((t) => KIDS_TAG.test(t.trim()))) return { role: "skip", reasons: ["Venue for young children"] };
   if (MEDICAL.test(genre)) return { role: "skip", reasons: ["Hospital or clinic"] };
   if (IN_HOTEL.test(p.name)) return { role: "skip", reasons: ["Inside a hotel or resort"] };
   if (BY_APPOINTMENT.test(p.name)) return { role: "skip", reasons: ["Appointment only"] };
   if (PERSONAL_CARE.test(genre) || (!HOST.test(genre) && p.tags.some((t) => SPA_TAG.test(t.trim())))) return { role: "skip", reasons: ["Appointment-only personal care"] };
   const reasons: string[] = [];
   if (p.tags.some((t) => /18\s*24/.test(t))) reasons.push("Young crowd (18–24)");
-  if (ALCOHOL.test(genre) && !NOT_ALCOHOL.test(genre)) return { role: "promote", reasons: ["Promote here, don't host here (alcohol venue)", ...reasons] };
+  if ((ALCOHOL.test(genre) && !NOT_ALCOHOL.test(genre)) || (ALCOHOL_NAME.test(p.name) && !NOT_ALCOHOL_NAME.test(p.name))) return { role: "promote", reasons: ["Promote here, don't host here (alcohol venue)", ...reasons] };
   if (p.eventSpaces) reasons.push("Has event space");
   if (date && p.hours) {
     const day = DAYS[new Date(`${date}T12:00:00Z`).getUTCDay()];

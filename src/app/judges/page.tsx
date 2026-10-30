@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { signed } from "@/lib/client/view";
 import eval_ from "@/data/eval.json";
+import safety from "@/data/safety.json";
 import validation from "@/data/validation.json";
 
 export const metadata = { title: "For judges · FanDrive", description: "FanDrive in two minutes: what it does, how to test it, the evidence, how Qloo is used, and its limits." };
@@ -13,7 +14,9 @@ const STEPS: [string, string, string][] = [
   ["Watch a recorded run", "The agent's real work replays in about 8 seconds: Houston leads with Astros star Jeremy Peña, and the fit check holds back Travis Scott.", "/plan?example=houston"],
   ["Plan any city live", "Type a city and press Plan my drives. The agent tests about 20 fandoms against Qloo in 30–90 seconds.", "/plan"],
   ["Check the evidence", "Every partner has a Qloo evidence drop-down, and the receipts drawer lists every Qloo request as a curl you can re-run.", "/plan?example=seattle"],
+  ["Take the plan away", "Every plan ends with a dated campaign calendar, from the pitch email to a return drive 56 days later, as a calendar file, a venue spreadsheet and a printable brief.", "/plan?example=mumbai"],
 ];
+const row = (start: string) => safety.rows.find((r) => r.check.startsWith(start));
 const QLOO: [string, string][] = [
   ["/v2/insights · urn:demographics", "How young each fan base is"],
   ["/v2/insights · urn:entity + location + age", "How much the city's young people love it, and (with no entity filter) its local taste"],
@@ -38,7 +41,7 @@ export default function JudgesPage() {
           <h2 id="try-h" className="font-display text-3xl">Try it in 60 seconds</h2>
           <ol className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))]">
             {STEPS.map(([t, b, href], i) => (
-              <li key={t} className={`brut flex flex-col gap-2 p-6 ${["bg-sun", "bg-bubble", "bg-sky"][i]}`}>
+              <li key={t} className={`brut flex flex-col gap-2 p-6 ${["bg-sun", "bg-bubble", "bg-sky", "bg-mint"][i]}`}>
                 <span className="font-display text-4xl">{i + 1}</span>
                 <h3 className="font-display text-2xl">{t}</h3>
                 <p className="font-semibold">{b}</p>
@@ -67,8 +70,13 @@ export default function JudgesPage() {
 
         <section className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))]">
           <div className="brut flex flex-col gap-2 bg-bubble p-6">
-            <h2 className="font-display text-2xl">Built to be trusted</h2>
-            <p className="font-semibold">28 automated tests guard safety: no invented numbers, no implied endorsements, no bars or children&rsquo;s venues as hosts, no identity or religion tags, no one under 18, an AI fit check on every person a plan leads with, no names with profanity, and older-skewing fan bases can never outrank young ones. Only public names and places go to Qloo.</p>
+            <h2 className="font-display text-2xl">Safety, measured</h2>
+            <ul className="flex flex-col gap-2 font-semibold">
+              <li><b>{row("Venues Qloo")?.cases.toLocaleString("en-US")} venues</b> Qloo has returned, checked by the app&rsquo;s rules: <b>0</b> bars, kids&rsquo; venues, hospitals, hotels or casinos chosen to host ({row("Bars")?.cases} alcohol venues get flyers only).</li>
+              <li><b>{row("Copy red-team")?.passed}/{row("Copy red-team")?.cases}</b> red-team lines handled: invented numbers, fake endorsements and leaked instructions caught, safe lines left alone.</li>
+              <li><b>{row("AI fit check")?.passed}/{row("AI fit check")?.cases}</b> public names with a death, criminal case or major controversy held back by the AI fit check, with {row("AI fit check")?.note.split(" ")[0]} false alarms.</li>
+            </ul>
+            <p className="mt-auto text-sm font-bold">Rerun with <code>pnpm safety</code> · measured {safety.at}</p>
           </div>
           <div className="brut flex flex-col gap-2 bg-mint p-6">
             <h2 className="font-display text-2xl">Use it from your own agent</h2>
@@ -80,10 +88,10 @@ export default function JudgesPage() {
         <section aria-labelledby="limits-h" className="border-t-[3px] border-black pt-6">
           <h2 id="limits-h" className="font-display text-2xl">Honest limits</h2>
           <ul className="mt-2 list-disc pl-5 font-semibold">
-            <li>FanDrive has not yet run a real drive, so it shows which fandoms skew young and local, not how many donors they bring. The method page sets past partners&rsquo; published results beside their Qloo data.</li>
+            <li>FanDrive has not yet run a real drive, so it shows which fandoms skew young and local, not how many donors they bring. The best public evidence that fan-themed drives work: at the Metallica donation experience in Las Vegas, 61% of donors were first-timers, against 26&ndash;31% at a typical Red Cross drive (FOX5 Las Vegas, Oct 2026).</li>
             <li>Qloo data is strong in large cities and thinner elsewhere; every plan shows a data badge.</li>
             <li>&ldquo;Local&rdquo; is Qloo&rsquo;s view of what young people there over-index on, not a hometown check (a &ldquo;Born here&rdquo; badge shows when Qloo&rsquo;s birthplace matches).</li>
-            <li>Qloo can&rsquo;t tell who has died or is in the news, so a separate AI fit check holds back anyone who may have died, be under 18, or have a reported legal case or controversy (in testing it caught all four such names among ten). It can miss things, so plans led by a person still remind organisers to check fit.</li>
+            <li>Qloo can&rsquo;t tell who has died or is in the news, so a separate AI fit check holds back anyone who may have died, be under 18, or have a reported legal case or controversy (in testing it held back all 8 such names among 16, with no false alarms). If the AI can&rsquo;t answer, the plan says no names were screened, and plans led by a person always remind organisers to check fit.</li>
           </ul>
         </section>
       </main>

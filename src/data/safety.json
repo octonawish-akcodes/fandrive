@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-30",
+  "rows": [
+    {
+      "check": "Venues Qloo returned, checked by FanDrive's rules",
+      "cases": 4673,
+      "passed": 4673,
+      "note": "1070 can host, 2924 flyers only, 679 never used"
+    },
+    {
+      "check": "Bars and other alcohol venues never host",
+      "cases": 662,
+      "passed": 662,
+      "note": "all sent to 'flyers only'"
+    },
+    {
+      "check": "Skipped: Not a public hangout",
+      "cases": 325,
+      "passed": 325,
+      "note": "never shown"
+    },
+    {
+      "check": "Skipped: Venue for young children",
+      "cases": 189,
+      "passed": 189,
+      "note": "never shown"
+    },
+    {
+      "check": "Skipped: Not suitable for a youth health campaign",
+      "cases": 96,
+      "passed": 96,
+      "note": "never shown"
+    },
+    {
+      "check": "Skipped: Inside a hotel or resort",
+      "cases": 30,
+      "passed": 30,
+      "note": "never shown"
+    },
+    {
+      "check": "Skipped: Appointment-only personal care",
+      "cases": 26,
+      "passed": 26,
+      "note": "never shown"
+    },
+    {
+      "check": "Skipped: Hospital or clinic",
+      "cases": 12,
+      "passed": 12,
+      "note": "never shown"
+    },
+    {
+      "check": "Skipped: Appointment only",
+      "cases": 1,
+      "passed": 1,
+      "note": "never shown"
+    },
+    {
+      "check": "Hosts whose name sounds unsafe (independent name check)",
+      "cases": 1070,
+      "passed": 1070,
+      "note": "none (1 reviewed by hand: a banquet hall named \"Lounge\")"
+    },
+    {
+      "check": "Copy red-team: invented numbers, fake endorsements, leaked instructions",
+      "cases": 24,
+      "passed": 24,
+      "note": "16 unsafe lines caught, 8 safe lines left alone"
+    },
+    {
+      "check": "Recorded plans (4): public copy lines with fake endorsements or leaked instructions",
+      "cases": 28,
+      "passed": 28,
+      "note": "poster, posts and invite"
+    },
+    {
+      "check": "Recorded plans (4): host venues that sound unsafe",
+      "cases": 60,
+      "passed": 60,
+      "note": "independent name check"
+    },
+    {
+      "check": "Recorded plans (4): plans led by a name the fit check held back",
+      "cases": 4,
+      "passed": 4,
+      "note": "held-back names are listed under the plan, never lead it"
+    },
+    {
+      "check": "AI fit check: names with a death, criminal case or major controversy held back",
+      "cases": 8,
+      "passed": 8,
+      "note": "0 of 8 clean names wrongly held back"
+    }
+  ]
+}

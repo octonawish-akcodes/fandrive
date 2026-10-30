@@ -10,7 +10,7 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs)
 ![Qloo Taste AI](https://img.shields.io/badge/Qloo-Taste%20AI-FF4949?style=flat-square)
 ![Gemini](https://img.shields.io/badge/agent-Gemini-90A8FF?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-208%20passing-23C78A?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-226%20passing-23C78A?style=flat-square)
 ![Qloo Agentic Hackathon](https://img.shields.io/badge/Qloo%20Agentic%20Hackathon-2026-FFC900?style=flat-square)
 
 ### [▶ Try the live demo](https://fandrive-nu.vercel.app) · [For judges](https://fandrive-nu.vercel.app/judges) · [Watch Houston](https://fandrive-nu.vercel.app/plan?example=houston) · [Watch Mumbai](https://fandrive-nu.vercel.app/plan?example=mumbai)
@@ -37,8 +37,8 @@ An AI agent for blood banks and student organisers. It uses **Qloo taste data** 
 
 - 🩸 On 27 July 2026 the American Red Cross declared its **second-ever national blood supply crisis** ([Red Cross](https://www.redcross.org/about-us/news-and-events/press-release/2026/red-cross-declares-national-blood-supply-crisis-urges-immediate-.html)).
 - 📉 **Donors under 30 are down about 39% since 2015**, while donors over 60 grew ([Blood Centers of America data, Aug 2026](https://www.strac.org/wp-content/uploads/2026/08/Block_NBS-2026.pdf)).
-- 🎸 **Fandoms already fill blood drives:** the Red Cross × NFL partnership brought **150,000+ first-time donors** ([Red Cross](https://www.redcross.org/about-us/news-and-events/press-release/2026/-red-cross-teeters-on-blood-shortage--give-to-win-super-bowl-tri.html)), and the Peanuts Snoopy shirt sent Red Cross search interest up **600%** ([NBC News](https://www.nbcnews.com/pop-culture/pop-culture-news/red-cross-snoopy-shirt-drives-blood-donations-tiktok-rcna78749)).
-- 🎯 **But partners are picked by gut feel.** Metallica's drives recruited only **16% first-timers** ([Red Cross](https://www.redcross.org/about-us/news-and-events/press-release/2026/more-than-25-000-blood-donations-made-in-metallica-partnership.html)), and on Qloo their fans skew 45–54.
+- 🎸 **Fandoms already fill blood drives:** the Red Cross × NFL partnership brought **150,000+ first-time donors** ([Red Cross](https://www.redcross.org/about-us/news-and-events/press-release/2026/-red-cross-teeters-on-blood-shortage--give-to-win-super-bowl-tri.html)), and at the Metallica donation experience in Las Vegas **61% of donors were first-timers**, against **26–31% at a typical Red Cross drive** ([FOX5 Las Vegas, Oct 2026](https://www.fox5vegas.com/2026/10/14/red-cross-metallica-blood-drive-collects-640-donations-first-two-weeks/)).
+- 🎯 **But the fandom matters, and it's picked by gut feel.** Across Metallica's whole partnership only **16% were first-timers**, below a typical drive ([Red Cross](https://www.redcross.org/about-us/news-and-events/press-release/2026/more-than-25-000-blood-donations-made-in-metallica-partnership.html)); on Qloo their fans skew 45–54.
 
 **FanDrive replaces the gut feel with taste data**, and tells you exactly where to set up.
 
@@ -66,7 +66,13 @@ Every step streams live as the agent works. The poster, three social posts, a fr
 
 <img src="docs/images/kit.png" alt="Campaign kit with three social posts, a friend invite and a pitch email" width="100%">
 
-### 4 · Every fandom, ranked with evidence
+### 4 · A campaign calendar you can take away
+
+Every plan ends with a dated campaign: the pitch email three weeks out, posters at the flyer spots, the three social posts, the drive day, a thank-you, and a **return drive 56 days later**, when US whole-blood donors can give again. First-timers are the hardest donors to win back, so the second drive is booked before the first one happens. One click adds it all to Google Calendar, Outlook or Apple Calendar (`.ics`); the venue sheet downloads as a spreadsheet (`.csv`), and **Print the brief** gives a clean printout of the plan for a meeting.
+
+<img src="docs/images/calendar.png" alt="Campaign calendar for Houston: partnership email, posters, three social posts, the Jeremy Peña fan day on Sat Nov 14, a thank-you, and a return drive on Jan 9" width="100%">
+
+### 5 · Every fandom, ranked with evidence
 
 <img src="docs/images/ranking.png" alt="Ranking of every fandom tested, with youth-skew bars and Qloo evidence" width="100%">
 
@@ -87,11 +93,11 @@ The same model is asked for partners **without Qloo**, then every pick is fact-c
 | City | Plain AI suggested | What Qloo says |
 |---|---|---|
 | **Houston** | Travis Scott, Houston Astros, Euphoria, Valorant, The Joe Rogan Experience | 2 are **not young** (Houston Astros −0.01, The Joe Rogan Experience +0.19). It **missed Houston's local pick**, Astros star Jeremy Peña (+0.98). FanDrive's AI fit check also held back Travis Scott (reported controversy). |
-| **Seattle** | Seattle Kraken, Minecraft, Macklemore, The Last of Us, Hasan Piker | 2 skew **older** (Macklemore −0.01, The Last of Us −0.05). It **missed Paolo Banchero (+0.99)**, the Seattle-born NBA star. |
+| **Seattle** | Seattle Kraken, Macklemore, Bungie, Grey's Anatomy | 2 are **not young** (Macklemore −0.01, Bungie −0.02). It **missed Paolo Banchero (+0.99)**, the Seattle-born NBA star. |
 | **Detroit** | Eminem, Detroit Lions, Fortnite, Big Sean, Stranger Things | 3 are **not young** (−0.06, +0.00, +0.05). It **missed Cade Cunningham (+0.87)**, the Pistons star who is Detroit's local pick. |
-| **Mumbai** | Karan Aujla, Mumbai Indians, Minecraft, BeerBiceps, Stranger Things | 2 skew **older** (−0.20, −0.07), 1 has no data. It missed Lost Stories, the Indian electronic duo young Mumbaikars over-index on. |
+| **Mumbai** | Minecraft, Mumbai City FC, MostlySane, Karan Aujla, Stranger Things | 2 skew **older** (Mumbai City FC −0.18, Karan Aujla −0.20), 1 has no data. It **missed Indian Ocean (+0.77)**, the band FanDrive's agent picked first. |
 
-<img src="docs/images/mumbai.png" alt="Mumbai report card: Valorant +0.57 (AI pick) and Lost Stories +0.48 (local taste); plain AI got 2 wrong" width="100%">
+<img src="docs/images/mumbai.png" alt="Mumbai report card: Indian Ocean +0.77 (AI pick) and Lost Stories +0.48, with the plain-AI check, which missed Indian Ocean" width="100%">
 
 > *"If your submission would work the same without Qloo, you're building the wrong thing."* Without Qloo, FanDrive would recommend famous names. With Qloo, it recommends the fan bases that are actually young, actually local, and actually near a hall that can host.
 
@@ -152,10 +158,20 @@ Then ask your agent: *"Which fandoms should a Houston blood drive partner with t
 
 ## 🛡️ Built to be trusted
 
+**Safety, measured** ([full report](docs/eval/safety.md), rerun with `pnpm safety`):
+
+| Check | Result |
+|---|---|
+| Every venue Qloo has returned to FanDrive (4,673 places, from every city it has planned) | **0 bars, kids' venues, hospitals, hotels or casinos chosen to host.** 662 alcohol venues get flyers only; 679 are never shown |
+| Independent name check on all 1,070 host venues | **0 unsafe-sounding names.** Its first run found 7 event spaces with bar-like names ("…Brewing", "…Rooftop Lounge") and a children's theatre; they're now caught by name too |
+| Copy red-team: invented numbers, fake endorsements, leaked instructions | **24 / 24** (16 unsafe lines caught, 8 safe lines left alone) |
+| AI fit check on 16 public names whose status is public record | **8 / 8** held back (deaths, criminal cases, major controversies); **0 / 8** clean names wrongly held back |
+| Recorded plans judges replay | **0** fake endorsements in 28 lines of public copy; **0** unsafe hosts; **0** plans led by a held-back name |
+
 - **No invented facts.** Copy with numbers the tools never returned (digits *or* words, like "forty percent") falls back to template text.
 - **No fake endorsements.** Public copy may only mention a fandom as fandom ("Kai Cenat fans"), never as if the artist, team or game were involved.
-- **Sensible venues.** No drives at bars, shooting ranges, cigar or vape shops, tattoo parlours, children's schools or museums, or private homes.
-- **Careful with people.** Qloo's birth dates rule out anyone under 18. A separate AI fit check holds back anyone the plan would lead with who may have died or has a reported legal case or controversy, and shows a neutral "check fit" label instead of guessing. Plans led by a person still remind organisers to check fit.
+- **Sensible venues.** No drives at bars, shooting ranges, cigar or vape shops, tattoo parlours, children's schools or museums, hospitals, hotels or private homes, judged by Qloo's genre, its tags and the venue's own name.
+- **Careful with people.** Qloo's birth dates rule out anyone under 18. A separate AI fit check holds back anyone the plan would lead with who may have died or has a reported legal case or controversy, and shows a neutral "check fit" label instead of guessing. If the AI can't answer after a retry, the plan says plainly that no names were screened. Plans led by a person still remind organisers to check fit.
 - **Always finishes.** A Gemini fallback chain plus deadlines; if the AI is down, autopilot finishes the plan with the same Qloo tools.
 - **Respects the API.** At most 3 Qloo requests/second, a pause on 429s, Redis caching, and a daily budget across all servers.
 - **Private by design.** Only public names, cities and coordinates go to Qloo. Results are crowd-level tendencies, never about individuals. Keys stay server-side.
@@ -183,7 +199,7 @@ pnpm dev                     # http://localhost:3000
 
 ## Quality
 
-- **208 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
+- **226 tests** (Vitest), typecheck and lint on every push (GitHub Actions).
 - Reviewed end to end by a separate code-review agent; every critical and important finding was fixed test-first.
 - Live data spike and tuning notes: [`docs/spike/2026-10-13.md`](docs/spike/2026-10-13.md). Design spec: [`docs/superpowers/specs`](docs/superpowers/specs).
 

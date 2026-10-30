@@ -13,7 +13,7 @@ function parseLocality(body: Raw): Locality | null {
   return l?.location ? { name: l.name, disambiguation: l.disambiguation, lat: l.location.lat, lon: l.location.lon } : null;
 }
 
-function parsePlace(e: Raw): QlooPlace {
+export function parsePlace(e: Raw): QlooPlace {
   const p = e.properties ?? {};
   return {
     entityId: e.entity_id, name: e.name, lat: e.location?.lat, lon: e.location?.lon,
