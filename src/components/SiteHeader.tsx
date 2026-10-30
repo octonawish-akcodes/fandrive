@@ -3,7 +3,7 @@ import { StatusBadges } from "./StatusBadges";
 
 export function SiteHeader() {
   return (
-    <header className="border-b-[3px] border-black bg-white">
+    <header className="print:hidden border-b-[3px] border-black bg-white">
       <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 sm:px-6">
         <Link href="/" className="brut-sm -rotate-2 bg-alarm px-3 py-1 font-display text-2xl">FanDrive</Link>
         <nav aria-label="Main" className="flex flex-wrap gap-x-5 gap-y-1 font-bold">

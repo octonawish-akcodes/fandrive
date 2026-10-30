@@ -44,3 +44,8 @@ body { background: #fff; color: #000; font-family: var(--font-sans); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+@media print {
+  @page { margin: 12mm; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .brut, .brut-sm { box-shadow: none; break-inside: avoid; }
+}

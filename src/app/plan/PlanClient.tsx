@@ -73,9 +73,9 @@ export function PlanClient() {
             </h1>
             <p className="max-w-2xl text-xl">{lead}</p>
           </div>
-          <div className="min-w-0 flex-[1_1_340px]"><PlanForm onSubmit={start} disabled={state.status === "running"} /></div>
+          <div className="min-w-0 flex-[1_1_340px] print:hidden"><PlanForm onSubmit={start} disabled={state.status === "running"} /></div>
         </section>
-        {recordedAt && <p className="brut-sm bg-bubble p-3 font-bold">Recorded run from {recordedAt}, replayed. Use the form to run it live.</p>}
+        {recordedAt && <p className="print:hidden brut-sm bg-bubble p-3 font-bold">Recorded run from {recordedAt}, replayed. Use the form to run it live.</p>}
         {view.status !== "idle" && <ReportView state={view} />}
       </main>
     </>

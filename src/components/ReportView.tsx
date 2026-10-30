@@ -2,6 +2,7 @@
 import type { RunState } from "@/lib/client/runState";
 import { topTwo } from "@/lib/client/view";
 import { CreativePanel, PosterCard } from "./CreativePanel";
+import { DriveKit } from "./DriveKit";
 import { MapCard } from "./MapCard";
 import { PartnerTable } from "./PartnerTable";
 import { PickCard, SkeletonCard } from "./PickCard";
@@ -16,9 +17,10 @@ export function ReportView({ state }: { state: RunState }) {
   const running = status === "running";
   const [first, second] = topTwo(partners ?? [], picks);
   const isPick = (id?: string) => !!id && (picks?.ids ?? []).includes(id);
-  const log = <StepLog steps={steps} running={running} />;
+  const log = <div className="contents print:hidden"><StepLog steps={steps} running={running} /></div>;
   return (
     <section aria-labelledby="report-h" className="flex flex-col gap-6">
+      {plan && <p className="hidden text-sm font-bold print:block">FanDrive drive brief · planned {plan.createdAt.slice(0, 10)} from Qloo taste data · fandrive-nu.vercel.app/plan?{plan.engine === "recorded" || plan.id.startsWith("example-") ? `example=${plan.id.replace("example-", "")}` : `id=${plan.id}`}</p>}
       {error && <div role="alert" className="brut bg-alarm p-5 text-lg font-bold">{error.message}</div>}
       <div className="flex flex-wrap items-center gap-3">
         <h2 id="report-h" className="font-display text-3xl sm:text-4xl">{city ? `${city.name} report card` : "Report card"}</h2>
@@ -30,14 +32,15 @@ export function ReportView({ state }: { state: RunState }) {
           {running && log}
           {first ? <PickCard partner={first} rank={1} agentPick={isPick(first.entityId)} rationale={isPick(first.entityId) ? picks?.rationale : null} city={city?.name} /> : <SkeletonCard tone="bg-sun" label="Top fandom" />}
           {second ? <PickCard partner={second} rank={2} agentPick={isPick(second.entityId)} city={city?.name} /> : <SkeletonCard tone="bg-bubble" label="Runner-up" />}
-          {plainAi !== undefined ? <PlainAiPanel checks={plainAi} partners={partners ?? []} picks={picks} /> : <SkeletonCard label="Plain AI check" />}
+          <div className="contents print:hidden">{plainAi !== undefined ? <PlainAiPanel checks={plainAi} partners={partners ?? []} picks={picks} /> : <SkeletonCard label="Plain AI check" />}</div>
           {maps && city ? <MapCard city={city} maps={maps} /> : <div className="col-span-full"><SkeletonCard tone="bg-sky" label="Where to host" /></div>}
           {creative ? <PosterCard c={creative} /> : <SkeletonCard tone="bg-alarm" label="Poster" />}
           {!running && log}
         </div>
-        {partners && <PartnerTable partners={partners} excluded={excluded ?? []} picks={picks} />}
+        {plan && <DriveKit plan={plan} />}
+        {partners && <div className="print:hidden"><PartnerTable partners={partners} excluded={excluded ?? []} picks={picks} /></div>}
         {creative && <CreativePanel c={creative} />}
-        {plan?.receipts && plan.receipts.length > 0 && <ReceiptsPanel receipts={plan.receipts} />}
+        {plan?.receipts && plan.receipts.length > 0 && <div className="print:hidden"><ReceiptsPanel receipts={plan.receipts} /></div>}
         {plan && (
           <footer className="border-t-[3px] border-black pt-4">
             <h3 className="font-bold">Data limits for this run</h3>
