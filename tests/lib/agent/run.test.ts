@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { runPlan, skippedNote } from "@/lib/agent/run";
+import { runPlan, skippedNote, unscreenedNote } from "@/lib/agent/run";
 import { recordReceipt } from "@/lib/qloo/receipts";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema, type RunEvent } from "@/lib/plan/schema";
@@ -36,6 +36,10 @@ describe("runPlan", () => {
     expect(plan?.limits.some((l) => l.includes("Jalen Green") && l.includes("public figure"))).toBe(true);
     const { plan: noPerson } = await run(data);
     expect(noPerson?.limits.some((l) => l.includes("public figure"))).toBe(false);
+  });
+  it("warns that no names were screened when the fit check couldn't run (autopilot has no AI)", async () => {
+    const { plan } = await run(data); // artists lead and autopilot runs without a model
+    expect(plan?.limits).toContain(unscreenedNote);
   });
   it("falls back to autopilot when the model fails", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});

@@ -14,6 +14,7 @@ export type RunDeps = {
   agentDeadlineMs?: number; plainAiTimeoutMs?: number; // recordings allow longer than live requests
 };
 
+export const unscreenedNote = "The AI fit check couldn’t run for this plan, so no names were screened for deaths, age or controversies. Check every name before using it.";
 export const skippedNote = (n: number) => `${n} ${n === 1 ? "name was" : "names were"} skipped (not found, wrong match, or no audience data yet).`;
 
 export async function runPlan(input: PlanInput, deps: RunDeps, emit: (e: RunEvent) => void): Promise<Plan | null> {
@@ -74,6 +75,7 @@ async function planWithin(input: PlanInput, deps: RunDeps, emit: (e: RunEvent) =
       ...(engine === "autopilot" ? ["Planned by autopilot: same Qloo data, fixed steps, template copy."] : []),
       ...(core.usedTemplate && engine === "agent" ? ["Campaign copy uses templates (AI writer unavailable)."] : []),
       ...(core.partners.some((p) => p.flag) ? [`Held back by the AI fit check: ${core.partners.filter((p) => p.flag).map((p) => `${p.name} (${p.flag})`).join("; ")}. Check before using any name.`] : []),
+      ...(!core.fitChecked && topTwo(core.partners, core.picks).some((p) => p.type === "person" || p.type === "artist") ? [unscreenedNote] : []),
       ...topTwo(core.partners, core.picks).filter((p) => p.type === "person").map((p) => `${p.name} is a public figure: check they fit your organisation before using their name, and never imply they endorse the drive.`),
       "Scores describe crowd-level tendencies, not individuals. Eligibility rules vary; follow your blood service's guidance.",
     ];

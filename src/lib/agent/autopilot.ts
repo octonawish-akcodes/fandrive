@@ -5,7 +5,9 @@ import type { CityInfo, Creative, MapResult, PlanInput, AgentPicks } from "@/lib
 import { dateLabel, templateCreative, type TemplateCtx } from "@/lib/plan/templates";
 
 export type AutopilotState = { ranked?: Partner[]; excluded?: Excluded[]; maps?: MapResult[] };
-export type CoreResult = { partners: Partner[]; excluded: Excluded[]; maps: MapResult[]; creative: Creative; usedTemplate: boolean; picks?: AgentPicks };
+export type CoreResult = { partners: Partner[]; excluded: Excluded[]; maps: MapResult[]; creative: Creative; usedTemplate: boolean; picks?: AgentPicks;
+  fitChecked?: boolean; // the AI fit check ran on the people the plan leads with (autopilot runs without AI, so never)
+};
 export class TooFewPartnersError extends Error {
   constructor(public count: number) { super(`Only ${count} partners had enough Qloo data (need 3)`); this.name = "TooFewPartnersError"; }
 }

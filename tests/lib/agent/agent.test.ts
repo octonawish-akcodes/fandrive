@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AgentIncompleteError, runAgent, writeCreative } from "@/lib/agent/agent";
+import { AgentIncompleteError, fitCheck, runAgent, writeCreative } from "@/lib/agent/agent";
 import { runPlainAi } from "@/lib/agent/plainAi";
 import { createTools } from "@/lib/engine/tools";
 import { PlanInputSchema } from "@/lib/plan/schema";
@@ -60,7 +60,7 @@ describe("runAgent", () => {
     const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
     expect(r.partners[0].name).toBe("Bad Bunny");
     expect(r.maps[0].partnerName).toBe("Bad Bunny");
-    expect(model.doGenerateCalls).toHaveLength(4); // finish, creative, then the fit check
+    expect(model.doGenerateCalls).toHaveLength(5); // finish, creative, then the fit check (no answer here, so it tries twice)
   });
   it("queries Qloo with the user's full city string, not the short locality name", async () => {
     const calls: string[] = [];
@@ -125,6 +125,19 @@ describe("runAgent", () => {
     expect(r.maps.map((m) => m.partnerName)).toContain(r.partners[0].name);
     expect(r.creative.theme).toBe("Olivia Fan Day");
   });
+  it("retries a fit check that failed, and says when it never ran", async () => {
+    const people = [{ entityId: id("Sabrina Carpenter"), name: "Sabrina Carpenter", type: "artist" as const }];
+    const flaky = mockModel([text("not json"), text(JSON.stringify({ flags: [{ name: "sabrina carpenter", concern: "died", note: "test" }] }))]);
+    expect(await fitCheck(flaky, people)).toEqual(new Map([[id("Sabrina Carpenter"), "may have died"]]));
+    expect(await fitCheck(mockModel([text("not json"), text("still not json")]), people)).toBeNull();
+    expect(await fitCheck(mockModel([]), [])).toEqual(new Map()); // nobody to check: no call at all
+  });
+  it("records whether the fit check ran on the plan's lead people", async () => {
+    const answered = mockModel([calls(["score_partners", cands]), calls(["finish", { ids: [id("Bad Bunny")], rationale: "x" }]), text(creative("T")), text(JSON.stringify({ flags: [] }))]);
+    expect((await runAgent({ input, city, tools: createTools(fakeApi(data)), model: answered })).fitChecked).toBe(true);
+    const silent = mockModel([calls(["score_partners", cands]), calls(["finish", { ids: [id("Bad Bunny")], rationale: "x" }]), text(creative("T"))]);
+    expect((await runAgent({ input, city, tools: createTools(fakeApi(data)), model: silent })).fitChecked).toBe(false);
+  });
   it("accepts a partner's exact name when the planner passes names instead of ids", async () => {
     const model = mockModel([
       calls(["score_partners", cands]),
@@ -174,7 +187,7 @@ describe("runAgent", () => {
   it("stops the tool loop at 4 steps even if the model never finishes", async () => {
     const model = mockModel([calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), calls(["score_partners", cands]), text(creative("T"))]);
     const r = await runAgent({ input, city, tools: createTools(fakeApi(data)), model });
-    expect(model.doGenerateCalls.length).toBe(6); // 4 loop steps, creative, fit check
+    expect(model.doGenerateCalls.length).toBe(7); // 4 loop steps, creative, fit check twice (no answer here)
     expect(r.maps).toHaveLength(2);
   });
   it("replaces creative fields that contain invented numbers", async () => {
